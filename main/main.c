@@ -38,6 +38,39 @@ static void SPIFFS_Directory(char * path) {
 #define CONFIG_HEIGHT 320
 #define CONFIG_WIDTH  240
 
+TickType_t fillTest(ILI9340_t * dev, int width, int height) {
+	TickType_t startTick, endTick, diffTick;
+	startTick = xTaskGetTickCount();
+	lcdFillScreen(dev, RED);
+	vTaskDelay(1);
+	lcdFillScreen(dev, GREEN);
+	vTaskDelay(1);
+	lcdFillScreen(dev, BLUE);
+	endTick = xTaskGetTickCount();
+	diffTick = endTick - startTick;
+	ESP_LOGI(__FUNCTION__, "diffTick=%d",diffTick);
+	return diffTick;
+}
+
+TickType_t barTest(ILI9340_t * dev, int width, int height) {
+	TickType_t startTick, endTick, diffTick;
+	startTick = xTaskGetTickCount();
+	uint16_t Y1,Y2;
+	Y1 = height/3;
+	Y2 = (height/3)*2;
+    //ESP_LOGI(TAG, "Y1=%d Y2=%d",Y1,Y2);
+	lcdDrawFillRect(dev, 0, 0, width, Y1, RED);
+	vTaskDelay(1);
+	lcdDrawFillRect(dev, 0, Y1, width, Y2, GREEN);
+	vTaskDelay(1);
+	lcdDrawFillRect(dev, 0, Y2, width, height, BLUE);
+	endTick = xTaskGetTickCount();
+	diffTick = endTick - startTick;
+	ESP_LOGI(__FUNCTION__, "diffTick=%d",diffTick);
+	return diffTick;
+}
+
+
 void ILI9341(void *pvParameters)
 {
     /* フォントファイルの指定(お好みで) */
@@ -50,42 +83,11 @@ void ILI9341(void *pvParameters)
 	spi_master_init(&dev, CONFIG_GPIO_CS, CONFIG_GPIO_DC, CONFIG_GPIO_RESET);
 	lcdInit(&dev, CONFIG_WIDTH, CONFIG_HEIGHT);
 
-	TickType_t nowTick1, nowTick2, diffTick;
-	nowTick1 = xTaskGetTickCount();
-	lcdFillScreen(&dev, RED);
-	nowTick2 = xTaskGetTickCount();
-	diffTick = nowTick2 - nowTick1;
-	ESP_LOGI(TAG, "diffTick=%d",diffTick);
-	vTaskDelay(1);
-	lcdFillScreen(&dev, GREEN);
-	vTaskDelay(1);
-	lcdFillScreen(&dev, BLUE);
-	vTaskDelay(1);
-
-	//color bar
-	uint16_t Y1,Y2;
-	Y1=CONFIG_HEIGHT/3;
-	Y2=(CONFIG_HEIGHT/3)*2;
-    ESP_LOGI(TAG, "Y1=%d Y2=%d",Y1,Y2);
-	lcdDrawFillRect(&dev, 0, 0, CONFIG_WIDTH, Y1, RED);
-	vTaskDelay(1);
-	lcdDrawFillRect(&dev, 0, Y1, CONFIG_WIDTH, Y2, GREEN);
-	vTaskDelay(1);
-	lcdDrawFillRect(&dev, 0, Y2, CONFIG_WIDTH, CONFIG_HEIGHT, BLUE);
-	vTaskDelay(1);
+	fillTest(&dev, CONFIG_WIDTH, CONFIG_HEIGHT);
+	barTest(&dev, CONFIG_WIDTH, CONFIG_HEIGHT);
 
 #if 0
-	for(int i=0;i<CONFIG_WIDTH;i++){
-		for(int j=0;j<CONFIG_HEIGHT;j++){
-			if(j<Y1){
-				lcdDrawPixel(&dev, i, j, RED);
-			} else if(j<Y2) {
-				lcdDrawPixel(&dev, i, j, GREEN);
-			} else {
-				lcdDrawPixel(&dev, i, j, BLUE);
-			}
-		}
-	}
+
 #endif
 
     while (1) {
