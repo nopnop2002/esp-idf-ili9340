@@ -13,9 +13,6 @@
 #include "ili9340.h"
 #include "fontx.h"
 
-FontxFile fx16[2];
-FontxFile fx24[2];
-FontxFile fx32[2];
 
 #define _DEBUG_ 1
 
@@ -70,25 +67,62 @@ TickType_t barTest(ILI9340_t * dev, int width, int height) {
 	return diffTick;
 }
 
+TickType_t angleTest(ILI9340_t * dev, int width, int height, FontxFile * fx, bool arrow, bool text) {
+	uint8_t ascii[10];
+	uint16_t xpos;
+	uint16_t ypos;
+
+	TickType_t startTick, endTick, diffTick;
+	startTick = xTaskGetTickCount();
+	lcdFillScreen(dev, WHITE);
+	uint16_t color = RED;
+	lcdDrawFillRect(dev, 0, 0, 20, 20, color);
+
+	if(arrow) {
+		lcdDrawFillArrow(dev,30, 30, 20, 20, 10, color);
+	}
+
+	if(text) {
+		xpos = 30;
+		ypos = 30;
+		strcpy((char *)ascii, "0,0");
+		lcdDrawString(dev, fx, xpos, ypos, ascii, color);
+	}
+
+	endTick = xTaskGetTickCount();
+	diffTick = endTick - startTick;
+	ESP_LOGI(__FUNCTION__, "diffTick=%d",diffTick);
+	return diffTick;
+}
+
 
 void ILI9341(void *pvParameters)
 {
-    /* フォントファイルの指定(お好みで) */
-    FontxFile fx[2];
-    InitFontx(fx16,"ILGH16XB.FNT",""); // 16Dot Gothic
-    InitFontx(fx24,"ILGH24XB.FNT",""); // 24Dot Gothic
-    InitFontx(fx24,"ILGH32XB.FNT",""); // 24Dot Gothic
+	SPIFFS_Directory("/spiffs/");
+
+    // set font file
+	FontxFile fx16[2];
+	FontxFile fx24[2];
+	FontxFile fx32[2];
+    InitFontx(fx16,"/spiffs/ILGH16XB.FNT",""); // 16Dot Gothic
+    InitFontx(fx24,"/spiffs/ILGH24XB.FNT",""); // 24Dot Gothic
+    InitFontx(fx32,"/spiffs/ILGH32XB.FNT",""); // 24Dot Gothic
 	
 	ILI9340_t dev;
 	spi_master_init(&dev, CONFIG_GPIO_CS, CONFIG_GPIO_DC, CONFIG_GPIO_RESET);
 	lcdInit(&dev, CONFIG_WIDTH, CONFIG_HEIGHT);
 
+#if 0
 	fillTest(&dev, CONFIG_WIDTH, CONFIG_HEIGHT);
 	barTest(&dev, CONFIG_WIDTH, CONFIG_HEIGHT);
-
-#if 0
-
 #endif
+
+	lcdFillScreen(&dev, WHITE);
+	lcdDrawChar(&dev, fx16, 0, 0, 'A', BLACK);
+	lcdDrawChar(&dev, fx24, 16, 0, 'B', BLACK);
+	lcdDrawChar(&dev, fx32, 40, 0, 'C', BLACK);
+	angleTest(&dev, CONFIG_WIDTH, CONFIG_HEIGHT, fx24, true, true);
+
 
     while (1) {
       vTaskDelay(2000 / portTICK_PERIOD_MS);
