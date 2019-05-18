@@ -1,0 +1,44 @@
+menu "ILI9340 Configuration"
+
+    config WIDTH
+        int "SCREEN WIDTH"
+        range 0 999
+        default 240
+        help
+            The width resolution of the screen.
+
+    config HEIGHT
+        int "SCREEN HEIGHT"
+        range 0 999
+        default 320
+        help
+            The height resolution of the screen.
+
+    config CS_GPIO
+        int "CS GPIO number"
+        range 0 34
+        default 5
+        help
+            GPIO number (IOxx) to SPI CS.
+            Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to CS.
+            GPIOs 35-39 are input-only so cannot be used as outputs.
+
+    config DC_GPIO
+        int "DC GPIO number"
+        range 0 34
+        default 26
+        help
+            GPIO number (IOxx) to SPI DC.
+            Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to DC.
+            GPIOs 35-39 are input-only so cannot be used as outputs.
+
+    config RESET_GPIO
+        int "RESET GPIO number"
+        range 0 34
+        default 2
+        help
+            GPIO number (IOxx) to RESET.
+            Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to Reset.
+            GPIOs 35-39 are input-only so cannot be used as outputs.
+
+endmenu

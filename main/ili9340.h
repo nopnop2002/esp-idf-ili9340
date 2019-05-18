@@ -52,7 +52,7 @@ void lcdDrawFillCircle(ILI9340_t * dev, uint16_t x0, uint16_t y0, uint16_t r, ui
 void lcdDrawRoundRect(ILI9340_t * dev, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t r, uint16_t color);
 void lcdDrawArrow(ILI9340_t * dev, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t w, uint16_t color);
 void lcdDrawFillArrow(ILI9340_t * dev, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t w, uint16_t color);
-uint16_t rgb565_conv(ILI9340_t * dev, uint16_t r, uint16_t g, uint16_t b);
+uint16_t rgb565_conv(uint16_t r, uint16_t g, uint16_t b);
 int lcdDrawChar(ILI9340_t * dev, FontxFile *fx, uint16_t x, uint16_t y, uint8_t ascii, uint16_t color);
 int lcdDrawString(ILI9340_t * dev, FontxFile *fx, uint16_t x, uint16_t y, uint8_t * ascii, uint16_t color);
 //int lcdDrawSJISChar(ILI9340_t * dev, FontxFile *fx, uint16_t x, uint16_t y, uint16_t sjis, uint16_t color);

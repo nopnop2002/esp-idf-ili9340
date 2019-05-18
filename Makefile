@@ -11,4 +11,4 @@ include $(IDF_PATH)/make/project.mk
 # that fits the partition named 'storage'. FLASH_IN_PROJECT indicates that
 # the generated image should be flashed when the entire project is flashed to
 # the target with 'make flash'.
-##$(eval $(call spiffs_create_partition_image,storage,data,FLASH_IN_PROJECT))
+$(eval $(call spiffs_create_partition_image,storage,font,FLASH_IN_PROJECT))

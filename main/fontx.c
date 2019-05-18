@@ -95,6 +95,17 @@ void DumpFontx(FontxFile *fxs)
 	}
 }
 
+uint8_t getFortWidth(FontxFile *fx) {
+	printf("fx->w=%d\n",fx->w);
+	return(fx->w);
+}
+
+uint8_t getFortHeight(FontxFile *fx) {
+	printf("fx->h=%d\n",fx->h);
+	return(fx->h);
+}
+
+
 /*
  フォントファイルからフォントパターンを取り出す
 
@@ -192,6 +203,7 @@ bool GetFontx(FontxFile *fxs, uint8_t ascii , uint8_t *pGlyph, uint8_t *pw, uint
 
 	if(FontxDebug)printf("[GetFontx]ascii=0x%x\n",ascii);
 	for(i=0; i<2; i++){
+	//for(i=0; i<1; i++){
 		if(!OpenFontx(&fxs[i])) continue;
 		if(FontxDebug)printf("[GetFontx]openFontxFile[%d] ok\n",i);
 	
@@ -604,6 +616,4 @@ if(FontxDebug)printf("[String2SJIS]ANK %x\n",sp);
   return spos;
 }
 #endif
-
-
 

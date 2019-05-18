@@ -4,7 +4,7 @@
 
 typedef struct {
 	const char *path;
-	char  fxname[32];
+	char  fxname[10];
 	bool  opened;
 	bool  valid;
 	bool  is_ank;
@@ -20,6 +20,8 @@ void InitFontx(FontxFile *fxs, const char *f0, const char *f1);
 bool OpenFontx(FontxFile *fx);
 void CloseFontx(FontxFile *fx);
 void DumpFontx(FontxFile *fxs);
+uint8_t getFortWidth(FontxFile *fx);
+uint8_t getFortHeight(FontxFile *fx);
 bool GetFontx(FontxFile *fxs, uint8_t ascii , uint8_t *pGlyph, uint8_t *pw, uint8_t *ph);
 void Font2Bitmap(uint8_t *fonts, uint8_t *line, uint8_t w, uint8_t h, uint8_t inverse);
 void UnderlineBitmap(uint8_t *line, uint8_t w, uint8_t h);
@@ -34,3 +36,4 @@ uint8_t RotateByte(uint8_t ch);
 //uint16_t UTF2SJIS(spiffs_file fd, uint8_t *utf8);
 //int String2SJIS(spiffs_file fd, unsigned char *str_in, size_t stlen, uint16_t *sjis, size_t ssize);
 #endif /* MAIN_FONTX_H_ */
+

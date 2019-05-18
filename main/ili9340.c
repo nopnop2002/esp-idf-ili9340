@@ -10,8 +10,8 @@
 
 #include "ili9340.h"
 
-#define tag "ILI9340"
-#define	_DEBUG_ 1
+#define TAG "ILI9340"
+#define	_DEBUG_ 0
 
 static const int GPIO_MOSI = 23;
 static const int GPIO_SCLK = 18;
@@ -50,7 +50,7 @@ void spi_master_init(ILI9340_t * dev, int16_t GPIO_CS, int16_t GPIO_DC, int16_t 
 	};
 
 	ret = spi_bus_initialize( HSPI_HOST, &buscfg, 1 );
-	ESP_LOGI(tag, "spi_bus_initialize=%d",ret);
+	ESP_LOGI(TAG, "spi_bus_initialize=%d",ret);
 	assert(ret==ESP_OK);
 
 #if 0
@@ -70,7 +70,7 @@ void spi_master_init(ILI9340_t * dev, int16_t GPIO_CS, int16_t GPIO_DC, int16_t 
 
 	spi_device_handle_t handle;
 	ret = spi_bus_add_device( HSPI_HOST, &devcfg, &handle);
-	ESP_LOGI(tag, "spi_bus_add_device=%d",ret);
+	ESP_LOGI(TAG, "spi_bus_add_device=%d",ret);
 	assert(ret==ESP_OK);
 	dev->_dc = GPIO_DC;
 	dev->_SPIHandle = handle;
@@ -124,6 +124,13 @@ bool spi_master_write_data_word(ILI9340_t * dev, uint16_t data)
 	return spi_master_write_byte( dev->_SPIHandle, Byte, 2);
 }
 
+void delayMS(int ms) {
+	int _ms = ms + (portTICK_PERIOD_MS - 1);
+	TickType_t xTicksToDelay = _ms / portTICK_PERIOD_MS;
+	ESP_LOGD(TAG, "ms=%d _ms=%d portTICK_PERIOD_MS=%d xTicksToDelay=%d",ms,_ms,portTICK_PERIOD_MS,xTicksToDelay);
+	vTaskDelay(xTicksToDelay);
+}
+
 void lcdInit(ILI9340_t * dev, int width, int height)
 {
 	dev->_width = width;
@@ -132,41 +139,45 @@ void lcdInit(ILI9340_t * dev, int width, int height)
 	dev->_font_fill = false;
 	dev->_font_underline = false;
 
-	spi_master_write_command(dev, 0xC0);	
+	spi_master_write_command(dev, 0xC0);	//Power Control 1
 	spi_master_write_data_byte(dev, 0x23);
 
-	spi_master_write_command(dev, 0xC1);
+	spi_master_write_command(dev, 0xC1);	//Power Control 2
 	spi_master_write_data_byte(dev, 0x10);
 	
-	spi_master_write_command(dev, 0xC5);
+	spi_master_write_command(dev, 0xC5);	//VCOM Control 1
 	spi_master_write_data_byte(dev, 0x3E);
 	spi_master_write_data_byte(dev, 0x28);
 	
-	spi_master_write_command(dev, 0xC7);
+	spi_master_write_command(dev, 0xC7);	//VCOM Control 2
 	spi_master_write_data_byte(dev, 0x86);
 
-	spi_master_write_command(dev, 0x36);
-	spi_master_write_data_byte(dev, 0x48);
+	spi_master_write_command(dev, 0x36);	//Memory Access Control
+	//spi_master_write_data_byte(dev, 0x48);//Right top start
+	spi_master_write_data_byte(dev, 0x08);	//Left top start
 
-	spi_master_write_command(dev, 0x3A);
+	spi_master_write_command(dev, 0x3A);	//Pixel Format Set
 	spi_master_write_data_byte(dev, 0x55);
 
-	spi_master_write_command(dev, 0xB1);
+	spi_master_write_command(dev, 0xB1);	//Frame Rate Control
 	spi_master_write_data_byte(dev, 0x00);
 	spi_master_write_data_byte(dev, 0x18);
 
-	spi_master_write_command(dev, 0xB6);
+	spi_master_write_command(dev, 0xB6);	//Display Function Control
 	spi_master_write_data_byte(dev, 0x08);
 	spi_master_write_data_byte(dev, 0xA2);
 	spi_master_write_data_byte(dev, 0x27);
+	//spi_master_write_data_byte(dev, 0x67);
 
-	spi_master_write_command(dev, 0xF2);
+#if 0
+	spi_master_write_command(dev, 0xF2);	//??
 	spi_master_write_data_byte(dev, 0x00);
+#endif
 
-	spi_master_write_command(dev, 0x26);
+	spi_master_write_command(dev, 0x26);	//Gamma Set
 	spi_master_write_data_byte(dev, 0x01);
 
-	spi_master_write_command(dev, 0xE0);
+	spi_master_write_command(dev, 0xE0);	//Positive Gamma Correction
 	spi_master_write_data_byte(dev, 0x0F);
 	spi_master_write_data_byte(dev, 0x31);
 	spi_master_write_data_byte(dev, 0x2B);
@@ -183,7 +194,7 @@ void lcdInit(ILI9340_t * dev, int width, int height)
 	spi_master_write_data_byte(dev, 0x09);
 	spi_master_write_data_byte(dev, 0x00);
 
-	spi_master_write_command(dev, 0xE1);
+	spi_master_write_command(dev, 0xE1);	//Negative Gamma Correction
 	spi_master_write_data_byte(dev, 0x00);
 	spi_master_write_data_byte(dev, 0x0E);
 	spi_master_write_data_byte(dev, 0x14);
@@ -200,10 +211,10 @@ void lcdInit(ILI9340_t * dev, int width, int height)
 	spi_master_write_data_byte(dev, 0x36);
 	spi_master_write_data_byte(dev, 0x0F);
 
-	spi_master_write_command(dev, 0x11);
-	vTaskDelay(120 / portTICK_PERIOD_MS);
+	spi_master_write_command(dev, 0x11);	//Sleep Out
+	delayMS(120);
 
-	spi_master_write_command(dev, 0x29);
+	spi_master_write_command(dev, 0x29);	//Display ON
 }
 
 
@@ -246,7 +257,7 @@ void lcdDrawFillRect(ILI9340_t * dev, uint16_t x1, uint16_t y1, uint16_t x2, uin
 	spi_master_write_command(dev, 0x2C);	//  Memory Write
 	for(i=x1;i<=x2;i++){
 		for(j=y1;j<=y2;j++){
-			//ESP_LOGI(tag,"i=%d j=%d",i,j);
+			//ESP_LOGI(TAG,"i=%d j=%d",i,j);
 			spi_master_write_data_word(dev, color);
 		}
 	}
@@ -402,6 +413,11 @@ void lcdDrawRoundRect(ILI9340_t * dev, uint16_t x1, uint16_t y1, uint16_t x2, ui
 		temp=y1; y1=y2; y2=temp;
 	} // endif
 
+	ESP_LOGD(TAG, "x1=%d x2=%d delta=%d r=%d",x1, x2, x2-x1, r);
+	ESP_LOGD(TAG, "y1=%d y2=%d delta=%d r=%d",y1, y2, y2-y1, r);
+	if (x2-x1 < r) return; // Add 20190517
+	if (y2-y1 < r) return; // Add 20190517
+
 	x=0;
 	y=-r;
 	err=2-2*r;
@@ -496,7 +512,7 @@ void lcdDrawFillArrow(ILI9340_t * dev, uint16_t x0,uint16_t y0,uint16_t x1,uint1
 // RGB565 conversion
 // RGB565 is R(5)+G(6)+B(5)=16bit color format.
 // Bit image "RRRRRGGGGGGBBBBB"
-uint16_t rgb565_conv(ILI9340_t * dev, uint16_t r,uint16_t g,uint16_t b) {
+uint16_t rgb565_conv(uint16_t r,uint16_t g,uint16_t b) {
 	return (((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3));
 }
 
@@ -529,21 +545,21 @@ int lcdDrawChar(ILI9340_t * dev, FontxFile *fxs, uint16_t x, uint16_t y, uint8_t
 	int next = 0;
 	if (dev->_font_direction == 0) {
 		xd1 = +1;
-		yd1 = -1;
+		yd1 = +1; //-1;
 		xd2 =  0;
 		yd2 =  0;
 		xss =  x;
-		yss =  y + ph - 1;
+		yss =  y; //y + ph - 1;
 		xsd =  1;
 		ysd =  0;
 		next = x + pw;
 	} else if (dev->_font_direction == 2) {
 		xd1 = -1;
-		yd1 = +1;
+		yd1 = -1; //+1;
 		xd2 =  0;
 		yd2 =  0;
 		xss =  x;
-		yss =  y - ph + 1;
+		yss =  y + ph + 1; //y - ph + 1;
 		xsd =  1;
 		ysd =  0;
 		next = x - pw;
@@ -551,22 +567,22 @@ int lcdDrawChar(ILI9340_t * dev, FontxFile *fxs, uint16_t x, uint16_t y, uint8_t
 		xd1 =  0;
 		yd1 =  0;
 		xd2 = -1;
-		yd2 = -1;
+		yd2 = +1; //-1;
 		xss =  x + ph;
 		yss =  y;
 		xsd =  0;
 		ysd =  1;
-		next = y - pw;
+		next = y + pw; //y - pw;
 	} else if (dev->_font_direction == 3) {
 		xd1 =  0;
 		yd1 =  0;
 		xd2 = +1;
-		yd2 = +1;
-		xss =  x - ph - 1;
+		yd2 = -1; //+1;
+		xss =  x - (ph - 1);
 		yss =  y;
 		xsd =  0;
 		ysd =  1;
-		next = y + pw;
+		next = y - pw; //y + pw;
 	}
 
 	int bits;
