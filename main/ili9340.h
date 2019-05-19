@@ -68,5 +68,6 @@ void lcdSetFontUnderLine(ILI9340_t * dev, uint16_t color);
 void lcdUnsetFontUnderLine(ILI9340_t * dev);
 void lcdBacklightOff(ILI9340_t * dev);
 void lcdBacklightOn(ILI9340_t * dev);
+void lcdInversionOn(ILI9340_t * dev);
 #endif /* MAIN_ILI9340_H_ */
 

@@ -918,3 +918,7 @@ void lcdBacklightOn(ILI9340_t * dev) {
 	}
 }
 
+// Display Inversion ON
+void lcdInversionOn(ILI9340_t * dev) {
+	spi_master_write_command(dev, 0x21);	//Display Inversion ON
+}
