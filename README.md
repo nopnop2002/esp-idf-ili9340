@@ -20,7 +20,7 @@ make flash
 
 __MOSI is GPIO23.__   
 __SCLK is GPIO18.__   
-__MISO is don't use.__   
+__MISO is not use.__   
 
 ---
 
