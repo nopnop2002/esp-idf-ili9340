@@ -56,6 +56,8 @@ __MISO is not use.__
 
 ![ST7735-1](https://user-images.githubusercontent.com/6020549/57977471-54235300-7a34-11e9-9d9b-e9ff330de9c2.JPG)
 
+![ST7735-22](https://user-images.githubusercontent.com/6020549/57978322-17f8ee00-7a46-11e9-9240-c76903b7be1c.JPG)
+
 ---
 
 # GENERIC ILI9163C
