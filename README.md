@@ -72,5 +72,5 @@ http://elm-chan.org/docs/dosv/fontx_e.html
 ```
 FontxFile yourFont[2];
 InitFontx(yourFont,"/spiffs/your_font_file_name","");
-lcdDrawString(dev, yourFont, x, y, ascii, color);
+lcdDrawString(&dev, yourFont, x, y, ascii, color);
 ```
