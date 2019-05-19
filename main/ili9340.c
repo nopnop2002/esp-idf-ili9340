@@ -12,6 +12,7 @@
 
 #define TAG "ILI9340"
 #define	_DEBUG_ 0
+#define M5STACK 0
 
 static const int GPIO_MOSI = 23;
 static const int GPIO_SCLK = 18;
@@ -19,26 +20,35 @@ static const int GPIO_SCLK = 18;
 static const int SPI_Command_Mode = 0;
 static const int SPI_Data_Mode = 1;
 //static const int SPI_Frequency = SPI_MASTER_FREQ_20M;
-//static const int SPI_Frequency = SPI_MASTER_FREQ_26M;
+////static const int SPI_Frequency = SPI_MASTER_FREQ_26M;
 static const int SPI_Frequency = SPI_MASTER_FREQ_40M;
-//static const int SPI_Frequency = SPI_MASTER_FREQ_80M;
+////static const int SPI_Frequency = SPI_MASTER_FREQ_80M;
 
 
-void spi_master_init(ILI9340_t * dev, int16_t GPIO_CS, int16_t GPIO_DC, int16_t GPIO_RESET)
+void spi_master_init(ILI9340_t * dev, int16_t GPIO_CS, int16_t GPIO_DC, int16_t GPIO_RESET, int16_t GPIO_BL)
 {
 	esp_err_t ret;
 
+	ESP_LOGI(TAG, "GPIO_CS=%d",GPIO_CS);
 	gpio_set_direction( GPIO_CS, GPIO_MODE_OUTPUT );
 	gpio_set_level( GPIO_CS, 0 );
 
+	ESP_LOGI(TAG, "GPIO_DC=%d",GPIO_DC);
 	gpio_set_direction( GPIO_DC, GPIO_MODE_OUTPUT );
 	gpio_set_level( GPIO_DC, 0 );
 
+	ESP_LOGI(TAG, "GPIO_RESET=%d",GPIO_RESET);
 	if ( GPIO_RESET >= 0 ) {
 		gpio_set_direction( GPIO_RESET, GPIO_MODE_OUTPUT );
 		gpio_set_level( GPIO_RESET, 0 );
 		vTaskDelay( pdMS_TO_TICKS( 100 ) );
 		gpio_set_level( GPIO_RESET, 1 );
+	}
+
+	ESP_LOGI(TAG, "GPIO_BL=%d",GPIO_BL);
+	if ( GPIO_BL >= 0 ) {
+		gpio_set_direction( GPIO_BL, GPIO_MODE_OUTPUT );
+		gpio_set_level( GPIO_BL, 0 );
 	}
 
 	spi_bus_config_t buscfg = {
@@ -50,7 +60,7 @@ void spi_master_init(ILI9340_t * dev, int16_t GPIO_CS, int16_t GPIO_DC, int16_t 
 	};
 
 	ret = spi_bus_initialize( HSPI_HOST, &buscfg, 1 );
-	ESP_LOGI(TAG, "spi_bus_initialize=%d",ret);
+	ESP_LOGD(TAG, "spi_bus_initialize=%d",ret);
 	assert(ret==ESP_OK);
 
 #if 0
@@ -70,9 +80,10 @@ void spi_master_init(ILI9340_t * dev, int16_t GPIO_CS, int16_t GPIO_DC, int16_t 
 
 	spi_device_handle_t handle;
 	ret = spi_bus_add_device( HSPI_HOST, &devcfg, &handle);
-	ESP_LOGI(TAG, "spi_bus_add_device=%d",ret);
+	ESP_LOGD(TAG, "spi_bus_add_device=%d",ret);
 	assert(ret==ESP_OK);
 	dev->_dc = GPIO_DC;
+	dev->_bl = GPIO_BL;
 	dev->_SPIHandle = handle;
 }
 
@@ -131,13 +142,55 @@ void delayMS(int ms) {
 	vTaskDelay(xTicksToDelay);
 }
 
-void lcdInit(ILI9340_t * dev, int width, int height)
+
+void lcdInit(ILI9340_t * dev, int width, int height, int offsetx, int offsety)
 {
 	dev->_width = width;
 	dev->_height = height;
+	dev->_offsetx = offsetx;
+	dev->_offsety = offsety;
 	dev->_font_direction = DIRECTION0;
 	dev->_font_fill = false;
 	dev->_font_underline = false;
+
+	//For M5Stack
+	if (M5STACK) {
+	spi_master_write_command(dev, 0xCB);	//TFT_CMD_POWERA
+	spi_master_write_data_byte(dev, 0x39);
+	spi_master_write_data_byte(dev, 0x2C);
+	spi_master_write_data_byte(dev, 0x00);
+	spi_master_write_data_byte(dev, 0x34);
+	spi_master_write_data_byte(dev, 0x02);
+
+	spi_master_write_command(dev, 0xCF);	//TFT_CMD_POWERB
+	spi_master_write_data_byte(dev, 0x00);
+	spi_master_write_data_byte(dev, 0xC1);
+	spi_master_write_data_byte(dev, 0x30);
+
+	spi_master_write_command(dev, 0xEF);	//??
+	spi_master_write_data_byte(dev, 0x03);
+	spi_master_write_data_byte(dev, 0x80);
+	spi_master_write_data_byte(dev, 0x02);
+
+	spi_master_write_command(dev, 0xE8);	//TFT_CMD_DTCA
+	spi_master_write_data_byte(dev, 0x85);
+	spi_master_write_data_byte(dev, 0x00);
+	spi_master_write_data_byte(dev, 0x78);
+
+	spi_master_write_command(dev, 0xEA);	//TFT_CMD_DTCB
+	spi_master_write_data_byte(dev, 0x00);
+	spi_master_write_data_byte(dev, 0x00);
+
+	spi_master_write_command(dev, 0xED);	//TFT_CMD_POWER_SEQ
+	spi_master_write_data_byte(dev, 0x64);
+	spi_master_write_data_byte(dev, 0x03);
+	spi_master_write_data_byte(dev, 0x12);
+	spi_master_write_data_byte(dev, 0x81);
+
+	spi_master_write_command(dev, 0xF7);	//TFT_CMD_PROC
+	spi_master_write_data_byte(dev, 0x20);
+	}
+	//For M5Stack
 
 	spi_master_write_command(dev, 0xC0);	//Power Control 1
 	spi_master_write_data_byte(dev, 0x23);
@@ -153,11 +206,12 @@ void lcdInit(ILI9340_t * dev, int width, int height)
 	spi_master_write_data_byte(dev, 0x86);
 
 	spi_master_write_command(dev, 0x36);	//Memory Access Control
-	//spi_master_write_data_byte(dev, 0x48);//Right top start
-	spi_master_write_data_byte(dev, 0x08);	//Left top start
+	spi_master_write_data_byte(dev, 0x08);	//Right top start
 
 	spi_master_write_command(dev, 0x3A);	//Pixel Format Set
-	spi_master_write_data_byte(dev, 0x55);
+	spi_master_write_data_byte(dev, 0x55);	//65K color: 16-bit/pixel
+
+	spi_master_write_command(dev, 0x20);	//Display Inversion OFF
 
 	spi_master_write_command(dev, 0xB1);	//Frame Rate Control
 	spi_master_write_data_byte(dev, 0x00);
@@ -165,14 +219,20 @@ void lcdInit(ILI9340_t * dev, int width, int height)
 
 	spi_master_write_command(dev, 0xB6);	//Display Function Control
 	spi_master_write_data_byte(dev, 0x08);
-	spi_master_write_data_byte(dev, 0xA2);
+	spi_master_write_data_byte(dev, 0xA2);	// REV:1 GS:0 SS:0 SM:0
 	spi_master_write_data_byte(dev, 0x27);
-	//spi_master_write_data_byte(dev, 0x67);
+	spi_master_write_data_byte(dev, 0x00);
 
-#if 0
+	if (M5STACK) {
+	spi_master_write_command(dev, 0x30);	//Partial Area
+	spi_master_write_data_byte(dev, 0x00);
+	spi_master_write_data_byte(dev, 0x00);
+	spi_master_write_data_byte(dev, 0x01);
+	spi_master_write_data_byte(dev, 0x3F);
+
 	spi_master_write_command(dev, 0xF2);	//??
 	spi_master_write_data_byte(dev, 0x00);
-#endif
+	}
 
 	spi_master_write_command(dev, 0x26);	//Gamma Set
 	spi_master_write_data_byte(dev, 0x01);
@@ -215,6 +275,10 @@ void lcdInit(ILI9340_t * dev, int width, int height)
 	delayMS(120);
 
 	spi_master_write_command(dev, 0x29);	//Display ON
+
+	if(dev->_bl >= 0) {
+		gpio_set_level( dev->_bl, 1 );
+	}
 }
 
 
@@ -225,12 +289,16 @@ void lcdInit(ILI9340_t * dev, int width, int height)
 void lcdDrawPixel(ILI9340_t * dev, uint16_t x, uint16_t y, uint16_t color){
 	if (x >= dev->_width) return;
 	if (y >= dev->_height) return;
+
+	uint16_t _x = x + dev->_offsetx;
+	uint16_t _y = y + dev->_offsety;
+
 	spi_master_write_command(dev, 0x2A);	// set column(x) address
-	spi_master_write_data_word(dev, x);
-	spi_master_write_data_word(dev, x);
+	spi_master_write_data_word(dev, _x);
+	spi_master_write_data_word(dev, _x);
 	spi_master_write_command(dev, 0x2B);	// set Page(y) address
-	spi_master_write_data_word(dev, y);
-	spi_master_write_data_word(dev, y);
+	spi_master_write_data_word(dev, _y);
+	spi_master_write_data_word(dev, _y);
 	spi_master_write_command(dev, 0x2C);	//  Memory Write
 	spi_master_write_data_word(dev, color);
 }
@@ -248,27 +316,33 @@ void lcdDrawFillRect(ILI9340_t * dev, uint16_t x1, uint16_t y1, uint16_t x2, uin
 	if (y1 >= dev->_height) return;
 	if (y2 >= dev->_height) y2=dev->_height-1;
 
+	ESP_LOGD(TAG,"offset(x)=%d offset(y)=%d",dev->_offsetx,dev->_offsety);
+	uint16_t _x1 = x1 + dev->_offsetx;
+	uint16_t _x2 = x2 + dev->_offsetx;
+	uint16_t _y1 = y1 + dev->_offsety;
+	uint16_t _y2 = y2 + dev->_offsety;
+
 	spi_master_write_command(dev, 0x2A);	// set column(x) address
-	spi_master_write_data_word(dev, x1);
-	spi_master_write_data_word(dev, x2);
+	spi_master_write_data_word(dev, _x1);
+	spi_master_write_data_word(dev, _x2);
 	spi_master_write_command(dev, 0x2B);	// set Page(y) address
-	spi_master_write_data_word(dev, y1);
-	spi_master_write_data_word(dev, y2);
+	spi_master_write_data_word(dev, _y1);
+	spi_master_write_data_word(dev, _y2);
 	spi_master_write_command(dev, 0x2C);	//  Memory Write
 	for(i=x1;i<=x2;i++){
 		for(j=y1;j<=y2;j++){
-			//ESP_LOGI(TAG,"i=%d j=%d",i,j);
+			//ESP_LOGD(TAG,"i=%d j=%d",i,j);
 			spi_master_write_data_word(dev, color);
 		}
 	}
 }
 
-// Display Off
+// Display OFF
 void lcdDisplayOff(ILI9340_t * dev) {
 	spi_master_write_command(dev, 0x28);	//Display off
 }
  
-// Display On
+// Display ON
 void lcdDisplayOn(ILI9340_t * dev) {
 	spi_master_write_command(dev, 0x29);	//Display on
 }
@@ -433,8 +507,10 @@ void lcdDrawRoundRect(ILI9340_t * dev, uint16_t x1, uint16_t y1, uint16_t x2, ui
 		if (old_err>y || err>x) err+=++y*2+1;    
 	} while(y<0);
 
+	ESP_LOGD(TAG, "x1+r=%d x2-r=%d",x1+r, x2-r);
 	lcdDrawLine(dev, x1+r,y1  ,x2-r,y1  ,color);
 	lcdDrawLine(dev, x1+r,y2  ,x2-r,y2  ,color);
+	ESP_LOGD(TAG, "y1+r=%d y2-r=%d",y1+r, y2-r);
 	lcdDrawLine(dev, x1  ,y1+r,x1  ,y2-r,color);
 	lcdDrawLine(dev, x2  ,y1+r,x2  ,y2-r,color);  
 } 
@@ -828,4 +904,17 @@ void lcdUnsetFontUnderLine(ILI9340_t * dev) {
 	dev->_font_underline = false;
 }
 
+// Backlight OFF
+void lcdBacklightOff(ILI9340_t * dev) {
+	if(dev->_bl >= 0) {
+		gpio_set_level( dev->_bl, 0 );
+	}
+}
+
+// Backlight ON
+void lcdBacklightOn(ILI9340_t * dev) {
+	if(dev->_bl >= 0) {
+		gpio_set_level( dev->_bl, 1 );
+	}
+}
 

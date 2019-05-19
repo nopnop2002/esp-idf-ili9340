@@ -13,7 +13,7 @@
 #include "ili9340.h"
 #include "fontx.h"
 
-#define	INTERVAL		100
+#define	INTERVAL		400
 #define WAIT	vTaskDelay(INTERVAL)
 
 #define _DEBUG_ 1
@@ -33,11 +33,12 @@ static void SPIFFS_Directory(char * path) {
 
 // You have to set these CONFIG value using menuconfig.
 #if 0
+#define CONFIG_WIDTH  240
+#define CONFIG_HEIGHT 320
 #define CONFIG_CS_GPIO 5
 #define CONFIG_DC_GPIO 26
 #define CONFIG_RESET_GPIO 2
-#define CONFIG_WIDTH  240
-#define CONFIG_HEIGHT 320
+#define CONFIG_BL_GPIO 2
 #endif
 
 TickType_t FillTest(ILI9340_t * dev, int width, int height) {
@@ -61,47 +62,19 @@ TickType_t ColorBarTest(ILI9340_t * dev, int width, int height) {
 	TickType_t startTick, endTick, diffTick;
 	startTick = xTaskGetTickCount();
 
-	uint16_t Y1,Y2;
-	Y1 = height/3;
-	Y2 = (height/3)*2;
-    //ESP_LOGI(TAG, "Y1=%d Y2=%d",Y1,Y2);
-	lcdDrawFillRect(dev, 0, 0, width, Y1, RED);
+	uint16_t y1,y2;
+	y1 = height/3;
+	y2 = (height/3)*2;
+    //ESP_LOGI(TAG, "y1=%d y2=%d",y1,y2);
+	lcdDrawFillRect(dev, 0, 0, width, y1, RED);
 	vTaskDelay(1);
-	lcdDrawFillRect(dev, 0, Y1, width, Y2, GREEN);
+	lcdDrawFillRect(dev, 0, y1, width, y2, GREEN);
 	vTaskDelay(1);
-	lcdDrawFillRect(dev, 0, Y2, width, height, BLUE);
+	lcdDrawFillRect(dev, 0, y2, width, height, BLUE);
 
 	endTick = xTaskGetTickCount();
 	diffTick = endTick - startTick;
 	ESP_LOGI(__FUNCTION__, "elapsed time[ms]:%d",diffTick*portTICK_RATE_MS);
-	return diffTick;
-}
-
-TickType_t angleTest(ILI9340_t * dev, int width, int height, FontxFile * fx, bool arrow, bool text) {
-	uint8_t ascii[10];
-	uint16_t xpos;
-	uint16_t ypos;
-
-	TickType_t startTick, endTick, diffTick;
-	startTick = xTaskGetTickCount();
-	lcdFillScreen(dev, WHITE);
-	uint16_t color = RED;
-	lcdDrawFillRect(dev, 0, 0, 20, 20, color);
-
-	if(arrow) {
-		lcdDrawFillArrow(dev,30, 30, 20, 20, 10, color);
-	}
-
-	if(text) {
-		xpos = 30;
-		ypos = 30;
-		strcpy((char *)ascii, "0,0");
-		lcdDrawString(dev, fx, xpos, ypos, ascii, color);
-	}
-
-	endTick = xTaskGetTickCount();
-	diffTick = endTick - startTick;
-	ESP_LOGI(__FUNCTION__, "diffTick=%d",diffTick);
 	return diffTick;
 }
 
@@ -147,7 +120,7 @@ TickType_t ArrowTest(ILI9340_t * dev, FontxFile *fx, int width, int height) {
 	ypos = (height-11) - (fontHeight) - 5;
     lcdDrawString(dev, fx, 0, ypos, ascii, color);
 
-    color = BLUE;
+    color = CYAN;
     //lcdDrawArrow(dev, 69, 149, 79, 159, 5, color);
     lcdDrawFillArrow(dev, width-11, height-11, width-1, height-1, 5, color);
     //strcpy((char *)ascii, "79,159");
@@ -155,6 +128,47 @@ TickType_t ArrowTest(ILI9340_t * dev, FontxFile *fx, int width, int height) {
 	stlen = strlen((char *)ascii);
 	xpos = (width-1) - (fontWidth*stlen);
     lcdDrawString(dev, fx, xpos, ypos, ascii, color);
+
+	endTick = xTaskGetTickCount();
+	diffTick = endTick - startTick;
+	ESP_LOGI(__FUNCTION__, "elapsed time[ms]:%d",diffTick*portTICK_RATE_MS);
+	return diffTick;
+}
+
+TickType_t DirectionTest(ILI9340_t * dev, FontxFile *fx, int width, int height) {
+	TickType_t startTick, endTick, diffTick;
+	startTick = xTaskGetTickCount();
+
+	// get font width & height
+	uint8_t buffer[FontxGlyphBufSize];
+	uint8_t fontWidth;
+	uint8_t fontHeight;
+	GetFontx(fx, 0, buffer, &fontWidth, &fontHeight);
+	//ESP_LOGI(TAG,"fontWidth=%d fontHeight=%d",fontWidth,fontHeight);
+
+	uint16_t color;
+	lcdFillScreen(dev, BLACK);
+    uint8_t ascii[20];
+
+	color = RED;
+	strcpy((char *)ascii, "Direction=0");
+	lcdSetFontDirection(dev, 0);
+	lcdDrawString(dev, fx, 0, 0, ascii, color);
+
+	color = BLUE;
+	strcpy((char *)ascii, "Direction=2");
+	lcdSetFontDirection(dev, 2);
+	lcdDrawString(dev, fx, width-1, height-(fontHeight*1)-1, ascii, color);
+
+	color = CYAN;
+	strcpy((char *)ascii, "Direction=1");
+	lcdSetFontDirection(dev, 1);
+	lcdDrawString(dev, fx, width-fontHeight-1, 0, ascii, color);
+
+	color = GREEN;
+	strcpy((char *)ascii, "Direction=3");
+	lcdSetFontDirection(dev, 3);
+	lcdDrawString(dev, fx, fontHeight-1, height-1, ascii, color);
 
 	endTick = xTaskGetTickCount();
 	diffTick = endTick - startTick;
@@ -311,15 +325,25 @@ TickType_t RoundRectTest(ILI9340_t * dev, int width, int height) {
 	TickType_t startTick, endTick, diffTick;
 	startTick = xTaskGetTickCount();
 
+
     uint16_t color;
+	uint16_t limit = width;
+	if (width > height) limit = height;
     //lcdFillScreen(dev, WHITE);
     lcdFillScreen(dev, BLACK);
     color = BLUE;
+    for(int i=5;i<limit;i=i+5) {
+        if (i > (limit-i-1) ) break;
+        //ESP_LOGI(TAG, "i=%d, width-i-1=%d",i, width-i-1);
+        lcdDrawRoundRect(dev, i, i, (width-i-1), (height-i-1), 10, color);
+    }
+#if 0
     for(int i=5;i<width;i=i+5) {
         if (i > (width-i-1) ) break;
         //ESP_LOGI(TAG, "i=%d, width-i-1=%d",i, width-i-1);
         lcdDrawRoundRect(dev, i, i, (width-i-1), (height-i-1), 10, color);
     }
+#endif
 
 	endTick = xTaskGetTickCount();
 	diffTick = endTick - startTick;
@@ -332,7 +356,7 @@ TickType_t FillRectTest(ILI9340_t * dev, int width, int height) {
 	startTick = xTaskGetTickCount();
 
     uint16_t color;
-    lcdFillScreen(dev, WHITE);
+    lcdFillScreen(dev, CYAN);
 
 	uint16_t red;
 	uint16_t green;
@@ -398,8 +422,15 @@ void ILI9341(void *pvParameters)
     InitFontx(fx32M,"/spiffs/ILMH32XB.FNT",""); // 32Dot Mincyo
 	
 	ILI9340_t dev;
-	spi_master_init(&dev, CONFIG_CS_GPIO, CONFIG_DC_GPIO, CONFIG_RESET_GPIO);
-	lcdInit(&dev, CONFIG_WIDTH, CONFIG_HEIGHT);
+	spi_master_init(&dev, CONFIG_CS_GPIO, CONFIG_DC_GPIO, CONFIG_RESET_GPIO, CONFIG_BL_GPIO);
+	lcdInit(&dev, CONFIG_WIDTH, CONFIG_HEIGHT, CONFIG_OFFSETX, CONFIG_OFFSETY);
+
+#if 0
+	//for TEST
+	lcdDrawFillRect(&dev, 0, 0, 10, 10, RED);
+	lcdDrawFillRect(&dev, 10, 10, 20, 20, GREEN);
+	lcdDrawFillRect(&dev, 20, 20, 30, 30, BLUE);
+#endif
 
 	while(1) {
 
@@ -421,10 +452,25 @@ void ILI9341(void *pvParameters)
 		RoundRectTest(&dev, CONFIG_WIDTH, CONFIG_HEIGHT);
 		WAIT;
 
-		HorizontalTest(&dev, fx24G, CONFIG_WIDTH, CONFIG_HEIGHT);
+		if (CONFIG_WIDTH >= 240) {
+			DirectionTest(&dev, fx24G, CONFIG_WIDTH, CONFIG_HEIGHT);
+		} else {
+			DirectionTest(&dev, fx16G, CONFIG_WIDTH, CONFIG_HEIGHT);
+		}
 		WAIT;
 
-		VerticalTest(&dev, fx24G, CONFIG_WIDTH, CONFIG_HEIGHT);
+		if (CONFIG_WIDTH >= 240) {
+			HorizontalTest(&dev, fx24G, CONFIG_WIDTH, CONFIG_HEIGHT);
+		} else {
+			HorizontalTest(&dev, fx16G, CONFIG_WIDTH, CONFIG_HEIGHT);
+		}
+		WAIT;
+
+		if (CONFIG_WIDTH >= 240) {
+			VerticalTest(&dev, fx24G, CONFIG_WIDTH, CONFIG_HEIGHT);
+		} else {
+			VerticalTest(&dev, fx16G, CONFIG_WIDTH, CONFIG_HEIGHT);
+		}
 		WAIT;
 
 		FillRectTest(&dev, CONFIG_WIDTH, CONFIG_HEIGHT);
@@ -436,33 +482,53 @@ void ILI9341(void *pvParameters)
 		// Multi Font Test
 		uint16_t color;
 		uint8_t ascii[40];
-		uint16_t xpos;
+		uint16_t xpos = 0;
+		uint16_t ypos = 0;
 		lcdFillScreen(&dev, BLACK);
 		color = WHITE;
-		lcdSetFontDirection(&dev, 1);
-		xpos = CONFIG_WIDTH-16;
+		lcdSetFontDirection(&dev, 0);
+		int xd = 0;
+		int yd = 1;
+		if(CONFIG_WIDTH < CONFIG_HEIGHT) {
+			lcdSetFontDirection(&dev, 1);
+			xpos = CONFIG_WIDTH-16;
+			xd = 1;
+			yd = 0;
+		}
 		strcpy((char *)ascii, "16Dot Gothic Font");
-		lcdDrawString(&dev, fx16G, xpos, 0, ascii, color);
+		lcdDrawString(&dev, fx16G, xpos, ypos, ascii, color);
 
-		xpos = xpos - 24;
+		xpos = xpos - (24 * xd);
+		ypos = ypos + (16 * yd);
 		strcpy((char *)ascii, "24Dot Gothic Font");
-		lcdDrawString(&dev, fx24G, xpos, 0, ascii, color);
+		lcdDrawString(&dev, fx24G, xpos, ypos, ascii, color);
 
-		xpos = xpos - 32;
-		strcpy((char *)ascii, "32Dot Gothic Font");
-		lcdDrawString(&dev, fx32G, xpos, 0, ascii, color);
+		xpos = xpos - (32 * xd);
+		ypos = ypos + (24 * yd);
+		if (CONFIG_WIDTH >= 240) {
+			strcpy((char *)ascii, "32Dot Gothic Font");
+			lcdDrawString(&dev, fx32G, xpos, ypos, ascii, color);
+			xpos = xpos - (32 * xd);
+			ypos = ypos + (32 * yd);
+		}
 
-		xpos = xpos - 32;
+		//xpos = xpos - (10 * xd);
+		ypos = ypos + (10 * yd);
 		strcpy((char *)ascii, "16Dot Mincyo Font");
-		lcdDrawString(&dev, fx16M, xpos, 0, ascii, color);
+		lcdDrawString(&dev, fx16M, xpos, ypos, ascii, color);
 
-		xpos = xpos - 24;
+		xpos = xpos - (24 * xd);
+		ypos = ypos + (16 * yd);
 		strcpy((char *)ascii, "24Dot Mincyo Font");
-		lcdDrawString(&dev, fx24M, xpos, 0, ascii, color);
+		lcdDrawString(&dev, fx24M, xpos, ypos, ascii, color);
 
-		xpos = xpos - 32;
-		strcpy((char *)ascii, "32Dot Mincyo Font");
-		lcdDrawString(&dev, fx32M, xpos, 0, ascii, color);
+		if (CONFIG_WIDTH >= 240) {
+			xpos = xpos - (32 * xd);
+			ypos = ypos + (24 * yd);
+			strcpy((char *)ascii, "32Dot Mincyo Font");
+			lcdDrawString(&dev, fx32M, xpos, ypos, ascii, color);
+		}
+		lcdSetFontDirection(&dev, 0);
 		WAIT;
 
 	} // end while
