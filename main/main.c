@@ -16,8 +16,6 @@
 #define	INTERVAL		400
 #define WAIT	vTaskDelay(INTERVAL)
 
-#define _DEBUG_ 1
-
 static const char *TAG = "ILI9340";
 
 static void SPIFFS_Directory(char * path) {
