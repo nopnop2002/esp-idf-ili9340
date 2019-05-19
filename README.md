@@ -18,9 +18,9 @@ make menuconfig
 make flash
 ```
 
-*MOSI* is GPIO23.   
-*SCLK* is GPIO18.   
-*MISO* is don't use.   
+__MOSI is GPIO23.__   
+__SCLK is GPIO18.__   
+__MISO is don't use.__   
 
 ---
 
