@@ -18,6 +18,10 @@ make menuconfig
 make flash
 ```
 
+*MOSI is GPIO23.   
+*SCLK is GPIO18.   
+*MISO is don't use.   
+
 ---
 
 # M5Stack
