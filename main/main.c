@@ -402,22 +402,20 @@ TickType_t ColorTest(ILI9340_t * dev, int width, int height) {
 
 void ILI9341(void *pvParameters)
 {
-	SPIFFS_Directory("/spiffs/");
-
     // set font file
 	FontxFile fx16G[2];
 	FontxFile fx24G[2];
 	FontxFile fx32G[2];
-    InitFontx(fx16G,"/spiffs/ILGH16XB.FNT",""); // 16Dot Gothic
-    InitFontx(fx24G,"/spiffs/ILGH24XB.FNT",""); // 24Dot Gothic
-    InitFontx(fx32G,"/spiffs/ILGH32XB.FNT",""); // 24Dot Gothic
+    InitFontx(fx16G,"/spiffs/ILGH16XB.FNT",""); // 8x16Dot Gothic
+    InitFontx(fx24G,"/spiffs/ILGH24XB.FNT",""); // 12x24Dot Gothic
+    InitFontx(fx32G,"/spiffs/ILGH32XB.FNT",""); // 16x32Dot Gothic
 
 	FontxFile fx16M[2];
 	FontxFile fx24M[2];
 	FontxFile fx32M[2];
-    InitFontx(fx16M,"/spiffs/ILMH16XB.FNT",""); // 16Dot Mincyo
-    InitFontx(fx24M,"/spiffs/ILMH24XB.FNT",""); // 24Dot Mincyo
-    InitFontx(fx32M,"/spiffs/ILMH32XB.FNT",""); // 32Dot Mincyo
+    InitFontx(fx16M,"/spiffs/ILMH16XB.FNT",""); // 8x16Dot Mincyo
+    InitFontx(fx24M,"/spiffs/ILMH24XB.FNT",""); // 12x24Dot Mincyo
+    InitFontx(fx32M,"/spiffs/ILMH32XB.FNT",""); // 16x32Dot Mincyo
 	
 	ILI9340_t dev;
 	spi_master_init(&dev, CONFIG_CS_GPIO, CONFIG_DC_GPIO, CONFIG_RESET_GPIO, CONFIG_BL_GPIO);
@@ -575,5 +573,6 @@ void app_main(void)
         ESP_LOGI(TAG,"Partition size: total: %d, used: %d", total, used);
     }
 
+	SPIFFS_Directory("/spiffs/");
     xTaskCreate(ILI9341, "ILI9341", 1024*4, NULL, 2, NULL);
 }
