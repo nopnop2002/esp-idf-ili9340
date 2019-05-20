@@ -64,11 +64,11 @@ TickType_t ColorBarTest(ILI9340_t * dev, int width, int height) {
 	y1 = height/3;
 	y2 = (height/3)*2;
     //ESP_LOGI(TAG, "y1=%d y2=%d",y1,y2);
-	lcdDrawFillRect(dev, 0, 0, width, y1, RED);
+	lcdDrawFillRect(dev, 0, 0, width-1, y1-1, RED);
 	vTaskDelay(1);
-	lcdDrawFillRect(dev, 0, y1, width, y2, GREEN);
+	lcdDrawFillRect(dev, 0, y1-1, width-1, y2-1, GREEN);
 	vTaskDelay(1);
-	lcdDrawFillRect(dev, 0, y2, width, height, BLUE);
+	lcdDrawFillRect(dev, 0, y2-1, width-1, height-1, BLUE);
 
 	endTick = xTaskGetTickCount();
 	diffTick = endTick - startTick;
@@ -102,7 +102,6 @@ TickType_t ArrowTest(ILI9340_t * dev, FontxFile *fx, int width, int height) {
     lcdDrawString(dev, fx, 0, 20, ascii, color);
 
     color = GREEN;
-    //lcdDrawArrow(dev, 69, 10, 79, 0, 5, color);
     lcdDrawFillArrow(dev, width-11, 10, width-1, 0, 5, color);
     //strcpy((char *)ascii, "79,0");
 	sprintf((char *)ascii, "%d,0",width-1);
@@ -111,7 +110,6 @@ TickType_t ArrowTest(ILI9340_t * dev, FontxFile *fx, int width, int height) {
     lcdDrawString(dev, fx, xpos, 20, ascii, color);
 
     color = GRAY;
-    //lcdDrawArrow(dev, 10, 149, 0, 159, 5, color);
     lcdDrawFillArrow(dev, 10, height-11, 0, height-1, 5, color);
     //strcpy((char *)ascii, "0,159");
 	sprintf((char *)ascii, "0,%d",height-1);
@@ -119,7 +117,6 @@ TickType_t ArrowTest(ILI9340_t * dev, FontxFile *fx, int width, int height) {
     lcdDrawString(dev, fx, 0, ypos, ascii, color);
 
     color = CYAN;
-    //lcdDrawArrow(dev, 69, 149, 79, 159, 5, color);
     lcdDrawFillArrow(dev, width-11, height-11, width-1, height-1, 5, color);
     //strcpy((char *)ascii, "79,159");
 	sprintf((char *)ascii, "%d,%d",width-1, height-1);
@@ -335,13 +332,6 @@ TickType_t RoundRectTest(ILI9340_t * dev, int width, int height) {
         //ESP_LOGI(TAG, "i=%d, width-i-1=%d",i, width-i-1);
         lcdDrawRoundRect(dev, i, i, (width-i-1), (height-i-1), 10, color);
     }
-#if 0
-    for(int i=5;i<width;i=i+5) {
-        if (i > (width-i-1) ) break;
-        //ESP_LOGI(TAG, "i=%d, width-i-1=%d",i, width-i-1);
-        lcdDrawRoundRect(dev, i, i, (width-i-1), (height-i-1), 10, color);
-    }
-#endif
 
 	endTick = xTaskGetTickCount();
 	diffTick = endTick - startTick;
