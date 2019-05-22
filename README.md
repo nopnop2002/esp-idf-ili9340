@@ -18,6 +18,8 @@ make menuconfig
 make flash
 ```
 
+![config](https://user-images.githubusercontent.com/6020549/58177594-9fad5980-7cdf-11e9-9f43-413e31d82909.jpg)
+
 __MOSI is GPIO23.__   
 __SCLK is GPIO18.__   
 __MISO is not use.__   
