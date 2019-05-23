@@ -625,7 +625,7 @@ int lcdDrawChar(ILI9340_t * dev, FontxFile *fxs, uint16_t x, uint16_t y, uint8_t
 		xd2 =  0;
 		yd2 =  0;
 		xss =  x;
-		yss =  y; //y + ph - 1;
+		yss =  y - (ph - 1);
 		xsd =  1;
 		ysd =  0;
 		next = x + pw;
@@ -635,7 +635,7 @@ int lcdDrawChar(ILI9340_t * dev, FontxFile *fxs, uint16_t x, uint16_t y, uint8_t
 		xd2 =  0;
 		yd2 =  0;
 		xss =  x;
-		yss =  y + ph + 1; //y - ph + 1;
+		yss =  y + ph + 1;
 		xsd =  1;
 		ysd =  0;
 		next = x - pw;

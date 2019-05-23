@@ -99,7 +99,7 @@ TickType_t ArrowTest(ILI9340_t * dev, FontxFile *fx, int width, int height) {
     uint8_t ascii[10];
     lcdDrawFillArrow(dev, 10, 10, 0, 0, 5, color);
     strcpy((char *)ascii, "0,0");
-    lcdDrawString(dev, fx, 0, 20, ascii, color);
+    lcdDrawString(dev, fx, 0, 30, ascii, color);
 
     color = GREEN;
     lcdDrawFillArrow(dev, width-11, 10, width-1, 0, 5, color);
@@ -107,13 +107,13 @@ TickType_t ArrowTest(ILI9340_t * dev, FontxFile *fx, int width, int height) {
 	sprintf((char *)ascii, "%d,0",width-1);
 	stlen = strlen((char *)ascii);
 	xpos = (width-1) - (fontWidth*stlen);
-    lcdDrawString(dev, fx, xpos, 20, ascii, color);
+    lcdDrawString(dev, fx, xpos, 30, ascii, color);
 
     color = GRAY;
     lcdDrawFillArrow(dev, 10, height-11, 0, height-1, 5, color);
     //strcpy((char *)ascii, "0,159");
 	sprintf((char *)ascii, "0,%d",height-1);
-	ypos = (height-11) - (fontHeight) - 5;
+	ypos = (height-11) - (fontHeight) + 5;
     lcdDrawString(dev, fx, 0, ypos, ascii, color);
 
     color = CYAN;
@@ -148,22 +148,22 @@ TickType_t DirectionTest(ILI9340_t * dev, FontxFile *fx, int width, int height) 
 	color = RED;
 	strcpy((char *)ascii, "Direction=0");
 	lcdSetFontDirection(dev, 0);
-	lcdDrawString(dev, fx, 0, 0, ascii, color);
+	lcdDrawString(dev, fx, 0, fontHeight-1, ascii, color);
 
 	color = BLUE;
 	strcpy((char *)ascii, "Direction=2");
 	lcdSetFontDirection(dev, 2);
-	lcdDrawString(dev, fx, width-1, height-(fontHeight*1)-1, ascii, color);
+	lcdDrawString(dev, fx, (width-1), (height-1)-(fontHeight*1), ascii, color);
 
 	color = CYAN;
 	strcpy((char *)ascii, "Direction=1");
 	lcdSetFontDirection(dev, 1);
-	lcdDrawString(dev, fx, width-fontHeight-1, 0, ascii, color);
+	lcdDrawString(dev, fx, (width-1)-fontHeight, 0, ascii, color);
 
 	color = GREEN;
 	strcpy((char *)ascii, "Direction=3");
 	lcdSetFontDirection(dev, 3);
-	lcdDrawString(dev, fx, fontHeight-1, height-1, ascii, color);
+	lcdDrawString(dev, fx, (fontHeight-1), height-1, ascii, color);
 
 	endTick = xTaskGetTickCount();
 	diffTick = endTick - startTick;
@@ -189,15 +189,15 @@ TickType_t HorizontalTest(ILI9340_t * dev, FontxFile *fx, int width, int height)
 	color = RED;
 	strcpy((char *)ascii, "Direction=0");
 	lcdSetFontDirection(dev, 0);
-	lcdDrawString(dev, fx, 0, 0, ascii, color);
+	lcdDrawString(dev, fx, 0, fontHeight*1-1, ascii, color);
 	lcdSetFontUnderLine(dev, RED);
-	lcdDrawString(dev, fx, 0, 0+(fontHeight*1), ascii, color);
+	lcdDrawString(dev, fx, 0, fontHeight*2-1, ascii, color);
 	lcdUnsetFontUnderLine(dev);
 
 	lcdSetFontFill(dev, GREEN);
-	lcdDrawString(dev, fx, 0, 0+(fontHeight*2), ascii, color);
+	lcdDrawString(dev, fx, 0, fontHeight*3-1, ascii, color);
 	lcdSetFontUnderLine(dev, RED);
-	lcdDrawString(dev, fx, 0, 0+(fontHeight*3), ascii, color);
+	lcdDrawString(dev, fx, 0, fontHeight*4-1, ascii, color);
 	lcdUnsetFontFill(dev);
 	lcdUnsetFontUnderLine(dev);
 
@@ -471,49 +471,51 @@ void ILI9341(void *pvParameters)
 		// Multi Font Test
 		uint16_t color;
 		uint8_t ascii[40];
-		uint16_t xpos = 0;
-		uint16_t ypos = 0;
+		uint16_t margin = 10;
 		lcdFillScreen(&dev, BLACK);
 		color = WHITE;
 		lcdSetFontDirection(&dev, 0);
+		uint16_t xpos = 0;
+		uint16_t ypos = 15;
 		int xd = 0;
 		int yd = 1;
 		if(CONFIG_WIDTH < CONFIG_HEIGHT) {
 			lcdSetFontDirection(&dev, 1);
-			xpos = CONFIG_WIDTH-16;
+			xpos = (CONFIG_WIDTH-1)-16;
+			ypos = 0;
 			xd = 1;
 			yd = 0;
 		}
 		strcpy((char *)ascii, "16Dot Gothic Font");
 		lcdDrawString(&dev, fx16G, xpos, ypos, ascii, color);
 
-		xpos = xpos - (24 * xd);
-		ypos = ypos + (16 * yd);
+		xpos = xpos - (24 * xd) - (margin * xd);
+		ypos = ypos + (16 * yd) + (margin * yd);
 		strcpy((char *)ascii, "24Dot Gothic Font");
 		lcdDrawString(&dev, fx24G, xpos, ypos, ascii, color);
 
-		xpos = xpos - (32 * xd);
-		ypos = ypos + (24 * yd);
+		xpos = xpos - (32 * xd) - (margin * xd);
+		ypos = ypos + (24 * yd) + (margin * yd);
 		if (CONFIG_WIDTH >= 240) {
 			strcpy((char *)ascii, "32Dot Gothic Font");
 			lcdDrawString(&dev, fx32G, xpos, ypos, ascii, color);
-			xpos = xpos - (32 * xd);
-			ypos = ypos + (32 * yd);
+			xpos = xpos - (32 * xd) - (margin * xd);;
+			ypos = ypos + (32 * yd) + (margin * yd);
 		}
 
-		//xpos = xpos - (10 * xd);
-		ypos = ypos + (10 * yd);
+		xpos = xpos - (10 * xd) - (margin * xd);
+		ypos = ypos + (10 * yd) + (margin * yd);
 		strcpy((char *)ascii, "16Dot Mincyo Font");
 		lcdDrawString(&dev, fx16M, xpos, ypos, ascii, color);
 
-		xpos = xpos - (24 * xd);
-		ypos = ypos + (16 * yd);
+		xpos = xpos - (24 * xd) - (margin * xd);;
+		ypos = ypos + (16 * yd) + (margin * yd);
 		strcpy((char *)ascii, "24Dot Mincyo Font");
 		lcdDrawString(&dev, fx24M, xpos, ypos, ascii, color);
 
 		if (CONFIG_WIDTH >= 240) {
-			xpos = xpos - (32 * xd);
-			ypos = ypos + (24 * yd);
+			xpos = xpos - (32 * xd) - (margin * xd);;
+			ypos = ypos + (24 * yd) + (margin * yd);
 			strcpy((char *)ascii, "32Dot Mincyo Font");
 			lcdDrawString(&dev, fx32M, xpos, ypos, ascii, color);
 		}
