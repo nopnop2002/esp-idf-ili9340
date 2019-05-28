@@ -4,7 +4,7 @@
 #include "driver/spi_master.h"
 #include "fontx.h"
 
-#define RED				0xf800
+#define RED			0xf800
 #define GREEN			0x07e0
 #define BLUE			0x001f
 #define BLACK			0x0000
@@ -17,8 +17,8 @@
 
 #define DIRECTION0		0
 #define DIRECTION90		1
-#define DIRECTION180	2
-#define DIRECTION270	3
+#define DIRECTION180		2
+#define DIRECTION270		3
 
 
 typedef struct {

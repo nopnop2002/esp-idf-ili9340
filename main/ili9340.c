@@ -899,7 +899,7 @@ void lcdSetFontUnderLine(ILI9340_t * dev, uint16_t color) {
 	dev->_font_underline_color = color;
 }
 
-// UnSet font filling
+// UnSet font underline
 void lcdUnsetFontUnderLine(ILI9340_t * dev) {
 	dev->_font_underline = false;
 }
