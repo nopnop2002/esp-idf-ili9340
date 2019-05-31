@@ -28,7 +28,7 @@ __MISO is not use.__
 
 # M5Stack
 
-![config_M5Stick](https://user-images.githubusercontent.com/6020549/57977447-d7907480-7a33-11e9-9df6-f0882c113d37.jpg)
+![config_M5Stack](https://user-images.githubusercontent.com/6020549/58739501-7c07b300-8445-11e9-80c2-42b65536aaad.jpg)
 
 ![M5Stick-1](https://user-images.githubusercontent.com/6020549/57977479-7d43e380-7a34-11e9-99b6-6028500436e8.JPG)
 ![M5Stick-2](https://user-images.githubusercontent.com/6020549/57977480-7d43e380-7a34-11e9-814e-f206c43e4a05.JPG)
@@ -46,7 +46,7 @@ __MISO is not use.__
 
 # Generic ILI9340/9341
 
-![config_ILI9140](https://user-images.githubusercontent.com/6020549/57977453-fd1d7e00-7a33-11e9-98f1-54cc2e54d5f0.jpg)
+![config_ILI9140](https://user-images.githubusercontent.com/6020549/58739514-8aee6580-8445-11e9-944d-86f0cafb43d6.jpg)
 
 ![ILI9140-1](https://user-images.githubusercontent.com/6020549/57977468-48379100-7a34-11e9-96f6-c155af9f19f0.JPG)
 
@@ -54,7 +54,7 @@ __MISO is not use.__
 
 # GENERIC ST7735
 
-![config_ST7735](https://user-images.githubusercontent.com/6020549/57977455-04dd2280-7a34-11e9-987d-8df3c52d8372.jpg)
+![config_ST7735](https://user-images.githubusercontent.com/6020549/58739518-96da2780-8445-11e9-91f4-ba97c491278f.jpg)
 
 ![ST7735-1](https://user-images.githubusercontent.com/6020549/57977471-54235300-7a34-11e9-9d9b-e9ff330de9c2.JPG)
 
@@ -64,7 +64,7 @@ __MISO is not use.__
 
 # GENERIC ILI9163C
 
-![config_ILI9163C](https://user-images.githubusercontent.com/6020549/57977458-0e668a80-7a34-11e9-8061-5e9d76869545.jpg)
+![config_ILI9163C](https://user-images.githubusercontent.com/6020549/58739527-a2c5e980-8445-11e9-9748-a54a040d2c1a.jpg)
 
 ![ILI9163C-1](https://user-images.githubusercontent.com/6020549/57977472-62716f00-7a34-11e9-9514-07593661dd79.JPG)
 

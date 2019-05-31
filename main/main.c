@@ -421,8 +421,10 @@ void ILI9341(void *pvParameters)
 	spi_master_init(&dev, CONFIG_CS_GPIO, CONFIG_DC_GPIO, CONFIG_RESET_GPIO, CONFIG_BL_GPIO);
 	lcdInit(&dev, CONFIG_WIDTH, CONFIG_HEIGHT, CONFIG_OFFSETX, CONFIG_OFFSETY);
 
-	// If your TFT requre invert, enable this line.
-	//lcdInversionOn(&dev);
+#if CONFIG_WITH_INVERSION
+	ESP_LOGI(TAG, "Display Inversion Mode");
+	lcdInversionOn(&dev);
+#endif
 
 #if 0
 	//for TEST

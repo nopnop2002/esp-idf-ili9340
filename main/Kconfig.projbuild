@@ -65,4 +65,20 @@ menu "ILI9340 Configuration"
             Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to Reset.
             GPIOs 35-39 are input-only so cannot be used as outputs.
 
+    choice INVERSION
+        prompt "Display Inversion"
+        default NO_INVERSION
+        help
+            Select Display Inversion ON/OFF.
+        config NO_INVERSION
+            bool "NO_INVERSION"
+            help
+                Display Inversion OFF.
+        config WITH_INVERSION
+            bool "WITH_INVERSION"
+            help
+                Display Inversion ON.
+    endchoice
+
+
 endmenu
