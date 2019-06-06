@@ -99,7 +99,7 @@ Left:1.8" Right:2.0"
 
 ![config_1-8_128x160-1](https://user-images.githubusercontent.com/6020549/59007886-5aeafc00-8863-11e9-98f3-9b39967ee58d.jpg)
 
-Left:1.44" Right:2."
+Left:1.44" Right:2.0"
 ![screen_1-8_128x160-2](https://user-images.githubusercontent.com/6020549/59007892-63433700-8863-11e9-86a7-1b92e8b15efd.JPG)
 
 ---
