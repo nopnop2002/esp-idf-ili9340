@@ -47,6 +47,8 @@ __MISO is not use.__
 # 2.8" ILI9341 320x240
 
 ![config_2-8_240x320](https://user-images.githubusercontent.com/6020549/59007585-072be300-8862-11e9-97bb-90d538167c0b.jpg)
+
+Left:2.8" Right:2.4"
 ![screen_2-8_240x320](https://user-images.githubusercontent.com/6020549/59007633-3f332600-8862-11e9-8d8f-bbfb303456f4.JPG)
 
 ---
