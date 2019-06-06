@@ -12,7 +12,6 @@
 
 #define TAG "ILI9340"
 #define	_DEBUG_ 0
-#define M5STACK 0
 
 static const int GPIO_MOSI = 23;
 static const int GPIO_SCLK = 18;
@@ -25,7 +24,7 @@ static const int SPI_Frequency = SPI_MASTER_FREQ_40M;
 ////static const int SPI_Frequency = SPI_MASTER_FREQ_80M;
 
 
-void spi_master_init(ILI9340_t * dev, int16_t GPIO_CS, int16_t GPIO_DC, int16_t GPIO_RESET, int16_t GPIO_BL)
+void spi_master_init(TFT_t * dev, int16_t GPIO_CS, int16_t GPIO_DC, int16_t GPIO_RESET, int16_t GPIO_BL)
 {
 	esp_err_t ret;
 
@@ -113,7 +112,7 @@ bool spi_master_write_byte(spi_device_handle_t SPIHandle, const uint8_t* Data, s
 	return true;
 }
 
-bool spi_master_write_command(ILI9340_t * dev, uint8_t cmd)
+bool spi_master_write_comm_byte(TFT_t * dev, uint8_t cmd)
 {
 	static uint8_t Byte = 0;
 	Byte = cmd;
@@ -121,7 +120,17 @@ bool spi_master_write_command(ILI9340_t * dev, uint8_t cmd)
 	return spi_master_write_byte( dev->_SPIHandle, &Byte, 1 );
 }
 
-bool spi_master_write_data_byte(ILI9340_t * dev, uint8_t data)
+bool spi_master_write_comm_word(TFT_t * dev, uint16_t cmd)
+{
+	static uint8_t Byte[2];
+	Byte[0] = (cmd >> 8) & 0xFF;
+	Byte[1] = cmd & 0xFF;
+	gpio_set_level( dev->_dc, SPI_Command_Mode );
+	return spi_master_write_byte( dev->_SPIHandle, Byte, 2 );
+}
+
+
+bool spi_master_write_data_byte(TFT_t * dev, uint8_t data)
 {
 	static uint8_t Byte = 0;
 	Byte = data;
@@ -130,7 +139,7 @@ bool spi_master_write_data_byte(ILI9340_t * dev, uint8_t data)
 }
 
 
-bool spi_master_write_data_word(ILI9340_t * dev, uint16_t data)
+bool spi_master_write_data_word(TFT_t * dev, uint16_t data)
 {
 	static uint8_t Byte[2];
 	Byte[0] = (data >> 8) & 0xFF;
@@ -147,8 +156,24 @@ void delayMS(int ms) {
 }
 
 
-void lcdInit(ILI9340_t * dev, int width, int height, int offsetx, int offsety)
+void lcdWriteRegisterWord(TFT_t * dev, uint16_t addr, uint16_t data)
 {
+	spi_master_write_comm_word(dev, addr);
+	spi_master_write_data_word(dev, data);
+}
+
+
+void lcdWriteRegisterByte(TFT_t * dev, uint8_t addr, uint16_t data)
+{
+	spi_master_write_comm_byte(dev, addr);
+	spi_master_write_data_word(dev, data);
+}
+
+
+
+void lcdInit(TFT_t * dev, uint16_t model, int width, int height, int offsetx, int offsety)
+{
+	dev->_model = model;
 	dev->_width = width;
 	dev->_height = height;
 	dev->_offsetx = offsetx;
@@ -157,128 +182,152 @@ void lcdInit(ILI9340_t * dev, int width, int height, int offsetx, int offsety)
 	dev->_font_fill = false;
 	dev->_font_underline = false;
 
-	//For M5Stack
-	if (M5STACK) {
-	spi_master_write_command(dev, 0xCB);	//TFT_CMD_POWERA
-	spi_master_write_data_byte(dev, 0x39);
-	spi_master_write_data_byte(dev, 0x2C);
-	spi_master_write_data_byte(dev, 0x00);
-	spi_master_write_data_byte(dev, 0x34);
-	spi_master_write_data_byte(dev, 0x02);
+	if (dev->_model == 0x9340 || dev->_model == 0x9341 || dev->_model == 0x7735) {
+		if (dev->_model == 0x9340)
+			ESP_LOGI(TAG,"Your TFT is ILI9340");
+		if (dev->_model == 0x9341)
+			ESP_LOGI(TAG,"Your TFT is ILI9341");
+		if (dev->_model == 0x7735)
+			ESP_LOGI(TAG,"Your TFT is ST7735");
+		ESP_LOGI(TAG,"Screen width:%d",width);
+		ESP_LOGI(TAG,"Screen height:%d",height);
+		spi_master_write_comm_byte(dev, 0xC0);	//Power Control 1
+		spi_master_write_data_byte(dev, 0x23);
 
-	spi_master_write_command(dev, 0xCF);	//TFT_CMD_POWERB
-	spi_master_write_data_byte(dev, 0x00);
-	spi_master_write_data_byte(dev, 0xC1);
-	spi_master_write_data_byte(dev, 0x30);
-
-	spi_master_write_command(dev, 0xEF);	//??
-	spi_master_write_data_byte(dev, 0x03);
-	spi_master_write_data_byte(dev, 0x80);
-	spi_master_write_data_byte(dev, 0x02);
-
-	spi_master_write_command(dev, 0xE8);	//TFT_CMD_DTCA
-	spi_master_write_data_byte(dev, 0x85);
-	spi_master_write_data_byte(dev, 0x00);
-	spi_master_write_data_byte(dev, 0x78);
-
-	spi_master_write_command(dev, 0xEA);	//TFT_CMD_DTCB
-	spi_master_write_data_byte(dev, 0x00);
-	spi_master_write_data_byte(dev, 0x00);
-
-	spi_master_write_command(dev, 0xED);	//TFT_CMD_POWER_SEQ
-	spi_master_write_data_byte(dev, 0x64);
-	spi_master_write_data_byte(dev, 0x03);
-	spi_master_write_data_byte(dev, 0x12);
-	spi_master_write_data_byte(dev, 0x81);
-
-	spi_master_write_command(dev, 0xF7);	//TFT_CMD_PROC
-	spi_master_write_data_byte(dev, 0x20);
-	}
-	//For M5Stack
-
-	spi_master_write_command(dev, 0xC0);	//Power Control 1
-	spi_master_write_data_byte(dev, 0x23);
-
-	spi_master_write_command(dev, 0xC1);	//Power Control 2
-	spi_master_write_data_byte(dev, 0x10);
+		spi_master_write_comm_byte(dev, 0xC1);	//Power Control 2
+		spi_master_write_data_byte(dev, 0x10);
 	
-	spi_master_write_command(dev, 0xC5);	//VCOM Control 1
-	spi_master_write_data_byte(dev, 0x3E);
-	spi_master_write_data_byte(dev, 0x28);
+		spi_master_write_comm_byte(dev, 0xC5);	//VCOM Control 1
+		spi_master_write_data_byte(dev, 0x3E);
+		spi_master_write_data_byte(dev, 0x28);
 	
-	spi_master_write_command(dev, 0xC7);	//VCOM Control 2
-	spi_master_write_data_byte(dev, 0x86);
+		spi_master_write_comm_byte(dev, 0xC7);	//VCOM Control 2
+		spi_master_write_data_byte(dev, 0x86);
 
-	spi_master_write_command(dev, 0x36);	//Memory Access Control
-	spi_master_write_data_byte(dev, 0x08);	//Right top start
+		spi_master_write_comm_byte(dev, 0x36);	//Memory Access Control
+		spi_master_write_data_byte(dev, 0x08);	//Right top start, BGR color filter panel
+		//spi_master_write_data_byte(dev, 0x00);//Right top start, RGB color filter panel
 
-	spi_master_write_command(dev, 0x3A);	//Pixel Format Set
-	spi_master_write_data_byte(dev, 0x55);	//65K color: 16-bit/pixel
+		spi_master_write_comm_byte(dev, 0x3A);	//Pixel Format Set
+		spi_master_write_data_byte(dev, 0x55);	//65K color: 16-bit/pixel
 
-	spi_master_write_command(dev, 0x20);	//Display Inversion OFF
+		spi_master_write_comm_byte(dev, 0x20);	//Display Inversion OFF
 
-	spi_master_write_command(dev, 0xB1);	//Frame Rate Control
-	spi_master_write_data_byte(dev, 0x00);
-	spi_master_write_data_byte(dev, 0x18);
+		spi_master_write_comm_byte(dev, 0xB1);	//Frame Rate Control
+		spi_master_write_data_byte(dev, 0x00);
+		spi_master_write_data_byte(dev, 0x18);
 
-	spi_master_write_command(dev, 0xB6);	//Display Function Control
-	spi_master_write_data_byte(dev, 0x08);
-	spi_master_write_data_byte(dev, 0xA2);	// REV:1 GS:0 SS:0 SM:0
-	spi_master_write_data_byte(dev, 0x27);
-	spi_master_write_data_byte(dev, 0x00);
+		spi_master_write_comm_byte(dev, 0xB6);	//Display Function Control
+		spi_master_write_data_byte(dev, 0x08);
+		spi_master_write_data_byte(dev, 0xA2);	// REV:1 GS:0 SS:0 SM:0
+		spi_master_write_data_byte(dev, 0x27);
+		spi_master_write_data_byte(dev, 0x00);
 
-	if (M5STACK) {
-	spi_master_write_command(dev, 0x30);	//Partial Area
-	spi_master_write_data_byte(dev, 0x00);
-	spi_master_write_data_byte(dev, 0x00);
-	spi_master_write_data_byte(dev, 0x01);
-	spi_master_write_data_byte(dev, 0x3F);
+		spi_master_write_comm_byte(dev, 0x26);	//Gamma Set
+		spi_master_write_data_byte(dev, 0x01);
 
-	spi_master_write_command(dev, 0xF2);	//??
-	spi_master_write_data_byte(dev, 0x00);
-	}
+		spi_master_write_comm_byte(dev, 0xE0);	//Positive Gamma Correction
+		spi_master_write_data_byte(dev, 0x0F);
+		spi_master_write_data_byte(dev, 0x31);
+		spi_master_write_data_byte(dev, 0x2B);
+		spi_master_write_data_byte(dev, 0x0C);
+		spi_master_write_data_byte(dev, 0x0E);
+		spi_master_write_data_byte(dev, 0x08);
+		spi_master_write_data_byte(dev, 0x4E);
+		spi_master_write_data_byte(dev, 0xF1);
+		spi_master_write_data_byte(dev, 0x37);
+		spi_master_write_data_byte(dev, 0x07);
+		spi_master_write_data_byte(dev, 0x10);
+		spi_master_write_data_byte(dev, 0x03);
+		spi_master_write_data_byte(dev, 0x0E);
+		spi_master_write_data_byte(dev, 0x09);
+		spi_master_write_data_byte(dev, 0x00);
 
-	spi_master_write_command(dev, 0x26);	//Gamma Set
-	spi_master_write_data_byte(dev, 0x01);
+		spi_master_write_comm_byte(dev, 0xE1);	//Negative Gamma Correction
+		spi_master_write_data_byte(dev, 0x00);
+		spi_master_write_data_byte(dev, 0x0E);
+		spi_master_write_data_byte(dev, 0x14);
+		spi_master_write_data_byte(dev, 0x03);
+		spi_master_write_data_byte(dev, 0x11);
+		spi_master_write_data_byte(dev, 0x07);
+		spi_master_write_data_byte(dev, 0x31);
+		spi_master_write_data_byte(dev, 0xC1);
+		spi_master_write_data_byte(dev, 0x48);
+		spi_master_write_data_byte(dev, 0x08);
+		spi_master_write_data_byte(dev, 0x0F);
+		spi_master_write_data_byte(dev, 0x0C);
+		spi_master_write_data_byte(dev, 0x31);
+		spi_master_write_data_byte(dev, 0x36);
+		spi_master_write_data_byte(dev, 0x0F);
 
-	spi_master_write_command(dev, 0xE0);	//Positive Gamma Correction
-	spi_master_write_data_byte(dev, 0x0F);
-	spi_master_write_data_byte(dev, 0x31);
-	spi_master_write_data_byte(dev, 0x2B);
-	spi_master_write_data_byte(dev, 0x0C);
-	spi_master_write_data_byte(dev, 0x0E);
-	spi_master_write_data_byte(dev, 0x08);
-	spi_master_write_data_byte(dev, 0x4E);
-	spi_master_write_data_byte(dev, 0xF1);
-	spi_master_write_data_byte(dev, 0x37);
-	spi_master_write_data_byte(dev, 0x07);
-	spi_master_write_data_byte(dev, 0x10);
-	spi_master_write_data_byte(dev, 0x03);
-	spi_master_write_data_byte(dev, 0x0E);
-	spi_master_write_data_byte(dev, 0x09);
-	spi_master_write_data_byte(dev, 0x00);
+		spi_master_write_comm_byte(dev, 0x11);	//Sleep Out
+		delayMS(120);
 
-	spi_master_write_command(dev, 0xE1);	//Negative Gamma Correction
-	spi_master_write_data_byte(dev, 0x00);
-	spi_master_write_data_byte(dev, 0x0E);
-	spi_master_write_data_byte(dev, 0x14);
-	spi_master_write_data_byte(dev, 0x03);
-	spi_master_write_data_byte(dev, 0x11);
-	spi_master_write_data_byte(dev, 0x07);
-	spi_master_write_data_byte(dev, 0x31);
-	spi_master_write_data_byte(dev, 0xC1);
-	spi_master_write_data_byte(dev, 0x48);
-	spi_master_write_data_byte(dev, 0x08);
-	spi_master_write_data_byte(dev, 0x0F);
-	spi_master_write_data_byte(dev, 0x0C);
-	spi_master_write_data_byte(dev, 0x31);
-	spi_master_write_data_byte(dev, 0x36);
-	spi_master_write_data_byte(dev, 0x0F);
+		spi_master_write_comm_byte(dev, 0x29);	//Display ON
+	} // endif 0x9340/0x9341/0x7735
 
-	spi_master_write_command(dev, 0x11);	//Sleep Out
-	delayMS(120);
+	if (dev->_model == 0x9225) {
+		ESP_LOGI(TAG,"Your TFT is ILI9225");
+		ESP_LOGI(TAG,"Screen width:%d",width);
+		ESP_LOGI(TAG,"Screen height:%d",height);
+		lcdWriteRegisterByte(dev, 0x10, 0x0000); // Set SAP,DSTB,STB
+		lcdWriteRegisterByte(dev, 0x11, 0x0000); // Set APON,PON,AON,VCI1EN,VC
+		lcdWriteRegisterByte(dev, 0x12, 0x0000); // Set BT,DC1,DC2,DC3
+		lcdWriteRegisterByte(dev, 0x13, 0x0000); // Set GVDD
+		lcdWriteRegisterByte(dev, 0x14, 0x0000); // Set VCOMH/VCOML voltage
+		delayMS(40);
 
-	spi_master_write_command(dev, 0x29);	//Display ON
+		// Power-on sequence
+		lcdWriteRegisterByte(dev, 0x11, 0x0018); // Set APON,PON,AON,VCI1EN,VC
+		lcdWriteRegisterByte(dev, 0x12, 0x6121); // Set BT,DC1,DC2,DC3
+		lcdWriteRegisterByte(dev, 0x13, 0x006F); // Set GVDD
+		lcdWriteRegisterByte(dev, 0x14, 0x495F); // Set VCOMH/VCOML voltage
+		lcdWriteRegisterByte(dev, 0x10, 0x0800); // Set SAP,DSTB,STB
+		delayMS(10);
+		lcdWriteRegisterByte(dev, 0x11, 0x103B); // Set APON,PON,AON,VCI1EN,VC
+		delayMS(50);
+
+		lcdWriteRegisterByte(dev, 0x01, 0x011C); // set the display line number and display direction
+		lcdWriteRegisterByte(dev, 0x02, 0x0100); // set 1 line inversion
+		lcdWriteRegisterByte(dev, 0x03, 0x1030); // set GRAM write direction and BGR=1.
+		lcdWriteRegisterByte(dev, 0x07, 0x0000); // Display off
+		lcdWriteRegisterByte(dev, 0x08, 0x0808); // set the back porch and front porch
+		lcdWriteRegisterByte(dev, 0x0B, 0x1100); // set the clocks number per line
+		lcdWriteRegisterByte(dev, 0x0C, 0x0000); // CPU interface
+		//lcdWriteRegisterByte(dev, 0x0F, 0x0D01); // Set Osc
+		lcdWriteRegisterByte(dev, 0x0F, 0x0801); // Set Osc
+		lcdWriteRegisterByte(dev, 0x15, 0x0020); // Set VCI recycling
+		lcdWriteRegisterByte(dev, 0x20, 0x0000); // RAM Address
+		lcdWriteRegisterByte(dev, 0x21, 0x0000); // RAM Address
+
+		// Set GRAM area
+		lcdWriteRegisterByte(dev, 0x30, 0x0000);
+		lcdWriteRegisterByte(dev, 0x31, 0x00DB);
+		lcdWriteRegisterByte(dev, 0x32, 0x0000);
+		lcdWriteRegisterByte(dev, 0x33, 0x0000);
+		lcdWriteRegisterByte(dev, 0x34, 0x00DB);
+		lcdWriteRegisterByte(dev, 0x35, 0x0000);
+		lcdWriteRegisterByte(dev, 0x36, 0x00AF);
+		lcdWriteRegisterByte(dev, 0x37, 0x0000);
+		lcdWriteRegisterByte(dev, 0x38, 0x00DB);
+		lcdWriteRegisterByte(dev, 0x39, 0x0000);
+
+		// Adjust GAMMA Curve
+		lcdWriteRegisterByte(dev, 0x50, 0x0000);
+		lcdWriteRegisterByte(dev, 0x51, 0x0808);
+		lcdWriteRegisterByte(dev, 0x52, 0x080A);
+		lcdWriteRegisterByte(dev, 0x53, 0x000A);
+		lcdWriteRegisterByte(dev, 0x54, 0x0A08);
+		lcdWriteRegisterByte(dev, 0x55, 0x0808);
+		lcdWriteRegisterByte(dev, 0x56, 0x0000);
+		lcdWriteRegisterByte(dev, 0x57, 0x0A00);
+		lcdWriteRegisterByte(dev, 0x58, 0x0710);
+		lcdWriteRegisterByte(dev, 0x59, 0x0710);
+
+		lcdWriteRegisterByte(dev, 0x07, 0x0012);
+		delayMS(50); // Delay 50ms
+		lcdWriteRegisterByte(dev, 0x07, 0x1017);
+	} // endif 0x9225
 
 	if(dev->_bl >= 0) {
 		gpio_set_level( dev->_bl, 1 );
@@ -290,21 +339,32 @@ void lcdInit(ILI9340_t * dev, int width, int height, int offsetx, int offsety)
 // x:X coordinate
 // y:Y coordinate
 // color:color
-void lcdDrawPixel(ILI9340_t * dev, uint16_t x, uint16_t y, uint16_t color){
+void lcdDrawPixel(TFT_t * dev, uint16_t x, uint16_t y, uint16_t color){
 	if (x >= dev->_width) return;
 	if (y >= dev->_height) return;
 
 	uint16_t _x = x + dev->_offsetx;
 	uint16_t _y = y + dev->_offsety;
 
-	spi_master_write_command(dev, 0x2A);	// set column(x) address
-	spi_master_write_data_word(dev, _x);
-	spi_master_write_data_word(dev, _x);
-	spi_master_write_command(dev, 0x2B);	// set Page(y) address
-	spi_master_write_data_word(dev, _y);
-	spi_master_write_data_word(dev, _y);
-	spi_master_write_command(dev, 0x2C);	//  Memory Write
-	spi_master_write_data_word(dev, color);
+	if (dev->_model == 0x9340 || dev->_model == 0x9341 || dev->_model == 0x7735) {
+		spi_master_write_comm_byte(dev, 0x2A);	// set column(x) address
+		spi_master_write_data_word(dev, _x);
+		spi_master_write_data_word(dev, _x);
+		spi_master_write_comm_byte(dev, 0x2B);	// set Page(y) address
+		spi_master_write_data_word(dev, _y);
+		spi_master_write_data_word(dev, _y);
+		spi_master_write_comm_byte(dev, 0x2C);	//  Memory Write
+		spi_master_write_data_word(dev, color);
+	} // endif 0x9340/0x9341/0x7735
+
+	if (dev->_model == 0x9225) {
+		spi_master_write_comm_byte(dev, 0x20);	// set column(x) address
+		spi_master_write_data_word(dev, _x);
+		spi_master_write_comm_byte(dev, 0x21);	// set column(y) address
+		spi_master_write_data_word(dev, _y);
+		spi_master_write_comm_byte(dev, 0x22);	// Memory Write
+		spi_master_write_data_word(dev, color);
+	} // endif 0x9225
 }
 
 // Draw rectangule of filling
@@ -313,7 +373,7 @@ void lcdDrawPixel(ILI9340_t * dev, uint16_t x, uint16_t y, uint16_t color){
 // x2:End X coordinate
 // y2:End Y coordinate
 // color:color
-void lcdDrawFillRect(ILI9340_t * dev, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color) {
+void lcdDrawFillRect(TFT_t * dev, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color) {
 	int i,j; 
 	if (x1 >= dev->_width) return;
 	if (x2 >= dev->_width) x2=dev->_width-1;
@@ -326,34 +386,98 @@ void lcdDrawFillRect(ILI9340_t * dev, uint16_t x1, uint16_t y1, uint16_t x2, uin
 	uint16_t _y1 = y1 + dev->_offsety;
 	uint16_t _y2 = y2 + dev->_offsety;
 
-	spi_master_write_command(dev, 0x2A);	// set column(x) address
-	spi_master_write_data_word(dev, _x1);
-	spi_master_write_data_word(dev, _x2);
-	spi_master_write_command(dev, 0x2B);	// set Page(y) address
-	spi_master_write_data_word(dev, _y1);
-	spi_master_write_data_word(dev, _y2);
-	spi_master_write_command(dev, 0x2C);	//  Memory Write
-	for(i=x1;i<=x2;i++){
-		for(j=y1;j<=y2;j++){
-			//ESP_LOGD(TAG,"i=%d j=%d",i,j);
-			spi_master_write_data_word(dev, color);
+	if (dev->_model == 0x9340 || dev->_model == 0x9341 || dev->_model == 0x7735) {
+		spi_master_write_comm_byte(dev, 0x2A);	// set column(x) address
+		spi_master_write_data_word(dev, _x1);
+		spi_master_write_data_word(dev, _x2);
+		spi_master_write_comm_byte(dev, 0x2B);	// set Page(y) address
+		spi_master_write_data_word(dev, _y1);
+		spi_master_write_data_word(dev, _y2);
+		spi_master_write_comm_byte(dev, 0x2C);	//  Memory Write
+		for(i=x1;i<=x2;i++){
+			for(j=y1;j<=y2;j++){
+				spi_master_write_data_word(dev, color);
+			}
 		}
-	}
+	} // endif 0x9340/0x9341/0x7735
+
+	if (dev->_model == 0x9225) {
+		for(j=_y1;j<=_y2;j++){
+			spi_master_write_comm_byte(dev, 0x20);	// set column(x) address
+			spi_master_write_data_word(dev, _x1);
+			spi_master_write_comm_byte(dev, 0x21);	// set column(y) address
+			spi_master_write_data_word(dev, j);
+			spi_master_write_comm_byte(dev, 0x22);	// Memory Write
+			for(i=_x1;i<=_x2;i++){
+				spi_master_write_data_word(dev, color);
+			}
+		}
+	} // endif 0x9225
+
 }
 
 // Display OFF
-void lcdDisplayOff(ILI9340_t * dev) {
-	spi_master_write_command(dev, 0x28);	//Display off
+void lcdDisplayOff(TFT_t * dev) {
+	if (dev->_model == 0x9340 || dev->_model == 0x9341 || dev->_model == 0x7735) {
+		spi_master_write_comm_byte(dev, 0x28);
+	} // endif 0x9340/0x9341/0x7735
+
+	if (dev->_model == 0x9225) {
+		spi_master_write_comm_byte(dev, 0x07);
+		spi_master_write_data_word(dev, 0x1014);
+	} // endif 0x9225
+
 }
  
 // Display ON
-void lcdDisplayOn(ILI9340_t * dev) {
-	spi_master_write_command(dev, 0x29);	//Display on
+void lcdDisplayOn(TFT_t * dev) {
+	if (dev->_model == 0x9340 || dev->_model == 0x9341 || dev->_model == 0x7735) {
+		spi_master_write_comm_byte(dev, 0x29);
+	} // endif 0x9340/0x9341/0x7735
+
+	if (dev->_model == 0x9225) {
+		spi_master_write_comm_byte(dev, 0x07);
+		spi_master_write_data_word(dev, 0x1017);
+	} // endif 0x9225
+
 }
 
+// Display Inversion OFF
+void lcdInversionOff(TFT_t * dev) {
+	if (dev->_model == 0x9340 || dev->_model == 0x9341 || dev->_model == 0x7735) {
+		spi_master_write_comm_byte(dev, 0x20);
+	} // endif 0x9340/0x9341/0x7735
+
+	if (dev->_model == 0x9225) {
+		ESP_LOGW(TAG, "No supported command(lcdInversionOn)");
+	} // endif 0x9225
+}
+
+// Display Inversion ON
+void lcdInversionOn(TFT_t * dev) {
+	if (dev->_model == 0x9340 || dev->_model == 0x9341 || dev->_model == 0x7735) {
+		spi_master_write_comm_byte(dev, 0x21);
+	} // endif 0x9340/0x9341/0x7735
+
+	if (dev->_model == 0x9225) {
+		ESP_LOGW(TAG, "No supported command(lcdInversionOn)");
+	} // endif 0x9225
+}
+
+// Change Memory Access Control
+void lcdBGRFilter(TFT_t * dev) {
+	if (dev->_model == 0x9340 || dev->_model == 0x9341 || dev->_model == 0x7735) {
+		spi_master_write_comm_byte(dev, 0x36);	//Memory Access Control
+		spi_master_write_data_byte(dev, 0x00);	//Right top start, RGB color filter panel
+	} // endif 0x9340/0x9341/0x7735
+
+	if (dev->_model == 0x9225) {
+		ESP_LOGW(TAG, "No supported command(lcdInversionOn)");
+	} // endif 0x9225
+}
 // Fill screen
 // color:color
-void lcdFillScreen(ILI9340_t * dev, uint16_t color) {
+void lcdFillScreen(TFT_t * dev, uint16_t color) {
 	lcdDrawFillRect(dev, 0, 0, dev->_width-1, dev->_height-1, color);
 }
 
@@ -363,7 +487,7 @@ void lcdFillScreen(ILI9340_t * dev, uint16_t color) {
 // x2:End X coordinate
 // y2:End Y coordinate
 // color:color 
-void lcdDrawLine(ILI9340_t * dev, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color) {
+void lcdDrawLine(TFT_t * dev, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color) {
 	int i;
 	int dx,dy;
 	int sx,sy;
@@ -411,7 +535,7 @@ void lcdDrawLine(ILI9340_t * dev, uint16_t x1, uint16_t y1, uint16_t x2, uint16_
 // x2:End   X coordinate
 // y2:End   Y coordinate
 // color:color
-void lcdDrawRect(ILI9340_t * dev, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color) {
+void lcdDrawRect(TFT_t * dev, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color) {
 	lcdDrawLine(dev, x1, y1, x2, y1, color);
 	lcdDrawLine(dev, x2, y1, x2, y2, color);
 	lcdDrawLine(dev, x2, y2, x1, y2, color);
@@ -423,7 +547,7 @@ void lcdDrawRect(ILI9340_t * dev, uint16_t x1, uint16_t y1, uint16_t x2, uint16_
 // y0:Central Y coordinate
 // r:radius
 // color:color
-void lcdDrawCircle(ILI9340_t * dev, uint16_t x0, uint16_t y0, uint16_t r, uint16_t color) {
+void lcdDrawCircle(TFT_t * dev, uint16_t x0, uint16_t y0, uint16_t r, uint16_t color) {
 	int x;
 	int y;
 	int err;
@@ -447,7 +571,7 @@ void lcdDrawCircle(ILI9340_t * dev, uint16_t x0, uint16_t y0, uint16_t r, uint16
 // y0:Central Y coordinate
 // r:radius
 // color:color
-void lcdDrawFillCircle(ILI9340_t * dev, uint16_t x0, uint16_t y0, uint16_t r, uint16_t color) {
+void lcdDrawFillCircle(TFT_t * dev, uint16_t x0, uint16_t y0, uint16_t r, uint16_t color) {
 	int x;
 	int y;
 	int err;
@@ -476,7 +600,7 @@ void lcdDrawFillCircle(ILI9340_t * dev, uint16_t x0, uint16_t y0, uint16_t r, ui
 // y2:End   Y coordinate
 // r:radius
 // color:color
-void lcdDrawRoundRect(ILI9340_t * dev, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t r, uint16_t color) {
+void lcdDrawRoundRect(TFT_t * dev, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t r, uint16_t color) {
 	int x;
 	int y;
 	int err;
@@ -527,7 +651,7 @@ void lcdDrawRoundRect(ILI9340_t * dev, uint16_t x1, uint16_t y1, uint16_t x2, ui
 // w:Width of the botom
 // color:color
 // Thanks http://k-hiura.cocolog-nifty.com/blog/2010/11/post-2a62.html
-void lcdDrawArrow(ILI9340_t * dev, uint16_t x0,uint16_t y0,uint16_t x1,uint16_t y1,uint16_t w,uint16_t color) {
+void lcdDrawArrow(TFT_t * dev, uint16_t x0,uint16_t y0,uint16_t x1,uint16_t y1,uint16_t w,uint16_t color) {
 	double Vx= x1 - x0;
 	double Vy= y1 - y0;
 	double v = sqrt(Vx*Vx+Vy*Vy);
@@ -556,7 +680,7 @@ void lcdDrawArrow(ILI9340_t * dev, uint16_t x0,uint16_t y0,uint16_t x1,uint16_t 
 // y2:End   Y coordinate
 // w:Width of the botom
 // color:color
-void lcdDrawFillArrow(ILI9340_t * dev, uint16_t x0,uint16_t y0,uint16_t x1,uint16_t y1,uint16_t w,uint16_t color) {
+void lcdDrawFillArrow(TFT_t * dev, uint16_t x0,uint16_t y0,uint16_t x1,uint16_t y1,uint16_t w,uint16_t color) {
 	double Vx= x1 - x0;
 	double Vy= y1 - y0;
 	double v = sqrt(Vx*Vx+Vy*Vy);
@@ -601,7 +725,7 @@ uint16_t rgb565_conv(uint16_t r,uint16_t g,uint16_t b) {
 // y:Y coordinate
 // ascii: ascii code
 // color:color
-int lcdDrawChar(ILI9340_t * dev, FontxFile *fxs, uint16_t x, uint16_t y, uint8_t ascii, uint16_t color) {
+int lcdDrawChar(TFT_t * dev, FontxFile *fxs, uint16_t x, uint16_t y, uint8_t ascii, uint16_t color) {
 	uint16_t xx,yy,bit,ofs;
 	unsigned char fonts[128]; // font pattern
 	unsigned char pw, ph;
@@ -704,7 +828,7 @@ int lcdDrawChar(ILI9340_t * dev, FontxFile *fxs, uint16_t x, uint16_t y, uint8_t
 	return next;
 }
 
-int lcdDrawString(ILI9340_t * dev, FontxFile *fx, uint16_t x, uint16_t y, uint8_t * ascii, uint16_t color) {
+int lcdDrawString(TFT_t * dev, FontxFile *fx, uint16_t x, uint16_t y, uint8_t * ascii, uint16_t color) {
 	int length = strlen((char *)ascii);
 	if(_DEBUG_)printf("lcdDrawString length=%d\n",length);
 	for(int i=0;i<length;i++) {
@@ -732,7 +856,7 @@ int lcdDrawString(ILI9340_t * dev, FontxFile *fx, uint16_t x, uint16_t y, uint8_
 // y:Y coordinate
 // sjis: SJIS code
 // color:color
-int lcdDrawSJISChar(ILI9340_t * dev, FontxFile *fxs, uint16_t x,uint16_t y,uint16_t sjis,uint16_t color) {
+int lcdDrawSJISChar(TFT_t * dev, FontxFile *fxs, uint16_t x,uint16_t y,uint16_t sjis,uint16_t color) {
 	uint16_t xx,yy,bit,ofs;
 	unsigned char fonts[128]; // font pattern
 	unsigned char pw, ph;
@@ -839,7 +963,7 @@ int lcdDrawSJISChar(ILI9340_t * dev, FontxFile *fxs, uint16_t x,uint16_t y,uint1
 // y:Y coordinate
 // utf8: UTF8 code
 // color:color
-int lcdDrawUTF8Char(ILI9340_t * dev, FontxFile *fx, uint16_t x,uint16_t y,uint8_t *utf8,uint16_t color) {
+int lcdDrawUTF8Char(TFT_t * dev, FontxFile *fx, uint16_t x,uint16_t y,uint8_t *utf8,uint16_t color) {
 	uint16_t sjis[1];
 
 	sjis[0] = UTF2SJIS(utf8);
@@ -852,7 +976,7 @@ int lcdDrawUTF8Char(ILI9340_t * dev, FontxFile *fx, uint16_t x,uint16_t y,uint8_
 // y:Y coordinate
 // utfs: UTF8 string
 // color:color
-int lcdDrawUTF8String(ILI9340_t * dev, FontxFile *fx, uint16_t x, uint16_t y, unsigned char *utfs, uint16_t color) {
+int lcdDrawUTF8String(TFT_t * dev, FontxFile *fx, uint16_t x, uint16_t y, unsigned char *utfs, uint16_t color) {
 
 	int i;
 	int spos;
@@ -880,49 +1004,45 @@ int lcdDrawUTF8String(ILI9340_t * dev, FontxFile *fx, uint16_t x, uint16_t y, un
 
 // Set font direction
 // dir:Direction
-void lcdSetFontDirection(ILI9340_t * dev, uint16_t dir) {
+void lcdSetFontDirection(TFT_t * dev, uint16_t dir) {
 	dev->_font_direction = dir;
 }
 
 // Set font filling
 // color:fill color
-void lcdSetFontFill(ILI9340_t * dev, uint16_t color) {
+void lcdSetFontFill(TFT_t * dev, uint16_t color) {
 	dev->_font_fill = true;
 	dev->_font_fill_color = color;
 }
 
 // UnSet font filling
-void lcdUnsetFontFill(ILI9340_t * dev) {
+void lcdUnsetFontFill(TFT_t * dev) {
 	dev->_font_fill = false;
 }
 
 // Set font underline
 // color:frame color
-void lcdSetFontUnderLine(ILI9340_t * dev, uint16_t color) {
+void lcdSetFontUnderLine(TFT_t * dev, uint16_t color) {
 	dev->_font_underline = true;
 	dev->_font_underline_color = color;
 }
 
 // UnSet font underline
-void lcdUnsetFontUnderLine(ILI9340_t * dev) {
+void lcdUnsetFontUnderLine(TFT_t * dev) {
 	dev->_font_underline = false;
 }
 
 // Backlight OFF
-void lcdBacklightOff(ILI9340_t * dev) {
+void lcdBacklightOff(TFT_t * dev) {
 	if(dev->_bl >= 0) {
 		gpio_set_level( dev->_bl, 0 );
 	}
 }
 
 // Backlight ON
-void lcdBacklightOn(ILI9340_t * dev) {
+void lcdBacklightOn(TFT_t * dev) {
 	if(dev->_bl >= 0) {
 		gpio_set_level( dev->_bl, 1 );
 	}
 }
 
-// Display Inversion ON
-void lcdInversionOn(ILI9340_t * dev) {
-	spi_master_write_command(dev, 0x21);	//Display Inversion ON
-}

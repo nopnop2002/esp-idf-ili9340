@@ -39,7 +39,7 @@ static void SPIFFS_Directory(char * path) {
 #define CONFIG_BL_GPIO 2
 #endif
 
-TickType_t FillTest(ILI9340_t * dev, int width, int height) {
+TickType_t FillTest(TFT_t * dev, int width, int height) {
 	TickType_t startTick, endTick, diffTick;
 	startTick = xTaskGetTickCount();
 
@@ -56,7 +56,7 @@ TickType_t FillTest(ILI9340_t * dev, int width, int height) {
 	return diffTick;
 }
 
-TickType_t ColorBarTest(ILI9340_t * dev, int width, int height) {
+TickType_t ColorBarTest(TFT_t * dev, int width, int height) {
 	TickType_t startTick, endTick, diffTick;
 	startTick = xTaskGetTickCount();
 
@@ -86,7 +86,7 @@ TickType_t ColorBarTest(ILI9340_t * dev, int width, int height) {
 	return diffTick;
 }
 
-TickType_t ArrowTest(ILI9340_t * dev, FontxFile *fx, int width, int height) {
+TickType_t ArrowTest(TFT_t * dev, FontxFile *fx, uint16_t model, int width, int height) {
 	TickType_t startTick, endTick, diffTick;
 	startTick = xTaskGetTickCount();
 
@@ -95,18 +95,36 @@ TickType_t ArrowTest(ILI9340_t * dev, FontxFile *fx, int width, int height) {
 	uint8_t fontWidth;
 	uint8_t fontHeight;
 	GetFontx(fx, 0, buffer, &fontWidth, &fontHeight);
-	//ESP_LOGI(TAG,"fontWidth=%d fontHeight=%d",fontWidth,fontHeight);
+	ESP_LOGI(TAG,"fontWidth=%d fontHeight=%d",fontWidth,fontHeight);
 	
 	uint16_t xpos;
 	uint16_t ypos;
 	int	stlen;
-
-	uint16_t color;
-	//lcdFillScreen(dev, WHITE);
-	lcdFillScreen(dev, BLACK);
-	lcdSetFontDirection(dev, 0);
-	color = RED;
 	uint8_t ascii[10];
+	uint16_t color;
+
+	lcdFillScreen(dev, BLACK);
+
+	if (model == 0x9225) strcpy((char *)ascii, "ILI9225");
+	if (model == 0x9340) strcpy((char *)ascii, "ILI9340");
+	if (model == 0x9341) strcpy((char *)ascii, "ILI9341");
+	if (model == 0x7735) strcpy((char *)ascii, "ST7735");
+	if (width < height) {
+		xpos = ((width - fontHeight) / 2) - 1;
+		ypos = (height - (strlen((char *)ascii) * fontWidth)) / 2;
+		lcdSetFontDirection(dev, DIRECTION90);
+	} else {
+		ypos = ((height - fontHeight) / 2) - 1;
+		xpos = (width - (strlen((char *)ascii) * fontWidth)) / 2;
+		lcdSetFontDirection(dev, DIRECTION0);
+	}
+	ESP_LOGI(TAG,"xpos=%d ypos=%d",xpos, ypos);
+	color = WHITE;
+	lcdDrawString(dev, fx, xpos, ypos, ascii, color);
+
+	lcdSetFontDirection(dev, 0);
+	//lcdFillScreen(dev, WHITE);
+	color = RED;
 	lcdDrawFillArrow(dev, 10, 10, 0, 0, 5, color);
 	strcpy((char *)ascii, "0,0");
 	lcdDrawString(dev, fx, 0, 30, ascii, color);
@@ -140,7 +158,7 @@ TickType_t ArrowTest(ILI9340_t * dev, FontxFile *fx, int width, int height) {
 	return diffTick;
 }
 
-TickType_t DirectionTest(ILI9340_t * dev, FontxFile *fx, int width, int height) {
+TickType_t DirectionTest(TFT_t * dev, FontxFile *fx, int width, int height) {
 	TickType_t startTick, endTick, diffTick;
 	startTick = xTaskGetTickCount();
 
@@ -181,7 +199,7 @@ TickType_t DirectionTest(ILI9340_t * dev, FontxFile *fx, int width, int height) 
 	return diffTick;
 }
 
-TickType_t HorizontalTest(ILI9340_t * dev, FontxFile *fx, int width, int height) {
+TickType_t HorizontalTest(TFT_t * dev, FontxFile *fx, int width, int height) {
 	TickType_t startTick, endTick, diffTick;
 	startTick = xTaskGetTickCount();
 
@@ -232,7 +250,7 @@ TickType_t HorizontalTest(ILI9340_t * dev, FontxFile *fx, int width, int height)
 	return diffTick;
 }
 
-TickType_t VerticalTest(ILI9340_t * dev, FontxFile *fx, int width, int height) {
+TickType_t VerticalTest(TFT_t * dev, FontxFile *fx, int width, int height) {
 	TickType_t startTick, endTick, diffTick;
 	startTick = xTaskGetTickCount();
 
@@ -284,7 +302,7 @@ TickType_t VerticalTest(ILI9340_t * dev, FontxFile *fx, int width, int height) {
 }
 
 
-TickType_t LineTest(ILI9340_t * dev, int width, int height) {
+TickType_t LineTest(TFT_t * dev, int width, int height) {
 	TickType_t startTick, endTick, diffTick;
 	startTick = xTaskGetTickCount();
 
@@ -306,7 +324,7 @@ TickType_t LineTest(ILI9340_t * dev, int width, int height) {
 	return diffTick;
 }
 
-TickType_t CircleTest(ILI9340_t * dev, int width, int height) {
+TickType_t CircleTest(TFT_t * dev, int width, int height) {
 	TickType_t startTick, endTick, diffTick;
 	startTick = xTaskGetTickCount();
 
@@ -326,7 +344,7 @@ TickType_t CircleTest(ILI9340_t * dev, int width, int height) {
 	return diffTick;
 }
 
-TickType_t RoundRectTest(ILI9340_t * dev, int width, int height) {
+TickType_t RoundRectTest(TFT_t * dev, int width, int height) {
 	TickType_t startTick, endTick, diffTick;
 	startTick = xTaskGetTickCount();
 
@@ -349,7 +367,7 @@ TickType_t RoundRectTest(ILI9340_t * dev, int width, int height) {
 	return diffTick;
 }
 
-TickType_t FillRectTest(ILI9340_t * dev, int width, int height) {
+TickType_t FillRectTest(TFT_t * dev, int width, int height) {
 	TickType_t startTick, endTick, diffTick;
 	startTick = xTaskGetTickCount();
 
@@ -377,7 +395,7 @@ TickType_t FillRectTest(ILI9340_t * dev, int width, int height) {
 	return diffTick;
 }
 
-TickType_t ColorTest(ILI9340_t * dev, int width, int height) {
+TickType_t ColorTest(TFT_t * dev, int width, int height) {
 	TickType_t startTick, endTick, diffTick;
 	startTick = xTaskGetTickCount();
 
@@ -417,13 +435,38 @@ void ILI9341(void *pvParameters)
 	InitFontx(fx24M,"/spiffs/ILMH24XB.FNT",""); // 12x24Dot Mincyo
 	InitFontx(fx32M,"/spiffs/ILMH32XB.FNT",""); // 16x32Dot Mincyo
 	
-	ILI9340_t dev;
+	TFT_t dev;
 	spi_master_init(&dev, CONFIG_CS_GPIO, CONFIG_DC_GPIO, CONFIG_RESET_GPIO, CONFIG_BL_GPIO);
-	lcdInit(&dev, CONFIG_WIDTH, CONFIG_HEIGHT, CONFIG_OFFSETX, CONFIG_OFFSETY);
 
-#if CONFIG_WITH_INVERSION
-	ESP_LOGI(TAG, "Display Inversion Mode");
+#if CONFIG_ILI9225
+	uint16_t model = 0x9225;
+#endif
+#if CONFIG_ILI9340
+	uint16_t model = 0x9340;
+#endif
+#if CONFIG_ILI9341
+	uint16_t model = 0x9341;
+#endif
+#if CONFIG_ST7735
+	uint16_t model = 0x7735;
+#endif
+	lcdInit(&dev, model, CONFIG_WIDTH, CONFIG_HEIGHT, CONFIG_OFFSETX, CONFIG_OFFSETY);
+
+#if CONFIG_INVERSION
+	ESP_LOGI(TAG, "Enable Display Inversion");
 	lcdInversionOn(&dev);
+#endif
+
+#if CONFIG_RGB_COLOR
+	ESP_LOGI(TAG, "Change BGR filter to RGB filter");
+	lcdBGRFilter(&dev);
+#endif
+
+#if 0
+	while(1) {
+		ArrowTest(&dev, fx16G, model, CONFIG_WIDTH, CONFIG_HEIGHT);
+		WAIT;
+	}
 #endif
 
 #if 0
@@ -441,7 +484,7 @@ void ILI9341(void *pvParameters)
 		ColorBarTest(&dev, CONFIG_WIDTH, CONFIG_HEIGHT);
 		WAIT;
 
-		ArrowTest(&dev, fx16G, CONFIG_WIDTH, CONFIG_HEIGHT);
+		ArrowTest(&dev, fx16G, model, CONFIG_WIDTH, CONFIG_HEIGHT);
 		WAIT;
 
 		LineTest(&dev, CONFIG_WIDTH, CONFIG_HEIGHT);
