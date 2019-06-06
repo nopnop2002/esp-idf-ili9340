@@ -31,7 +31,7 @@ __MISO is not use.__
 ![config_M5Stack](https://user-images.githubusercontent.com/6020549/59007566-f4191300-8861-11e9-95f3-88156964707f.jpg)
 
 ![M5Stick-1](https://user-images.githubusercontent.com/6020549/57977479-7d43e380-7a34-11e9-99b6-6028500436e8.JPG)
-![M5Stick-2](https://user-images.githubusercontent.com/6020549/57977480-7d43e380-7a34-11e9-814e-f206c43e4a05.JPG)
+![M5Stack-2](https://user-images.githubusercontent.com/6020549/59008264-f7fa6480-8864-11e9-92f6-ffbd979fa75e.JPG)
 ![M5Stick-3](https://user-images.githubusercontent.com/6020549/57977481-7d43e380-7a34-11e9-9bc6-8e415aa52c52.JPG)
 ![M5Stick-4](https://user-images.githubusercontent.com/6020549/57977482-7d43e380-7a34-11e9-8188-653cb02f3ba0.JPG)
 ![M5Stick-5](https://user-images.githubusercontent.com/6020549/57977483-7ddc7a00-7a34-11e9-936e-4d97b1411610.JPG)
