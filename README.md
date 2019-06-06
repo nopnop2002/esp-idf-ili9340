@@ -56,6 +56,8 @@ Left:2.8" Right:2.4"
 # 2.4" ILI9341 320x240
 
 ![config_2-8_240x320](https://user-images.githubusercontent.com/6020549/59007585-072be300-8862-11e9-97bb-90d538167c0b.jpg)
+
+Left:2.8" Right:2.4"
 ![screen_2-8_240x320](https://user-images.githubusercontent.com/6020549/59007633-3f332600-8862-11e9-8d8f-bbfb303456f4.JPG)
 
 ---
@@ -63,6 +65,8 @@ Left:2.8" Right:2.4"
 # 2.2" ILI9340 320x240
 
 ![config_2-2_240x320](https://user-images.githubusercontent.com/6020549/59007751-ce403e00-8862-11e9-9472-6d7783d3aedd.jpg)
+
+Left:2.2" Right:2.4"
 ![screen_2-2_240x320](https://user-images.githubusercontent.com/6020549/59007758-d304f200-8862-11e9-8d61-fa4b734f4b9a.JPG)
 
 ---
@@ -70,6 +74,8 @@ Left:2.8" Right:2.4"
 # 2.0" ILI9225 176x220
 
 ![config_2-0_176x220](https://user-images.githubusercontent.com/6020549/59007709-9e913600-8862-11e9-9144-d004bda88c47.jpg)
+
+Left:2.2" Right:2.0"
 ![screen_2-0_176x220](https://user-images.githubusercontent.com/6020549/59007713-a05af980-8862-11e9-8ea2-d60b84ea49bf.JPG)
 
 ---
@@ -77,6 +83,8 @@ Left:2.8" Right:2.4"
 # 1.8" ST7735 128x160
 
 ![config_1-8_128x160-1](https://user-images.githubusercontent.com/6020549/59007797-fdef4600-8862-11e9-9048-6628e56a6fe8.jpg)
+
+Left:1.8" Right:2.0"
 ![screen_1-8_128x160-2](https://user-images.githubusercontent.com/6020549/59007803-0778ae00-8863-11e9-9a5c-c217a1bfab66.JPG)
 
 ---
@@ -98,6 +106,8 @@ Left:2.8" Right:2.4"
 # 1.44" ST7735 128x128
 
 ![config_1-8_128x160-1](https://user-images.githubusercontent.com/6020549/59007886-5aeafc00-8863-11e9-98f3-9b39967ee58d.jpg)
+
+Left:1.44" Right:2."
 ![screen_1-8_128x160-2](https://user-images.githubusercontent.com/6020549/59007892-63433700-8863-11e9-86a7-1b92e8b15efd.JPG)
 
 ---
@@ -112,6 +122,8 @@ Left:2.8" Right:2.4"
 # 0.96" ST7735 80x160
 
 ![config_0-96_80x160-1](https://user-images.githubusercontent.com/6020549/59007930-95549900-8863-11e9-8a02-ba2224fe2a96.jpg)
+
+Left:1.44" Right:0.96"
 ![screen_0-96_80x160-3](https://user-images.githubusercontent.com/6020549/59007940-9ede0100-8863-11e9-85ba-6eca86b6f441.JPG)
 
 ---
