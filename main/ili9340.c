@@ -763,6 +763,10 @@ int lcdDrawChar(TFT_t * dev, FontxFile *fxs, uint16_t x, uint16_t y, uint8_t asc
 	uint16_t xsd = 0;
 	uint16_t ysd = 0;
 	int next = 0;
+        uint16_t x0  = 0;
+        uint16_t x1  = 0;
+        uint16_t y0  = 0;
+        uint16_t y1  = 0;
 	if (dev->_font_direction == 0) {
 		xd1 = +1;
 		yd1 = +1; //-1;
@@ -773,6 +777,11 @@ int lcdDrawChar(TFT_t * dev, FontxFile *fxs, uint16_t x, uint16_t y, uint8_t asc
 		xsd =  1;
 		ysd =  0;
 		next = x + pw;
+
+                x0  = x;
+                y0  = y - (ph-1);
+                x1  = x + (pw-1);
+                y1  = y;
 	} else if (dev->_font_direction == 2) {
 		xd1 = -1;
 		yd1 = -1; //+1;
@@ -783,6 +792,11 @@ int lcdDrawChar(TFT_t * dev, FontxFile *fxs, uint16_t x, uint16_t y, uint8_t asc
 		xsd =  1;
 		ysd =  0;
 		next = x - pw;
+
+                x0  = x - (pw-1);
+                y0  = y;
+                x1  = x;
+                y1  = y + (ph-1);
 	} else if (dev->_font_direction == 1) {
 		xd1 =  0;
 		yd1 =  0;
@@ -793,6 +807,11 @@ int lcdDrawChar(TFT_t * dev, FontxFile *fxs, uint16_t x, uint16_t y, uint8_t asc
 		xsd =  0;
 		ysd =  1;
 		next = y + pw; //y - pw;
+
+                x0  = x;
+                y0  = y;
+                x1  = x + (ph-1);
+                y1  = y + (pw-1);
 	} else if (dev->_font_direction == 3) {
 		xd1 =  0;
 		yd1 =  0;
@@ -803,7 +822,14 @@ int lcdDrawChar(TFT_t * dev, FontxFile *fxs, uint16_t x, uint16_t y, uint8_t asc
 		xsd =  0;
 		ysd =  1;
 		next = y - pw; //y + pw;
+
+                x0  = x - (ph-1);
+                y0  = y - (pw-1);
+                x1  = x;
+                y1  = y;
 	}
+
+        if (dev->_font_fill) lcdDrawFillRect(dev, x0, y0, x1, y1, dev->_font_fill_color);
 
 	int bits;
 	if(_DEBUG_)printf("xss=%d yss=%d\n",xss,yss);
@@ -824,7 +850,7 @@ int lcdDrawChar(TFT_t * dev, FontxFile *fxs, uint16_t x, uint16_t y, uint8_t asc
 				if (fonts[ofs] & mask) {
 					lcdDrawPixel(dev, xx, yy, color);
 				} else {
-					if (dev->_font_fill) lcdDrawPixel(dev, xx, yy, dev->_font_fill_color);
+					//if (dev->_font_fill) lcdDrawPixel(dev, xx, yy, dev->_font_fill_color);
 				}
 				if (h == (ph-2) && dev->_font_underline)
 					lcdDrawPixel(dev, xx, yy, dev->_font_underline_color);

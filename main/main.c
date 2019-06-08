@@ -232,15 +232,15 @@ TickType_t HorizontalTest(TFT_t * dev, FontxFile *fx, int width, int height) {
 	color = BLUE;
 	strcpy((char *)ascii, "Direction=2");
 	lcdSetFontDirection(dev, 2);
-	lcdDrawString(dev, fx, width, height-(fontHeight*1)-1, ascii, color);
+	lcdDrawString(dev, fx, width-1, height-(fontHeight*1)-1, ascii, color);
 	lcdSetFontUnderLine(dev, BLUE);
-	lcdDrawString(dev, fx, width, height-(fontHeight*2)-1, ascii, color);
+	lcdDrawString(dev, fx, width-1, height-(fontHeight*2)-1, ascii, color);
 	lcdUnsetFontUnderLine(dev);
 
 	lcdSetFontFill(dev, YELLOW);
-	lcdDrawString(dev, fx, width, height-(fontHeight*3)-1, ascii, color);
+	lcdDrawString(dev, fx, width-1, height-(fontHeight*3)-1, ascii, color);
 	lcdSetFontUnderLine(dev, BLUE);
-	lcdDrawString(dev, fx, width, height-(fontHeight*4)-1, ascii, color);
+	lcdDrawString(dev, fx, width-1, height-(fontHeight*4)-1, ascii, color);
 	lcdUnsetFontFill(dev);
 	lcdUnsetFontUnderLine(dev);
 
@@ -283,15 +283,15 @@ TickType_t VerticalTest(TFT_t * dev, FontxFile *fx, int width, int height) {
 	color = BLUE;
 	strcpy((char *)ascii, "Direction=3");
 	lcdSetFontDirection(dev, 3);
-	lcdDrawString(dev, fx, (fontHeight*1)-1, height, ascii, color);
+	lcdDrawString(dev, fx, (fontHeight*1)-1, height-1, ascii, color);
 	lcdSetFontUnderLine(dev, BLUE);
-	lcdDrawString(dev, fx, (fontHeight*2)-1, height, ascii, color);
+	lcdDrawString(dev, fx, (fontHeight*2)-1, height-1, ascii, color);
 	lcdUnsetFontUnderLine(dev);
 
 	lcdSetFontFill(dev, YELLOW);
-	lcdDrawString(dev, fx, (fontHeight*3)-1, height, ascii, color);
+	lcdDrawString(dev, fx, (fontHeight*3)-1, height-1, ascii, color);
 	lcdSetFontUnderLine(dev, BLUE);
-	lcdDrawString(dev, fx, (fontHeight*4)-1, height, ascii, color);
+	lcdDrawString(dev, fx, (fontHeight*4)-1, height-1, ascii, color);
 	lcdUnsetFontFill(dev);
 	lcdUnsetFontUnderLine(dev);
 
