@@ -44,11 +44,11 @@ TickType_t FillTest(TFT_t * dev, int width, int height) {
 	startTick = xTaskGetTickCount();
 
 	lcdFillScreen(dev, RED);
-	vTaskDelay(1);
+	vTaskDelay(50);
 	lcdFillScreen(dev, GREEN);
-	vTaskDelay(1);
+	vTaskDelay(50);
 	lcdFillScreen(dev, BLUE);
-	vTaskDelay(1);
+	vTaskDelay(50);
 
 	endTick = xTaskGetTickCount();
 	diffTick = endTick - startTick;
@@ -464,6 +464,8 @@ void ILI9341(void *pvParameters)
 
 #if 0
 	while(1) {
+		FillTest(&dev, CONFIG_WIDTH, CONFIG_HEIGHT);
+		WAIT;
 		ArrowTest(&dev, fx16G, model, CONFIG_WIDTH, CONFIG_HEIGHT);
 		WAIT;
 	}
