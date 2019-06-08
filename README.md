@@ -65,7 +65,7 @@ Left:2.2" Right:2.4"
 
 # 2.0" ILI9225 176x220
 
-![config_2-0_176x220](https://user-images.githubusercontent.com/6020549/59007709-9e913600-8862-11e9-9144-d004bda88c47.jpg)
+![config_2-0_176x220](https://user-images.githubusercontent.com/6020549/59140156-06678e00-89d5-11e9-9b82-1077b2e61c65.jpg)
 
 Left:2.2" Right:2.0"
 ![screen_2-0_176x220](https://user-images.githubusercontent.com/6020549/59007713-a05af980-8862-11e9-8ea2-d60b84ea49bf.JPG)
