@@ -95,7 +95,7 @@ TickType_t ArrowTest(TFT_t * dev, FontxFile *fx, uint16_t model, int width, int 
 	uint8_t fontWidth;
 	uint8_t fontHeight;
 	GetFontx(fx, 0, buffer, &fontWidth, &fontHeight);
-	ESP_LOGI(TAG,"fontWidth=%d fontHeight=%d",fontWidth,fontHeight);
+	ESP_LOGD(TAG,"fontWidth=%d fontHeight=%d",fontWidth,fontHeight);
 	
 	uint16_t xpos;
 	uint16_t ypos;
@@ -118,7 +118,6 @@ TickType_t ArrowTest(TFT_t * dev, FontxFile *fx, uint16_t model, int width, int 
 		xpos = (width - (strlen((char *)ascii) * fontWidth)) / 2;
 		lcdSetFontDirection(dev, DIRECTION0);
 	}
-	ESP_LOGI(TAG,"xpos=%d ypos=%d",xpos, ypos);
 	color = WHITE;
 	lcdDrawString(dev, fx, xpos, ypos, ascii, color);
 
