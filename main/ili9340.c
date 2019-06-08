@@ -395,7 +395,6 @@ void lcdDrawPixel(TFT_t * dev, uint16_t x, uint16_t y, uint16_t color){
 // y2:End Y coordinate
 // color:color
 void lcdDrawFillRect(TFT_t * dev, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color) {
-	int i,j; 
 	if (x1 >= dev->_width) return;
 	if (x2 >= dev->_width) x2=dev->_width-1;
 	if (y1 >= dev->_height) return;
@@ -413,14 +412,14 @@ void lcdDrawFillRect(TFT_t * dev, uint16_t x1, uint16_t y1, uint16_t x2, uint16_
 		spi_master_write_comm_byte(dev, 0x2B);	// set Page(y) address
 		spi_master_write_addr(dev, _y1, _y2);
 		spi_master_write_comm_byte(dev, 0x2C);	//  Memory Write
-		for(i=_x1;i<=_x2;i++) {
+		for(int i=_x1;i<=_x2;i++) {
 			uint16_t size = _y2-_y1+1;
 			spi_master_write_color(dev, color, size);
 		}
 	} // endif 0x9340/0x9341/0x7735
 
 	if (dev->_model == 0x9225) {
-		for(j=_y1;j<=_y2;j++){
+		for(int j=_y1;j<=_y2;j++){
 			spi_master_write_comm_byte(dev, 0x20);	// set column(x) address
 			spi_master_write_data_word(dev, _x1);
 			spi_master_write_comm_byte(dev, 0x21);	// set column(y) address
