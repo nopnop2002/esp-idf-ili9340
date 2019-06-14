@@ -1,5 +1,5 @@
 # esp-idf-ili9340
-ILI9340 Driver for esp-idf
+SPI TFT Driver for esp-idf
 
 You have to set this config value with menuconfig.   
 CONFIG_WIDTH   
@@ -23,6 +23,21 @@ make flash
 __MOSI is GPIO23.__   
 __SCLK is GPIO18.__   
 __MISO is not use.__   
+
+---
+
+# Tested TFT
+
+M5Stack   
+2.8" ILI9341 320x240   
+2.4" ILI9341 320x240   
+2.2" ILI9340 320x240   
+2.0" ILI9225 176x220   
+1.8" ST7735 128x160   
+1.44" ST7735 128x128   
+0.96" ST7735 80x160   
+
+![spi-tft](https://user-images.githubusercontent.com/6020549/59512687-3098de80-8ef4-11e9-9759-530ffe47d659.JPG)
 
 ---
 
