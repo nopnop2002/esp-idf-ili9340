@@ -66,14 +66,6 @@ void spi_master_init(TFT_t * dev, int16_t GPIO_CS, int16_t GPIO_DC, int16_t GPIO
 	ESP_LOGD(TAG, "spi_bus_initialize=%d",ret);
 	assert(ret==ESP_OK);
 
-#if 0
-	spi_device_interface_config_t devcfg;
-	memset( &devcfg, 0, sizeof( spi_device_interface_config_t ) );
-	devcfg.clock_speed_hz = frequency;
-	devcfg.spics_io_num = GPIO_CS;
-	devcfg.queue_size = 1;
-#endif
-
 	spi_device_interface_config_t devcfg={
 		.clock_speed_hz = SPI_Frequency,
 		.spics_io_num = GPIO_CS,
@@ -369,14 +361,26 @@ void lcdDrawPixel(TFT_t * dev, uint16_t x, uint16_t y, uint16_t color){
 	uint16_t _x = x + dev->_offsetx;
 	uint16_t _y = y + dev->_offsety;
 
-	if (dev->_model == 0x9340 || dev->_model == 0x9341 || dev->_model == 0x7735) {
+	//if (dev->_model == 0x9340 || dev->_model == 0x9341 || dev->_model == 0x7735) {
+	if (dev->_model == 0x9340 || dev->_model == 0x9341) {
 		spi_master_write_comm_byte(dev, 0x2A);	// set column(x) address
 		spi_master_write_addr(dev, _x, _x);
 		spi_master_write_comm_byte(dev, 0x2B);	// set Page(y) address
 		spi_master_write_addr(dev, _y, _y);
 		spi_master_write_comm_byte(dev, 0x2C);	//  Memory Write
 		spi_master_write_data_word(dev, color);
-	} // endif 0x9340/0x9341/0x7735
+	} // endif 0x9340/0x9341
+
+	if (dev->_model == 0x7735) {
+		spi_master_write_comm_byte(dev, 0x2A);	// set column(x) address
+		spi_master_write_data_word(dev, _x);
+		spi_master_write_data_word(dev, _x);
+		spi_master_write_comm_byte(dev, 0x2B);	// set Page(y) address
+		spi_master_write_data_word(dev, _y);
+		spi_master_write_data_word(dev, _y);
+		spi_master_write_comm_byte(dev, 0x2C);	//  Memory Write
+		spi_master_write_data_word(dev, color);
+	} // endif 0x7735
 
 	if (dev->_model == 0x9225) {
 		spi_master_write_comm_byte(dev, 0x20);	// set column(x) address
@@ -406,7 +410,8 @@ void lcdDrawFillRect(TFT_t * dev, uint16_t x1, uint16_t y1, uint16_t x2, uint16_
 	uint16_t _y1 = y1 + dev->_offsety;
 	uint16_t _y2 = y2 + dev->_offsety;
 
-	if (dev->_model == 0x9340 || dev->_model == 0x9341 || dev->_model == 0x7735) {
+	//if (dev->_model == 0x9340 || dev->_model == 0x9341 || dev->_model == 0x7735) {
+	if (dev->_model == 0x9340 || dev->_model == 0x9341) {
 		spi_master_write_comm_byte(dev, 0x2A);	// set column(x) address
 		spi_master_write_addr(dev, _x1, _x2);
 		spi_master_write_comm_byte(dev, 0x2B);	// set Page(y) address
@@ -416,7 +421,21 @@ void lcdDrawFillRect(TFT_t * dev, uint16_t x1, uint16_t y1, uint16_t x2, uint16_
 			uint16_t size = _y2-_y1+1;
 			spi_master_write_color(dev, color, size);
 		}
-	} // endif 0x9340/0x9341/0x7735
+	} // endif 0x9340/0x9341
+
+	if (dev->_model == 0x7735) {
+		spi_master_write_comm_byte(dev, 0x2A);	// set column(x) address
+		spi_master_write_data_word(dev, _x1);
+		spi_master_write_data_word(dev, _x2);
+		spi_master_write_comm_byte(dev, 0x2B);	// set Page(y) address
+		spi_master_write_data_word(dev, _y1);
+		spi_master_write_data_word(dev, _y2);
+		spi_master_write_comm_byte(dev, 0x2C);	//  Memory Write
+		for(int i=_x1;i<=_x2;i++) {
+			uint16_t size = _y2-_y1+1;
+			spi_master_write_color(dev, color, size);
+		}
+	} // 0x7735
 
 	if (dev->_model == 0x9225) {
 		for(int j=_y1;j<=_y2;j++){
