@@ -113,6 +113,8 @@ Left:1.8" Right:2.0"
 # 1.77" ST7735 128x160
 
 ![config_1-77_128x160](https://user-images.githubusercontent.com/6020549/59970575-bb3ca600-95a4-11e9-8d8c-82f7feb33332.jpg)
+
+Left:1.77" Right:1.8"
 ![screen_1-77_128x160](https://user-images.githubusercontent.com/6020549/59970576-bd066980-95a4-11e9-9f4a-88d69733f034.JPG)
 
 ---
