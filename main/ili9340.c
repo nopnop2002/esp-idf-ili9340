@@ -1107,3 +1107,37 @@ void lcdBacklightOn(TFT_t * dev) {
 	}
 }
 
+// Vertical Scrolling Definition
+// tfa:Top Fixed Area
+// vsa:Vertical Scrolling Area
+// bfa:Bottom Fixed Area
+void lcdSetScrollArea(TFT_t * dev, uint16_t tfa, uint16_t vsa, uint16_t bfa){
+	if (dev->_model == 0x9340 || dev->_model == 0x9341) {
+		spi_master_write_comm_byte(dev, 0x33);	// Vertical Scrolling Definition
+		spi_master_write_data_word(dev, tfa);
+		spi_master_write_data_word(dev, vsa);
+		spi_master_write_data_word(dev, bfa);
+	}
+
+	if (dev->_model == 0x9225) {
+		spi_master_write_comm_byte(dev, 0x31);	// Specify scroll start address at the scroll display
+		spi_master_write_data_word(dev, tfa);
+		spi_master_write_comm_byte(dev, 0x32);	// Specify scroll end address at the scroll display
+		spi_master_write_data_word(dev, vsa);
+	}
+}
+
+// Vertical Scrolling Start Address
+// vsp:Vertical Scrolling Start Address
+void lcdScroll(TFT_t * dev, uint16_t vsp){
+	if (dev->_model == 0x9340 || dev->_model == 0x9341) {
+		spi_master_write_comm_byte(dev, 0x37);	// Vertical Scrolling Start Address
+		spi_master_write_data_word(dev, vsp);
+	}
+
+	if (dev->_model == 0x9225) {
+		spi_master_write_comm_byte(dev, 0x33);	// Specify scroll start and step at the scroll display
+		spi_master_write_data_word(dev, vsp);
+	}
+}
+
