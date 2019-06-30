@@ -462,6 +462,8 @@ TickType_t ScrollTest(TFT_t * dev, FontxFile *fx, int width, int height) {
 		vTaskDelay(25);
 	}
 
+	// Reset scroll area
+	lcdSetScrollArea(dev, 0, 0x0140, 0);
 	endTick = xTaskGetTickCount();
 	diffTick = endTick - startTick;
 	ESP_LOGI(__FUNCTION__, "elapsed time[ms]:%d",diffTick*portTICK_RATE_MS);
