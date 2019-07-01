@@ -87,6 +87,15 @@ Left:2.2" Right:2.0"
 
 ---
 
+# 2.0" ILI9225G 176x220
+
+![config_2-0_176x220-11](https://user-images.githubusercontent.com/6020549/60471069-f2ded880-9c9d-11e9-9cef-5253a017f305.jpg)
+
+Left:2.0" 9225G Right:2.0" 9225
+![screen_2-0_176x220-11](https://user-images.githubusercontent.com/6020549/60471071-f70af600-9c9d-11e9-8f5d-4d2b64fa0e09.JPG)
+
+---
+
 # 1.8" ST7735 128x160
 
 ![config_1-8_128x160-1](https://user-images.githubusercontent.com/6020549/59007797-fdef4600-8862-11e9-9048-6628e56a6fe8.jpg)
