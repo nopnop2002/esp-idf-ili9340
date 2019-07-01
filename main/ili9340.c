@@ -344,6 +344,55 @@ void lcdInit(TFT_t * dev, uint16_t model, int width, int height, int offsetx, in
 		lcdWriteRegisterByte(dev, 0x07, 0x1017);
 	} // endif 0x9225
 
+	if (dev->_model == 0x9226) {
+		ESP_LOGI(TAG,"Your TFT is ILI9225G");
+		ESP_LOGI(TAG,"Screen width:%d",width);
+		ESP_LOGI(TAG,"Screen height:%d",height);
+		//lcdWriteRegisterByte(dev, 0x01, 0x011c);
+		lcdWriteRegisterByte(dev, 0x01, 0x021c);
+		lcdWriteRegisterByte(dev, 0x02, 0x0100);
+		lcdWriteRegisterByte(dev, 0x03, 0x1030);
+		lcdWriteRegisterByte(dev, 0x08, 0x0808); // set BP and FP
+		lcdWriteRegisterByte(dev, 0x0B, 0x1100); // frame cycle
+		lcdWriteRegisterByte(dev, 0x0C, 0x0000); // RGB interface setting R0Ch=0x0110 for RGB 18Bit and R0Ch=0111for RGB16Bit
+		lcdWriteRegisterByte(dev, 0x0F, 0x1401); // Set frame rate----0801
+		lcdWriteRegisterByte(dev, 0x15, 0x0000); // set system interface
+		lcdWriteRegisterByte(dev, 0x20, 0x0000); // Set GRAM Address
+		lcdWriteRegisterByte(dev, 0x21, 0x0000); // Set GRAM Address
+		//*************Power On sequence ****************//
+		delayMS(50);
+		lcdWriteRegisterByte(dev, 0x10, 0x0800); // Set SAP,DSTB,STB----0A00
+		lcdWriteRegisterByte(dev, 0x11, 0x1F3F); // Set APON,PON,AON,VCI1EN,VC----1038
+		delayMS(50);
+		lcdWriteRegisterByte(dev, 0x12, 0x0121); // Internal reference voltage= Vci;----1121
+		lcdWriteRegisterByte(dev, 0x13, 0x006F); // Set GVDD----0066
+		lcdWriteRegisterByte(dev, 0x14, 0x4349); // Set VCOMH/VCOML voltage----5F60
+		//-------------- Set GRAM area -----------------//
+		lcdWriteRegisterByte(dev, 0x30, 0x0000);
+		lcdWriteRegisterByte(dev, 0x31, 0x00DB);
+		lcdWriteRegisterByte(dev, 0x32, 0x0000);
+		lcdWriteRegisterByte(dev, 0x33, 0x0000);
+		lcdWriteRegisterByte(dev, 0x34, 0x00DB);
+		lcdWriteRegisterByte(dev, 0x35, 0x0000);
+		lcdWriteRegisterByte(dev, 0x36, 0x00AF);
+		lcdWriteRegisterByte(dev, 0x37, 0x0000);
+		lcdWriteRegisterByte(dev, 0x38, 0x00DB);
+		lcdWriteRegisterByte(dev, 0x39, 0x0000);
+		// ----------- Adjust the Gamma Curve ----------//
+		lcdWriteRegisterByte(dev, 0x50, 0x0001);
+		lcdWriteRegisterByte(dev, 0x51, 0x200B);
+		lcdWriteRegisterByte(dev, 0x52, 0x0000);
+		lcdWriteRegisterByte(dev, 0x53, 0x0404);
+		lcdWriteRegisterByte(dev, 0x54, 0x0C0C);
+		lcdWriteRegisterByte(dev, 0x55, 0x000C);
+		lcdWriteRegisterByte(dev, 0x56, 0x0101);
+		lcdWriteRegisterByte(dev, 0x57, 0x0400);
+		lcdWriteRegisterByte(dev, 0x58, 0x1108);
+		lcdWriteRegisterByte(dev, 0x59, 0x050C);
+		delayMS(50);
+		lcdWriteRegisterByte(dev, 0x07,0x1017);
+	} // endif 0x9226
+
 	if(dev->_bl >= 0) {
 		gpio_set_level( dev->_bl, 1 );
 	}
@@ -383,13 +432,22 @@ void lcdDrawPixel(TFT_t * dev, uint16_t x, uint16_t y, uint16_t color){
 	} // endif 0x7735
 
 	if (dev->_model == 0x9225) {
-		spi_master_write_comm_byte(dev, 0x20);	// set column(x) address
-		spi_master_write_data_word(dev, _x);
-		spi_master_write_comm_byte(dev, 0x21);	// set column(y) address
-		spi_master_write_data_word(dev, _y);
+		lcdWriteRegisterByte(dev, 0x20, _x);
+		lcdWriteRegisterByte(dev, 0x21, _y);
 		spi_master_write_comm_byte(dev, 0x22);	// Memory Write
 		spi_master_write_data_word(dev, color);
 	} // endif 0x9225
+
+	if (dev->_model == 0x9226) {
+		lcdWriteRegisterByte(dev, 0x36, _x);
+		lcdWriteRegisterByte(dev, 0x37, _x);
+		lcdWriteRegisterByte(dev, 0x38, _y);
+		lcdWriteRegisterByte(dev, 0x39, _y);
+		lcdWriteRegisterByte(dev, 0x20, _x);
+		lcdWriteRegisterByte(dev, 0x21, _y); 
+		spi_master_write_comm_byte(dev, 0x22);             
+		spi_master_write_data_word(dev, color);
+	} // endif 0x9226
 }
 
 // Draw rectangule of filling
@@ -439,15 +497,32 @@ void lcdDrawFillRect(TFT_t * dev, uint16_t x1, uint16_t y1, uint16_t x2, uint16_
 
 	if (dev->_model == 0x9225) {
 		for(int j=_y1;j<=_y2;j++){
-			spi_master_write_comm_byte(dev, 0x20);	// set column(x) address
-			spi_master_write_data_word(dev, _x1);
-			spi_master_write_comm_byte(dev, 0x21);	// set column(y) address
-			spi_master_write_data_word(dev, j);
+			lcdWriteRegisterByte(dev, 0x20, _x1);
+			lcdWriteRegisterByte(dev, 0x21, j);
 			spi_master_write_comm_byte(dev, 0x22);	// Memory Write
 			uint16_t size = _x2-_x1+1;
 			spi_master_write_color(dev, color, size);
 		}
 	} // endif 0x9225
+
+	if (dev->_model == 0x9226) {
+		for(int j=_x1;j<=_x2;j++) {
+			lcdWriteRegisterByte(dev, 0x36, j);
+			lcdWriteRegisterByte(dev, 0x37, j);
+			lcdWriteRegisterByte(dev, 0x38, _y2);
+			lcdWriteRegisterByte(dev, 0x39, _y1);
+			lcdWriteRegisterByte(dev, 0x20, j);
+			lcdWriteRegisterByte(dev, 0x21, _y1); 
+			spi_master_write_comm_byte(dev, 0x22);             
+			uint16_t size = _y2-_y1+1;
+			spi_master_write_color(dev, color, size);
+#if 0
+			for(int i=_y1;i<=_y2;i++) {
+				spi_master_write_data_word(dev, color);
+			}
+#endif
+		}
+	} // endif 0x9226
 
 }
 
@@ -457,10 +532,9 @@ void lcdDisplayOff(TFT_t * dev) {
 		spi_master_write_comm_byte(dev, 0x28);
 	} // endif 0x9340/0x9341/0x7735
 
-	if (dev->_model == 0x9225) {
-		spi_master_write_comm_byte(dev, 0x07);
-		spi_master_write_data_word(dev, 0x1014);
-	} // endif 0x9225
+	if (dev->_model == 0x9225 || dev->_model == 0x9226) {
+		lcdWriteRegisterByte(dev, 0x07, 0x1014);
+	} // endif 0x9225/0x9226
 
 }
  
@@ -470,10 +544,9 @@ void lcdDisplayOn(TFT_t * dev) {
 		spi_master_write_comm_byte(dev, 0x29);
 	} // endif 0x9340/0x9341/0x7735
 
-	if (dev->_model == 0x9225) {
-		spi_master_write_comm_byte(dev, 0x07);
-		spi_master_write_data_word(dev, 0x1017);
-	} // endif 0x9225
+	if (dev->_model == 0x9225 || dev->_model == 0x9226) {
+		lcdWriteRegisterByte(dev, 0x07, 0x1017);
+	} // endif 0x9225/0x9226
 
 }
 
@@ -483,9 +556,9 @@ void lcdInversionOff(TFT_t * dev) {
 		spi_master_write_comm_byte(dev, 0x20);
 	} // endif 0x9340/0x9341/0x7735
 
-	if (dev->_model == 0x9225) {
+	if (dev->_model == 0x9225 || dev->_model == 0x9226) {
 		lcdWriteRegisterByte(dev, 0x07, 0x1017);
-	} // endif 0x9225
+	} // endif 0x9225/0x9226
 }
 
 // Display Inversion ON
@@ -494,9 +567,9 @@ void lcdInversionOn(TFT_t * dev) {
 		spi_master_write_comm_byte(dev, 0x21);
 	} // endif 0x9340/0x9341/0x7735
 
-	if (dev->_model == 0x9225) {
+	if (dev->_model == 0x9225 || dev->_model == 0x9226) {
 		lcdWriteRegisterByte(dev, 0x07, 0x1013);
-	} // endif 0x9225
+	} // endif 0x9225/0x9226
 }
 
 // Change Memory Access Control
@@ -506,9 +579,9 @@ void lcdBGRFilter(TFT_t * dev) {
 		spi_master_write_data_byte(dev, 0x00);	//Right top start, RGB color filter panel
 	} // endif 0x9340/0x9341/0x7735
 
-	if (dev->_model == 0x9225) {
+	if (dev->_model == 0x9225 || dev->_model == 0x9226) {
 		lcdWriteRegisterByte(dev, 0x03, 0x0030); // set GRAM write direction and BGR=0.
-	} // endif 0x9225
+	} // endif 0x9225/0x9226
 }
 // Fill screen
 // color:color
@@ -1117,14 +1190,18 @@ void lcdSetScrollArea(TFT_t * dev, uint16_t tfa, uint16_t vsa, uint16_t bfa){
 		spi_master_write_data_word(dev, tfa);
 		spi_master_write_data_word(dev, vsa);
 		spi_master_write_data_word(dev, bfa);
-	}
+	} // endif 0x9340/0x9341
 
-	if (dev->_model == 0x9225) {
-		spi_master_write_comm_byte(dev, 0x31);	// Specify scroll start address at the scroll display
-		spi_master_write_data_word(dev, tfa);
-		spi_master_write_comm_byte(dev, 0x32);	// Specify scroll end address at the scroll display
+	if (dev->_model == 0x9225 || dev->_model == 0x9226) {
+		lcdWriteRegisterByte(dev, 0x31, vsa);	// Specify scroll end and step at the scroll display
+		lcdWriteRegisterByte(dev, 0x32, tfa);	// Specify scroll start and step at the scroll display
+#if 0
+		spi_master_write_comm_byte(dev, 0x31);	// Specify scroll end address at the scroll display
 		spi_master_write_data_word(dev, vsa);
-	}
+		spi_master_write_comm_byte(dev, 0x32);	// Specify scroll start address at the scroll display
+		spi_master_write_data_word(dev, tfa);
+#endif
+	} // endif 0x9225/0x9226
 }
 
 // Vertical Scrolling Start Address
@@ -1133,11 +1210,14 @@ void lcdScroll(TFT_t * dev, uint16_t vsp){
 	if (dev->_model == 0x9340 || dev->_model == 0x9341) {
 		spi_master_write_comm_byte(dev, 0x37);	// Vertical Scrolling Start Address
 		spi_master_write_data_word(dev, vsp);
-	}
+	} // endif 0x9340/0x9341
 
-	if (dev->_model == 0x9225) {
-		spi_master_write_comm_byte(dev, 0x33);	// Specify scroll start and step at the scroll display
+	if (dev->_model == 0x9225 || dev->_model == 0x9226) {
+		lcdWriteRegisterByte(dev, 0x33, vsp);	// Vertical Scrolling Start Address
+#if 0
+		spi_master_write_comm_byte(dev, 0x33);	// Vertical Scrolling Start Address
 		spi_master_write_data_word(dev, vsp);
-	}
+#endif
+	} // endif 0x9225/0x9226
 }
 

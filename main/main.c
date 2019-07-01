@@ -106,6 +106,7 @@ TickType_t ArrowTest(TFT_t * dev, FontxFile *fx, uint16_t model, int width, int 
 	lcdFillScreen(dev, BLACK);
 
 	if (model == 0x9225) strcpy((char *)ascii, "ILI9225");
+	if (model == 0x9226) strcpy((char *)ascii, "ILI9225G");
 	if (model == 0x9340) strcpy((char *)ascii, "ILI9340");
 	if (model == 0x9341) strcpy((char *)ascii, "ILI9341");
 	if (model == 0x7735) strcpy((char *)ascii, "ST7735");
@@ -433,9 +434,13 @@ TickType_t ScrollTest(TFT_t * dev, FontxFile *fx, int width, int height) {
 
 	int lines = (height - fontHeight) / fontHeight;
 	ESP_LOGD(TAG, "height=%d fontHeight=%d lines=%d", height, fontHeight, lines);
+	int ymax = (lines+1) * fontHeight;
+	ESP_LOGD(TAG, "ymax=%d",ymax);
 
 	lcdSetFontDirection(dev, 0);
 	lcdFillScreen(dev, BLACK);
+
+	// Reset scroll area
 	lcdSetScrollArea(dev, 0, 0x0140, 0);
 
 	strcpy((char *)ascii, "Vertical Smooth Scrrol");
@@ -454,23 +459,96 @@ TickType_t ScrollTest(TFT_t * dev, FontxFile *fx, int width, int height) {
 			lcdSetScrollArea(dev, fontHeight, (height-fontHeight), 0);
 			lcdScroll(dev, vsp);
 			vsp = vsp + fontHeight;
-			if (vsp > height) vsp = fontHeight*2;
+			if (vsp > ymax) vsp = fontHeight*2;
 			lcdDrawString(dev, fx, 0, ypos, ascii, color);
 		}
 		ypos = ypos + fontHeight;
-		if (ypos > height) ypos = fontHeight*2-1;
+		if (ypos > ymax) ypos = fontHeight*2-1;
 		vTaskDelay(25);
 	}
 
 	// Reset scroll area
-	lcdSetScrollArea(dev, 0, 0x0140, 0);
+	//lcdSetScrollArea(dev, 0, 0x0140, 0);
+
 	endTick = xTaskGetTickCount();
 	diffTick = endTick - startTick;
 	ESP_LOGI(__FUNCTION__, "elapsed time[ms]:%d",diffTick*portTICK_RATE_MS);
 	return diffTick;
 }
 
-#else
+void ScrollReset(TFT_t * dev) {
+	//Reset scroll area
+	lcdSetScrollArea(dev, 0, 0x0140, 0);
+}
+#endif
+
+#if CONFIG_ILI9225 || CONFIG_ILI9225G
+TickType_t ScrollTest(TFT_t * dev, FontxFile *fx, int width, int height) {
+	TickType_t startTick, endTick, diffTick;
+	startTick = xTaskGetTickCount();
+
+	// get font width & height
+	uint8_t buffer[FontxGlyphBufSize];
+	uint8_t fontWidth;
+	uint8_t fontHeight;
+	GetFontx(fx, 0, buffer, &fontWidth, &fontHeight);
+	ESP_LOGD(TAG,"fontWidth=%d fontHeight=%d",fontWidth,fontHeight);
+
+	uint16_t color;
+	uint8_t ascii[30];
+
+	int lines = (height - fontHeight) / fontHeight;
+	ESP_LOGD(TAG, "height=%d fontHeight=%d lines=%d", height, fontHeight, lines);
+	int ymax = (lines+1) * fontHeight;
+	ESP_LOGD(TAG, "ymax=%d",ymax);
+
+	lcdSetFontDirection(dev, 0);
+	lcdFillScreen(dev, BLACK);
+
+	// Reset scroll area
+	lcdSetScrollArea(dev, 0, 0, 0);
+
+	strcpy((char *)ascii, "Vertical Smooth Scrrol");
+	lcdDrawString(dev, fx, 0, fontHeight-1, ascii, RED);
+
+	color = CYAN;
+	uint16_t vsp = fontHeight*1;
+	uint16_t ypos = fontHeight*2-1;
+	for(int i=0;i<30;i++) {
+		ESP_LOGD(TAG, "i=%d ypos=%d vsp=%d", i, ypos, vsp);
+		sprintf((char *)ascii, "This is text line %d", i);
+		if (i < lines) {
+			lcdDrawString(dev, fx, 0, ypos, ascii, color);
+		} else {
+			lcdDrawFillRect(dev, 0, ypos-fontHeight, width-1, ypos, BLACK);
+			//lcdSetScrollArea(dev, fontHeight, height-fontHeight, 0);
+			lcdSetScrollArea(dev, fontHeight, ymax, 0);
+			lcdScroll(dev, vsp);
+			vsp = vsp + fontHeight;
+			if (vsp > (ymax-fontHeight)) vsp = fontHeight*1;
+			lcdDrawString(dev, fx, 0, ypos, ascii, color);
+		}
+		ypos = ypos + fontHeight;
+		if (ypos > ymax) ypos = fontHeight*2-1;
+		vTaskDelay(25);
+	}
+
+	// Reset scroll area
+	//lcdSetScrollArea(dev, 0, 0, 0);
+
+	endTick = xTaskGetTickCount();
+	diffTick = endTick - startTick;
+	ESP_LOGI(__FUNCTION__, "elapsed time[ms]:%d",diffTick*portTICK_RATE_MS);
+	return diffTick;
+}
+
+void ScrollReset(TFT_t * dev) {
+	// Reset scroll area
+	lcdSetScrollArea(dev, 0, 0, 0);
+}
+#endif
+
+#if CONFIG_ST7735
 TickType_t ScrollTest(TFT_t * dev, FontxFile *fx, int width, int height) {
 	TickType_t startTick, endTick, diffTick;
 	startTick = xTaskGetTickCount();
@@ -543,6 +621,8 @@ TickType_t ScrollTest(TFT_t * dev, FontxFile *fx, int width, int height) {
 	ESP_LOGI(__FUNCTION__, "elapsed time[ms]:%d",diffTick*portTICK_RATE_MS);
 	return diffTick;
 }
+void ScrollReset(TFT_t * dev) {
+}
 #endif
 
 void ILI9341(void *pvParameters)
@@ -568,6 +648,9 @@ void ILI9341(void *pvParameters)
 #if CONFIG_ILI9225
 	uint16_t model = 0x9225;
 #endif
+#if CONFIG_ILI9225G
+	uint16_t model = 0x9226;
+#endif
 #if CONFIG_ILI9340
 	uint16_t model = 0x9340;
 #endif
@@ -592,6 +675,9 @@ void ILI9341(void *pvParameters)
 #if 0
 	while(1) {
 		ScrollTest(&dev, fx16G, CONFIG_WIDTH, CONFIG_HEIGHT);
+		WAIT;
+		ScrollReset(&dev);
+		ArrowTest(&dev, fx16G, model, CONFIG_WIDTH, CONFIG_HEIGHT);
 		WAIT;
 	}
 #endif
@@ -652,6 +738,7 @@ void ILI9341(void *pvParameters)
 
 		ScrollTest(&dev, fx16G, CONFIG_WIDTH, CONFIG_HEIGHT);
 		WAIT;
+		ScrollReset(&dev);
 
 		// Multi Font Test
 		uint16_t color;
