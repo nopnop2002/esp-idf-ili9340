@@ -443,7 +443,7 @@ TickType_t ScrollTest(TFT_t * dev, FontxFile *fx, int width, int height) {
 	// Reset scroll area
 	lcdSetScrollArea(dev, 0, 0x0140, 0);
 
-	strcpy((char *)ascii, "Vertical Smooth Scrrol");
+	strcpy((char *)ascii, "Vertical Smooth Scroll");
 	lcdDrawString(dev, fx, 0, fontHeight-1, ascii, RED);
 
 	color = CYAN;
@@ -508,7 +508,7 @@ TickType_t ScrollTest(TFT_t * dev, FontxFile *fx, int width, int height) {
 	// Reset scroll area
 	lcdSetScrollArea(dev, 0, 0, 0);
 
-	strcpy((char *)ascii, "Vertical Smooth Scrrol");
+	strcpy((char *)ascii, "Vertical Smooth Scroll");
 	lcdDrawString(dev, fx, 0, fontHeight-1, ascii, RED);
 
 	color = CYAN;
@@ -580,7 +580,7 @@ TickType_t ScrollTest(TFT_t * dev, FontxFile *fx, int width, int height) {
 	lcdSetFontDirection(dev, 0);
 	lcdFillScreen(dev, BLACK);
 
-	strcpy((char *)ascii, "Vertical Scrrol");
+	strcpy((char *)ascii, "Vertical Scroll");
 	lcdDrawString(dev, fx, 0, fontHeight-1, ascii, RED);
 
 	color = CYAN;
