@@ -14,7 +14,6 @@ menu "TFT Configuration"
             help
                 Display Driver is ILI9225G.
         config ILI9340
-        config ILI9340
             bool "ILI9340"
             help
                 Display Driver is ILI9340.
