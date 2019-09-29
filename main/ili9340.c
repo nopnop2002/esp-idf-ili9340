@@ -450,7 +450,7 @@ void lcdDrawPixel(TFT_t * dev, uint16_t x, uint16_t y, uint16_t color){
 	} // endif 0x9226
 }
 
-// Draw rectangule of filling
+// Draw rectangle of filling
 // x1:Start X coordinate
 // y1:Start Y coordinate
 // x2:End X coordinate
@@ -637,7 +637,7 @@ void lcdDrawLine(TFT_t * dev, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2
 	}
 }
 
-// Draw rectangule
+// Draw rectangle
 // x1:Start X coordinate
 // y1:Start Y coordinate
 // x2:End   X coordinate
@@ -650,7 +650,7 @@ void lcdDrawRect(TFT_t * dev, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2
 	lcdDrawLine(dev, x1, y2, x1, y1, color);
 }
 
-// Draw round
+// Draw circle
 // x0:Central X coordinate
 // y0:Central Y coordinate
 // r:radius
@@ -674,7 +674,7 @@ void lcdDrawCircle(TFT_t * dev, uint16_t x0, uint16_t y0, uint16_t r, uint16_t c
 	} while(y<0);
 }
 
-// Draw round of filling
+// Draw circle of filling
 // x0:Central X coordinate
 // y0:Central Y coordinate
 // r:radius
@@ -701,7 +701,7 @@ void lcdDrawFillCircle(TFT_t * dev, uint16_t x0, uint16_t y0, uint16_t r, uint16
 	} while(y<=0);
 } 
 
-// Draw rectangule with round corner
+// Draw rectangle with round corner
 // x1:Start X coordinate
 // y1:Start Y coordinate
 // x2:End   X coordinate
