@@ -1190,6 +1190,7 @@ void lcdSetScrollArea(TFT_t * dev, uint16_t tfa, uint16_t vsa, uint16_t bfa){
 		spi_master_write_data_word(dev, tfa);
 		spi_master_write_data_word(dev, vsa);
 		spi_master_write_data_word(dev, bfa);
+		//spi_master_write_comm_byte(dev, 0x12);	// Partial Mode ON
 	} // endif 0x9340/0x9341
 
 	if (dev->_model == 0x9225 || dev->_model == 0x9226) {
@@ -1201,6 +1202,19 @@ void lcdSetScrollArea(TFT_t * dev, uint16_t tfa, uint16_t vsa, uint16_t bfa){
 		spi_master_write_comm_byte(dev, 0x32);	// Specify scroll start address at the scroll display
 		spi_master_write_data_word(dev, tfa);
 #endif
+	} // endif 0x9225/0x9226
+}
+
+void lcdResetScrollArea(TFT_t * dev){
+	if (dev->_model == 0x9340 || dev->_model == 0x9341) {
+		spi_master_write_comm_byte(dev, 0x12);	// Partial Mode ON
+	} // endif 0x9340/0x9341
+
+	if (dev->_model == 0x9225 || dev->_model == 0x9226) {
+		lcdWriteRegisterByte(dev, 0x31, 0x0);	// Specify scroll end and step at the scroll display
+		lcdWriteRegisterByte(dev, 0x32, 0x0);	// Specify scroll start and step at the scroll display
+		//lcdWriteRegisterByte(dev, 0x31, vsa);	// Specify scroll end and step at the scroll display
+		//lcdWriteRegisterByte(dev, 0x32, tfa);	// Specify scroll start and step at the scroll display
 	} // endif 0x9225/0x9226
 }
 

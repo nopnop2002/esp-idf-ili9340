@@ -440,7 +440,7 @@ TickType_t ScrollTest(TFT_t * dev, FontxFile *fx, int width, int height) {
 	lcdSetFontDirection(dev, 0);
 	lcdFillScreen(dev, BLACK);
 
-	// Reset scroll area
+	// Initialize scroll area
 	lcdSetScrollArea(dev, 0, 0x0140, 0);
 
 	strcpy((char *)ascii, "Vertical Smooth Scroll");
@@ -467,7 +467,7 @@ TickType_t ScrollTest(TFT_t * dev, FontxFile *fx, int width, int height) {
 		vTaskDelay(25);
 	}
 
-	// Reset scroll area
+	// Initialize scroll area
 	//lcdSetScrollArea(dev, 0, 0x0140, 0);
 
 	endTick = xTaskGetTickCount();
@@ -477,8 +477,7 @@ TickType_t ScrollTest(TFT_t * dev, FontxFile *fx, int width, int height) {
 }
 
 void ScrollReset(TFT_t * dev) {
-	//Reset scroll area
-	lcdSetScrollArea(dev, 0, 0x0140, 0);
+	lcdResetScrollArea(dev);
 }
 #endif
 
@@ -543,8 +542,7 @@ TickType_t ScrollTest(TFT_t * dev, FontxFile *fx, int width, int height) {
 }
 
 void ScrollReset(TFT_t * dev) {
-	// Reset scroll area
-	lcdSetScrollArea(dev, 0, 0, 0);
+	lcdResetScrollArea(dev);
 }
 #endif
 
