@@ -100,7 +100,7 @@ TickType_t ArrowTest(TFT_t * dev, FontxFile *fx, uint16_t model, int width, int 
 	uint16_t xpos;
 	uint16_t ypos;
 	int	stlen;
-	uint8_t ascii[10];
+	uint8_t ascii[24];
 	uint16_t color;
 
 	lcdFillScreen(dev, BLACK);
