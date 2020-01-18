@@ -815,10 +815,10 @@ void ILI9341(void *pvParameters)
 	lcdBGRFilter(&dev);
 #endif
 
-#if 1
+#if 0
 	while(1) {
 		char file[32];
-		strcpy(file, "/spiffs/out.bmp");
+		strcpy(file, "/spiffs/image.bmp");
 		BMPTest(&dev, file, CONFIG_WIDTH, CONFIG_HEIGHT);
 		WAIT;
 

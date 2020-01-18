@@ -471,8 +471,8 @@ void lcdDrawPixel(TFT_t * dev, uint16_t x, uint16_t y, uint16_t color){
 // size:Number of colors
 // colors:colors
 void lcdDrawMultiPixels(TFT_t * dev, uint16_t x, uint16_t y, uint16_t size, uint16_t * colors) {
-    if (y >= dev->_height) return;
     if (x+size > dev->_width) return;
+    if (y >= dev->_height) return;
 
     ESP_LOGD(TAG,"offset(x)=%d offset(y)=%d",dev->_offsetx,dev->_offsety);
     uint16_t _x1 = x + dev->_offsetx;
