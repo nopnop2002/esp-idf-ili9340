@@ -12,6 +12,7 @@
 
 #include "ili9340.h"
 #include "fontx.h"
+#include "bmpfile.h"
 
 #define	INTERVAL		400
 #define WAIT	vTaskDelay(INTERVAL)
@@ -441,7 +442,8 @@ TickType_t ScrollTest(TFT_t * dev, FontxFile *fx, int width, int height) {
 	lcdFillScreen(dev, BLACK);
 
 	// Initialize scroll area
-	lcdSetScrollArea(dev, 0, 0x0140, 0);
+	//lcdSetScrollArea(dev, 0, 0x0140, 0);
+	lcdResetScrollArea(dev);
 
 	strcpy((char *)ascii, "Vertical Smooth Scroll");
 	lcdDrawString(dev, fx, 0, fontHeight-1, ascii, RED);
@@ -477,6 +479,7 @@ TickType_t ScrollTest(TFT_t * dev, FontxFile *fx, int width, int height) {
 }
 
 void ScrollReset(TFT_t * dev) {
+	//lcdSetScrollArea(dev, 0, 0x0140, 0);
 	lcdResetScrollArea(dev);
 }
 #endif
@@ -623,6 +626,146 @@ void ScrollReset(TFT_t * dev) {
 }
 #endif
 
+TickType_t BMPTest(TFT_t * dev, char * file, int width, int height) {
+	TickType_t startTick, endTick, diffTick;
+	startTick = xTaskGetTickCount();
+
+	lcdSetFontDirection(dev, 0);
+	lcdFillScreen(dev, BLACK);
+
+	// open requested file
+	FILE* fp;
+	esp_err_t ret;
+	fp = fopen(file, "rb");
+	if (fp == NULL) {
+		ESP_LOGW(TAG, "File not found [%s]", file);
+		return 0;
+	}
+
+	// read bmp header
+	bmpfile_t *result = (bmpfile_t*)malloc(sizeof(bmpfile_t));
+	ret = fread(result->header.magic, 1, 2, fp);
+	assert(ret == 2);
+	ESP_LOGD(TAG,"result->header.magic=%c %c", result->header.magic[0], result->header.magic[1]);
+	if (result->header.magic[0]!='B' || result->header.magic[1] != 'M') {
+		ESP_LOGW(TAG, "File is not BMP");
+		free(result);
+		fclose(fp);
+		return 0;
+	}
+	ret = fread(&result->header.filesz, 4, 1 , fp);
+	assert(ret == 1);
+	ESP_LOGD(TAG,"result->header.filesz=%d", result->header.filesz);
+	ret = fread(&result->header.creator1, 2, 1, fp);
+	assert(ret == 1);
+	ret = fread(&result->header.creator2, 2, 1, fp);
+	assert(ret == 1);
+	ret = fread(&result->header.offset, 4, 1, fp);
+	assert(ret == 1);
+
+	// read dib header
+	ret = fread(&result->dib.header_sz, 4, 1, fp);
+	assert(ret == 1);
+	ret = fread(&result->dib.width, 4, 1, fp);
+	assert(ret == 1);
+	ret = fread(&result->dib.height, 4, 1, fp);
+	assert(ret == 1);
+	ret = fread(&result->dib.nplanes, 2, 1, fp);
+	assert(ret == 1);
+	ret = fread(&result->dib.depth, 2, 1, fp);
+	assert(ret == 1);
+	ret = fread(&result->dib.compress_type, 4, 1, fp);
+	assert(ret == 1);
+	ret = fread(&result->dib.bmp_bytesz, 4, 1, fp);
+	assert(ret == 1);
+	ret = fread(&result->dib.hres, 4, 1, fp);
+	assert(ret == 1);
+	ret = fread(&result->dib.vres, 4, 1, fp);
+	assert(ret == 1);
+	ret = fread(&result->dib.ncolors, 4, 1, fp);
+	assert(ret == 1);
+	ret = fread(&result->dib.nimpcolors, 4, 1, fp);
+	assert(ret == 1);
+
+	if((result->dib.depth == 24) && (result->dib.compress_type == 0)) {
+		// BMP rows are padded (if needed) to 4-byte boundary
+		uint32_t rowSize = (result->dib.width * 3 + 3) & ~3;
+		int w = result->dib.width;
+		int h = result->dib.height;
+		ESP_LOGI(TAG,"w=%d h=%d", w, h);
+		int _x;
+		int _w;
+		int _cols;
+		int _cole;
+		if (width >= w) {
+			_x = (width - w) / 2;
+			_w = w;
+			_cols = 0;
+			_cole = w - 1;
+		} else {
+			_x = 0;
+			_w = width;
+			_cols = (w - width) / 2;
+			_cole = _cols + width - 1;
+		}
+		ESP_LOGI(TAG,"_x=%d _w=%d _cols=%d _cole=%d",_x, _w, _cols, _cole);
+
+		int _rows;
+		int _rowe;
+		if (height >= h) {
+			_rows = 0;
+			_rowe = h -1;
+		} else {
+			_rows = (h - height) / 2;
+			_rowe = _rows + height - 1;
+		}
+		ESP_LOGI(TAG,"_rows=%d _rowe=%d",_rows, _rowe);
+
+#define BUFFPIXEL 20
+		uint8_t sdbuffer[3*BUFFPIXEL]; // pixel buffer (R+G+B per pixel)
+		uint16_t *colors = (uint16_t*)malloc(sizeof(uint16_t) * w);
+
+		for (int row=0; row<h; row++) { // For each scanline...
+			if (row < _rows || row > _rowe) continue;
+			// Seek to start of scan line.  It might seem labor-
+			// intensive to be doing this on every line, but this
+			// method covers a lot of gritty details like cropping
+			// and scanline padding.  Also, the seek only takes
+			// place if the file position actually needs to change
+			// (avoids a lot of cluster math in SD library).
+			// Bitmap is stored bottom-to-top order (normal BMP)
+			int pos = result->header.offset + (h - 1 - row) * rowSize;
+			fseek(fp, pos, SEEK_SET);
+			int buffidx = sizeof(sdbuffer); // Force buffer reload
+
+			int index = 0;
+			for (int col=0; col<w; col++) { // For each pixel...
+				if (buffidx >= sizeof(sdbuffer)) { // Indeed
+					fread(sdbuffer, sizeof(sdbuffer), 1, fp);
+					buffidx = 0; // Set index to beginning
+				}
+				if (col < _cols || col > _cole) continue;
+				// Convert pixel from BMP to TFT format, push to display
+				uint8_t b = sdbuffer[buffidx++];
+				uint8_t g = sdbuffer[buffidx++];
+				uint8_t r = sdbuffer[buffidx++];
+				//uint16_t color = rgb565_conv(r, g, b);
+				//colors[col] = color;
+				colors[index++] = rgb565_conv(r, g, b);
+			} // end for col
+			lcdDrawMultiPixels(dev, _x, row, _w, colors);
+		} // end for row
+		free(colors);
+	} // end if 
+	free(result);
+	fclose(fp);
+
+	endTick = xTaskGetTickCount();
+	diffTick = endTick - startTick;
+	ESP_LOGI(__FUNCTION__, "elapsed time[ms]:%d",diffTick*portTICK_RATE_MS);
+	return diffTick;
+}
+
 void ILI9341(void *pvParameters)
 {
 	// set font file
@@ -672,19 +815,15 @@ void ILI9341(void *pvParameters)
 
 #if 0
 	while(1) {
+		char file[32];
+		strcpy(file, "/spiffs/image.bmp");
+		BMPTest(&dev, file, CONFIG_WIDTH, CONFIG_HEIGHT);
+		WAIT;
+
 		ScrollTest(&dev, fx16G, CONFIG_WIDTH, CONFIG_HEIGHT);
 		WAIT;
 		ScrollReset(&dev);
-		ArrowTest(&dev, fx16G, model, CONFIG_WIDTH, CONFIG_HEIGHT);
-		WAIT;
 	}
-#endif
-
-#if 0
-	//for TEST
-	lcdDrawFillRect(&dev, 0, 0, 10, 10, RED);
-	lcdDrawFillRect(&dev, 10, 10, 20, 20, GREEN);
-	lcdDrawFillRect(&dev, 20, 20, 30, 30, BLUE);
 #endif
 
 	while(1) {
@@ -734,6 +873,11 @@ void ILI9341(void *pvParameters)
 		ColorTest(&dev, CONFIG_WIDTH, CONFIG_HEIGHT);
 		WAIT;
 
+		char file[32];
+		strcpy(file, "/spiffs/image.bmp");
+		BMPTest(&dev, file, CONFIG_WIDTH, CONFIG_HEIGHT);
+		WAIT;
+
 		ScrollTest(&dev, fx16G, CONFIG_WIDTH, CONFIG_HEIGHT);
 		WAIT;
 		ScrollReset(&dev);
@@ -759,11 +903,14 @@ void ILI9341(void *pvParameters)
 		strcpy((char *)ascii, "16Dot Gothic Font");
 		lcdDrawString(&dev, fx16G, xpos, ypos, ascii, color);
 
+#if 1
 		xpos = xpos - (24 * xd) - (margin * xd);
 		ypos = ypos + (16 * yd) + (margin * yd);
 		strcpy((char *)ascii, "24Dot Gothic Font");
 		lcdDrawString(&dev, fx24G, xpos, ypos, ascii, color);
+#endif
 
+#if 1
 		xpos = xpos - (32 * xd) - (margin * xd);
 		ypos = ypos + (24 * yd) + (margin * yd);
 		if (CONFIG_WIDTH >= 240) {
@@ -772,23 +919,30 @@ void ILI9341(void *pvParameters)
 			xpos = xpos - (32 * xd) - (margin * xd);;
 			ypos = ypos + (32 * yd) + (margin * yd);
 		}
+#endif
 
+#if 1
 		xpos = xpos - (10 * xd) - (margin * xd);
 		ypos = ypos + (10 * yd) + (margin * yd);
 		strcpy((char *)ascii, "16Dot Mincyo Font");
 		lcdDrawString(&dev, fx16M, xpos, ypos, ascii, color);
+#endif
 
+#if 1
 		xpos = xpos - (24 * xd) - (margin * xd);;
 		ypos = ypos + (16 * yd) + (margin * yd);
 		strcpy((char *)ascii, "24Dot Mincyo Font");
 		lcdDrawString(&dev, fx24M, xpos, ypos, ascii, color);
+#endif
 
+#if 1
 		if (CONFIG_WIDTH >= 240) {
 			xpos = xpos - (32 * xd) - (margin * xd);;
 			ypos = ypos + (24 * yd) + (margin * yd);
 			strcpy((char *)ascii, "32Dot Mincyo Font");
 			lcdDrawString(&dev, fx32M, xpos, ypos, ascii, color);
 		}
+#endif
 		lcdSetFontDirection(&dev, 0);
 		WAIT;
 
@@ -808,7 +962,7 @@ void app_main(void)
 	esp_vfs_spiffs_conf_t conf = {
 		.base_path = "/spiffs",
 		.partition_label = NULL,
-		.max_files = 6,
+		.max_files = 7,
 		.format_if_mount_failed =true
 	};
 
@@ -836,5 +990,5 @@ void app_main(void)
 	}
 
 	SPIFFS_Directory("/spiffs/");
-	xTaskCreate(ILI9341, "ILI9341", 1024*4, NULL, 2, NULL);
+	xTaskCreate(ILI9341, "ILI9341", 1024*6, NULL, 2, NULL);
 }

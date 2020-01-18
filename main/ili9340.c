@@ -163,6 +163,20 @@ bool spi_master_write_color(TFT_t * dev, uint16_t color, uint16_t size)
 	return spi_master_write_byte( dev->_SPIHandle, Byte, size*2);
 }
 
+// Add 202001
+bool spi_master_write_colors(TFT_t * dev, uint16_t * colors, uint16_t size)
+{
+	static uint8_t Byte[1024];
+	int index = 0;
+	for(int i=0;i<size;i++) {
+		Byte[index++] = (colors[i] >> 8) & 0xFF;
+		Byte[index++] = colors[i] & 0xFF;
+	}
+	gpio_set_level( dev->_dc, SPI_Data_Mode );
+	return spi_master_write_byte( dev->_SPIHandle, Byte, size*2);
+}
+
+
 void delayMS(int ms) {
 	int _ms = ms + (portTICK_PERIOD_MS - 1);
 	TickType_t xTicksToDelay = _ms / portTICK_PERIOD_MS;
@@ -449,6 +463,70 @@ void lcdDrawPixel(TFT_t * dev, uint16_t x, uint16_t y, uint16_t color){
 		spi_master_write_data_word(dev, color);
 	} // endif 0x9226
 }
+
+// Add 202001
+// Draw multi pixel
+// x:X coordinate
+// y:Y coordinate
+// size:Number of colors
+// colors:colors
+void lcdDrawMultiPixels(TFT_t * dev, uint16_t x, uint16_t y, uint16_t size, uint16_t * colors) {
+    if (y >= dev->_height) return;
+    if (x+size > dev->_width) return;
+
+    ESP_LOGD(TAG,"offset(x)=%d offset(y)=%d",dev->_offsetx,dev->_offsety);
+    uint16_t _x1 = x + dev->_offsetx;
+    uint16_t _x2 = _x1 + size;
+    uint16_t _y1 = y + dev->_offsety;
+    uint16_t _y2 = _y1;
+    ESP_LOGD(TAG,"_x1=%d _x2=%d _y1=%d _y2=%d",_x1, _x2, _y1, _y2);
+
+    //if (dev->_model == 0x9340 || dev->_model == 0x9341 || dev->_model == 0x7735) {
+    if (dev->_model == 0x9340 || dev->_model == 0x9341) {
+        spi_master_write_comm_byte(dev, 0x2A);  // set column(x) address
+        spi_master_write_addr(dev, _x1, _x2);
+        spi_master_write_comm_byte(dev, 0x2B);  // set Page(y) address
+        spi_master_write_addr(dev, _y1, _y2);
+        spi_master_write_comm_byte(dev, 0x2C);  //  Memory Write
+        spi_master_write_colors(dev, colors, size);
+    } // endif 0x9340/0x9341
+
+    if (dev->_model == 0x7735) {
+        spi_master_write_comm_byte(dev, 0x2A);  // set column(x) address
+        spi_master_write_data_word(dev, _x1);
+        spi_master_write_data_word(dev, _x2);
+        spi_master_write_comm_byte(dev, 0x2B);  // set Page(y) address
+        spi_master_write_data_word(dev, _y1);
+        spi_master_write_data_word(dev, _y2);
+        spi_master_write_comm_byte(dev, 0x2C);  //  Memory Write
+        spi_master_write_colors(dev, colors, size);
+    } // 0x7735
+
+    if (dev->_model == 0x9225) {
+        for(int j=_y1;j<=_y2;j++){
+            lcdWriteRegisterByte(dev, 0x20, _x1);
+            lcdWriteRegisterByte(dev, 0x21, j);
+            spi_master_write_comm_byte(dev, 0x22);  // Memory Write
+            spi_master_write_colors(dev, colors, size);
+        }
+    } // endif 0x9225
+
+    if (dev->_model == 0x9226) {
+        for(int j=_x1;j<=_x2;j++) {
+            lcdWriteRegisterByte(dev, 0x36, j);
+            lcdWriteRegisterByte(dev, 0x37, j);
+            lcdWriteRegisterByte(dev, 0x38, _y2);
+            lcdWriteRegisterByte(dev, 0x39, _y1);
+            lcdWriteRegisterByte(dev, 0x20, j);
+            lcdWriteRegisterByte(dev, 0x21, _y1);
+            spi_master_write_comm_byte(dev, 0x22);
+            spi_master_write_colors(dev, colors, size);
+        }
+    } // endif 0x9226
+
+}
+
+
 
 // Draw rectangle of filling
 // x1:Start X coordinate
@@ -1207,7 +1285,10 @@ void lcdSetScrollArea(TFT_t * dev, uint16_t tfa, uint16_t vsa, uint16_t bfa){
 
 void lcdResetScrollArea(TFT_t * dev){
 	if (dev->_model == 0x9340 || dev->_model == 0x9341) {
-		spi_master_write_comm_byte(dev, 0x12);	// Partial Mode ON
+		spi_master_write_comm_byte(dev, 0x33);	// Vertical Scrolling Definition
+		spi_master_write_data_word(dev, 0);
+		spi_master_write_data_word(dev, 0x140);
+		spi_master_write_data_word(dev, 0);
 	} // endif 0x9340/0x9341
 
 	if (dev->_model == 0x9225 || dev->_model == 0x9226) {

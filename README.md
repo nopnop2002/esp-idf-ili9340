@@ -56,6 +56,7 @@ M5Stack
 ![M5Stick-9](https://user-images.githubusercontent.com/6020549/57977487-7e751080-7a34-11e9-9a3e-6a0bd7359efb.JPG)
 ![M5Stick-10](https://user-images.githubusercontent.com/6020549/57977488-7e751080-7a34-11e9-9a12-e2b70334604d.JPG)
 ![M5Stick-11](https://user-images.githubusercontent.com/6020549/57977489-7f0da700-7a34-11e9-9ea3-c0420a785a3e.JPG)
+![M5Stack-13](https://user-images.githubusercontent.com/6020549/72659056-26e0d780-39fd-11ea-8980-be9a988ad7cd.JPG)
 
 ---
 
