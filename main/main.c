@@ -710,16 +710,19 @@ TickType_t BMPTest(TFT_t * dev, char * file, int width, int height) {
 		}
 		ESP_LOGI(TAG,"_x=%d _w=%d _cols=%d _cole=%d",_x, _w, _cols, _cole);
 
+		int _y;
 		int _rows;
 		int _rowe;
 		if (height >= h) {
+			_y = (height - h) / 2;
 			_rows = 0;
 			_rowe = h -1;
 		} else {
+			_y = 0;
 			_rows = (h - height) / 2;
 			_rowe = _rows + height - 1;
 		}
-		ESP_LOGI(TAG,"_rows=%d _rowe=%d",_rows, _rowe);
+		ESP_LOGI(TAG,"_y=%d _rows=%d _rowe=%d", _y, _rows, _rowe);
 
 #define BUFFPIXEL 20
 		uint8_t sdbuffer[3*BUFFPIXEL]; // pixel buffer (R+G+B per pixel)
@@ -749,11 +752,10 @@ TickType_t BMPTest(TFT_t * dev, char * file, int width, int height) {
 				uint8_t b = sdbuffer[buffidx++];
 				uint8_t g = sdbuffer[buffidx++];
 				uint8_t r = sdbuffer[buffidx++];
-				//uint16_t color = rgb565_conv(r, g, b);
-				//colors[col] = color;
 				colors[index++] = rgb565_conv(r, g, b);
 			} // end for col
-			lcdDrawMultiPixels(dev, _x, row, _w, colors);
+			ESP_LOGD(TAG,"lcdDrawMultiPixels row=%d",row);
+			lcdDrawMultiPixels(dev, _x, row+_y, _w, colors);
 		} // end for row
 		free(colors);
 	} // end if 
@@ -813,10 +815,10 @@ void ILI9341(void *pvParameters)
 	lcdBGRFilter(&dev);
 #endif
 
-#if 0
+#if 1
 	while(1) {
 		char file[32];
-		strcpy(file, "/spiffs/image.bmp");
+		strcpy(file, "/spiffs/out.bmp");
 		BMPTest(&dev, file, CONFIG_WIDTH, CONFIG_HEIGHT);
 		WAIT;
 
