@@ -2,14 +2,14 @@
 SPI TFT Driver for esp-idf
 
 You have to set this config value with menuconfig.   
-CONFIG_WIDTH   
-CONFIG_HEIGHT   
-CONFIG_OFFSETX   
-CONFIG_OFFSETY   
-CONFIG_CS_GPIO   
-CONFIG_DC_GPIO   
-CONFIG_RESET_GPIO   
-CONFIG_BL_GPIO   
+- CONFIG_WIDTH   
+- CONFIG_HEIGHT   
+- CONFIG_OFFSETX   
+- CONFIG_OFFSETY   
+- CONFIG_CS_GPIO   
+- CONFIG_DC_GPIO   
+- CONFIG_RESET_GPIO   
+- CONFIG_BL_GPIO   
 
 ```
 git clone https://github.com/nopnop2002/esp-idf-ili9340
