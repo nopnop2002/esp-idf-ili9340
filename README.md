@@ -112,6 +112,7 @@ Left:1.8" Right:2.0"
 
 ![config_1-8_128x160-11](https://user-images.githubusercontent.com/6020549/59007826-1cedd800-8863-11e9-974d-d4b79abf8083.jpg)
 ![screen_1-8_128x160-12](https://user-images.githubusercontent.com/6020549/59007829-21b28c00-8863-11e9-945d-91f1c2fa2d14.JPG)
+![screen_1-8_128x160-13](https://user-images.githubusercontent.com/6020549/77221889-4cbb6180-6b91-11ea-9e3f-97d9ddafb82d.JPG)
 
 ---
 
