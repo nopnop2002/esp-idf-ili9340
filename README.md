@@ -166,7 +166,6 @@ I ported from [here](https://github.com/espressif/esp-idf/blob/master/examples/p
 
 Does not support image reduction.   
 
-
 ---
 
 # Font File   
