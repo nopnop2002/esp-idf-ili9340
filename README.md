@@ -58,7 +58,9 @@ M5Stack
 ![M5Stick-9](https://user-images.githubusercontent.com/6020549/57977487-7e751080-7a34-11e9-9a3e-6a0bd7359efb.JPG)
 ![M5Stick-10](https://user-images.githubusercontent.com/6020549/57977488-7e751080-7a34-11e9-9a12-e2b70334604d.JPG)
 ![M5Stick-11](https://user-images.githubusercontent.com/6020549/57977489-7f0da700-7a34-11e9-9ea3-c0420a785a3e.JPG)
-![M5Stack-13](https://user-images.githubusercontent.com/6020549/72659056-26e0d780-39fd-11ea-8980-be9a988ad7cd.JPG)
+![M5Stack-BMP](https://user-images.githubusercontent.com/6020549/78413964-dcaee000-7654-11ea-88f2-e70662d761e1.JPG)
+![M5Stack-JPEG](https://user-images.githubusercontent.com/6020549/78413968-e0426700-7654-11ea-9040-0fdfd0f2de2e.JPG)
+
 
 ---
 
@@ -156,6 +158,14 @@ Left:1.44" Right:2.0"
 
 Left:1.44" Right:0.96"
 ![screen_0-96_80x160-3](https://user-images.githubusercontent.com/6020549/59007940-9ede0100-8863-11e9-85ba-6eca86b6f441.JPG)
+
+---
+
+# JPEG Decorder   
+I ported from [here](https://github.com/espressif/esp-idf/blob/master/examples/peripherals/spi_master/lcd/main/decode_image.c). 
+
+Does not support image reduction.   
+
 
 ---
 
