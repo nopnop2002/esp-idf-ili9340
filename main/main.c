@@ -347,6 +347,74 @@ TickType_t CircleTest(TFT_t * dev, int width, int height) {
 	return diffTick;
 }
 
+TickType_t RectAngleTest(TFT_t * dev, int width, int height) {
+	TickType_t startTick, endTick, diffTick;
+	startTick = xTaskGetTickCount();
+
+	uint16_t color;
+	//lcdFillScreen(dev, WHITE);
+	lcdFillScreen(dev, BLACK);
+	color = CYAN;
+	uint16_t xpos = width/2;
+	uint16_t ypos = height/2;
+
+	uint16_t w = width * 0.6;
+	uint16_t h = w * 0.5;
+	int angle;
+	for(angle=0;angle<=(360*3);angle=angle+30) {
+		lcdDrawRectAngle(dev, xpos, ypos, w, h, angle, color);
+		usleep(10000);
+		lcdDrawRectAngle(dev, xpos, ypos, w, h, angle, BLACK);
+	}
+
+	for(angle=0;angle<=180;angle=angle+30) {
+		lcdDrawRectAngle(dev, xpos, ypos, w, h, angle, color);
+	}
+
+	endTick = xTaskGetTickCount();
+	diffTick = endTick - startTick;
+	ESP_LOGI(__FUNCTION__, "elapsed time[ms]:%d",diffTick*portTICK_RATE_MS);
+	return diffTick;
+}
+
+TickType_t TriangleTest(TFT_t * dev, int width, int height) {
+	TickType_t startTick, endTick, diffTick;
+	startTick = xTaskGetTickCount();
+
+	uint16_t color;
+	//lcdFillScreen(dev, WHITE);
+	lcdFillScreen(dev, BLACK);
+	color = CYAN;
+	uint16_t xpos = width/2;
+	uint16_t ypos = height/2;
+
+	uint16_t w;
+	uint16_t h;
+	if (height > width) {
+		w = width * 0.6;
+		h = w * 1.0;
+	} else {
+		w = height * 0.6;
+		h = w * 1.0;
+	}
+	int angle;
+
+	for(angle=0;angle<=(360*3);angle=angle+30) {
+		lcdDrawTriangle(dev, xpos, ypos, w, h, angle, color);
+		usleep(10000);
+		lcdDrawTriangle(dev, xpos, ypos, w, h, angle, BLACK);
+	}
+
+	for(angle=0;angle<=360;angle=angle+30) {
+		lcdDrawTriangle(dev, xpos, ypos, w, h, angle, color);
+	}
+
+	endTick = xTaskGetTickCount();
+	diffTick = endTick - startTick;
+	ESP_LOGI(__FUNCTION__, "elapsed time[ms]:%d",diffTick*portTICK_RATE_MS);
+	return diffTick;
+}
+
 TickType_t RoundRectTest(TFT_t * dev, int width, int height) {
 	TickType_t startTick, endTick, diffTick;
 	startTick = xTaskGetTickCount();
@@ -890,6 +958,12 @@ void ILI9341(void *pvParameters)
 		strcpy(file, "/spiffs/esp32.jpeg");
 		JPEGTest(&dev, file, CONFIG_WIDTH, CONFIG_HEIGHT);
 		WAIT;
+
+		RectAngleTest(&dev, CONFIG_WIDTH, CONFIG_HEIGHT);
+		WAIT;
+
+		TriangleTest(&dev, CONFIG_WIDTH, CONFIG_HEIGHT);
+		WAIT;
 	}
 #endif
 
@@ -911,6 +985,12 @@ void ILI9341(void *pvParameters)
 		WAIT;
 
 		RoundRectTest(&dev, CONFIG_WIDTH, CONFIG_HEIGHT);
+		WAIT;
+
+		RectAngleTest(&dev, CONFIG_WIDTH, CONFIG_HEIGHT);
+		WAIT;
+
+		TriangleTest(&dev, CONFIG_WIDTH, CONFIG_HEIGHT);
 		WAIT;
 
 		if (CONFIG_WIDTH >= 240) {
@@ -974,14 +1054,11 @@ void ILI9341(void *pvParameters)
 		strcpy((char *)ascii, "16Dot Gothic Font");
 		lcdDrawString(&dev, fx16G, xpos, ypos, ascii, color);
 
-#if 1
 		xpos = xpos - (24 * xd) - (margin * xd);
 		ypos = ypos + (16 * yd) + (margin * yd);
 		strcpy((char *)ascii, "24Dot Gothic Font");
 		lcdDrawString(&dev, fx24G, xpos, ypos, ascii, color);
-#endif
 
-#if 1
 		xpos = xpos - (32 * xd) - (margin * xd);
 		ypos = ypos + (24 * yd) + (margin * yd);
 		if (CONFIG_WIDTH >= 240) {
@@ -990,30 +1067,23 @@ void ILI9341(void *pvParameters)
 			xpos = xpos - (32 * xd) - (margin * xd);;
 			ypos = ypos + (32 * yd) + (margin * yd);
 		}
-#endif
 
-#if 1
 		xpos = xpos - (10 * xd) - (margin * xd);
 		ypos = ypos + (10 * yd) + (margin * yd);
 		strcpy((char *)ascii, "16Dot Mincyo Font");
 		lcdDrawString(&dev, fx16M, xpos, ypos, ascii, color);
-#endif
 
-#if 1
 		xpos = xpos - (24 * xd) - (margin * xd);;
 		ypos = ypos + (16 * yd) + (margin * yd);
 		strcpy((char *)ascii, "24Dot Mincyo Font");
 		lcdDrawString(&dev, fx24M, xpos, ypos, ascii, color);
-#endif
 
-#if 1
 		if (CONFIG_WIDTH >= 240) {
 			xpos = xpos - (32 * xd) - (margin * xd);;
 			ypos = ypos + (24 * yd) + (margin * yd);
 			strcpy((char *)ascii, "32Dot Mincyo Font");
 			lcdDrawString(&dev, fx32M, xpos, ypos, ascii, color);
 		}
-#endif
 		lcdSetFontDirection(&dev, 0);
 		WAIT;
 
