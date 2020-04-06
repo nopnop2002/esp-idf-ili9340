@@ -60,7 +60,7 @@ M5Stack
 ![M5Stick-11](https://user-images.githubusercontent.com/6020549/57977489-7f0da700-7a34-11e9-9ea3-c0420a785a3e.JPG)
 ![M5Stack-BMP](https://user-images.githubusercontent.com/6020549/78413964-dcaee000-7654-11ea-88f2-e70662d761e1.JPG)
 ![M5Stack-JPEG](https://user-images.githubusercontent.com/6020549/78413968-e0426700-7654-11ea-9040-0fdfd0f2de2e.JPG)
-
+![M5Stack-PNG](https://user-images.githubusercontent.com/6020549/78613610-40c8e280-78a7-11ea-95b0-a89ce14dc196.JPG)
 
 ---
 
@@ -135,7 +135,7 @@ Left:1.77" Right:1.8"
 
 ---
 
-# 1.44" ST7735 128x128
+# 1.44" ST7735 128x160
 
 ![config_1-8_128x160-1](https://user-images.githubusercontent.com/6020549/59007886-5aeafc00-8863-11e9-98f3-9b39967ee58d.jpg)
 
@@ -145,10 +145,11 @@ Left:1.44" Right:2.0"
 ---
 
 # 1.44" ST7735 128x128
-
 ![config_1-44_128x128-11](https://user-images.githubusercontent.com/6020549/59007912-7a822480-8863-11e9-92ce-f2ca6f69b4d3.jpg)
 ![screen_1-44_128x128-12](https://user-images.githubusercontent.com/6020549/59007915-7eae4200-8863-11e9-901f-037cbc0baed2.JPG)
 ![screen_1-44_128x128-13](https://user-images.githubusercontent.com/6020549/77222202-775ae980-6b94-11ea-8eed-0f6829833da8.JPG)
+
+__GRAM Offset may be different__
 
 ---
 
@@ -161,10 +162,20 @@ Left:1.44" Right:0.96"
 
 ---
 
-# JPEG Decorder   
-I ported from [here](https://github.com/espressif/esp-idf/blob/master/examples/peripherals/spi_master/lcd/main/decode_image.c). 
+# JPEG Decoder   
+The ESP-IDF component includes Tiny JPEG Decompressor.   
+The document of Tiny JPEG Decompressor is [here](http://elm-chan.org/fsw/tjpgd/00index.html).   
+This can reduce the image to 1/2 1/4 1/8.   
 
-Does not support image reduction.   
+---
+
+# PNG Decoder   
+The ESP-IDF component includes part of the miniz library, such as mz_crc32.   
+But it doesn't support all of the miniz.   
+The document of miniz library is [here](https://github.com/richgel999/miniz).   
+
+And I ported the pngle library from [here](https://github.com/kikuchan/pngle).   
+This can reduce the image to any size.   
 
 ---
 
