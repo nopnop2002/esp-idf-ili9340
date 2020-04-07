@@ -195,3 +195,13 @@ strcpy((char *)ascii, "MyFont");
 uint16_t color = RED;
 lcdDrawString(&dev, yourFont, x, y, ascii, color);
 ```
+
+---
+
+# FONTX Editor   
+There is FONTX Editor.   
+This runs on Windows10.   
+http://elm-chan.org/fsw/fontxedit.zip
+
+![FONTX_Editor](https://user-images.githubusercontent.com/6020549/78730043-ab951f00-7976-11ea-85eb-54f01a97bc1b.jpg)
+
