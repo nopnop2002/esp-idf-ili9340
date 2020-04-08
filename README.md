@@ -210,5 +210,6 @@ This tool uses the following as default fonts:
 - font/ILGH16XB.FNT
 - font/ILGH24XB.FNT
 - font/ILGH32XB.FNT
+
 Changing this file will change the font.
 
