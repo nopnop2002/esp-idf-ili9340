@@ -206,7 +206,7 @@ http://elm-chan.org/fsw/fontxedit.zip
 ![FontxEditor](https://user-images.githubusercontent.com/6020549/78731275-3b889800-797a-11ea-81ba-096dbf07c4b8.png)
 
 
-This tool uses the following as default fonts:   
+This library uses the following as default fonts:   
 - font/ILGH16XB.FNT
 - font/ILGH24XB.FNT
 - font/ILGH32XB.FNT
