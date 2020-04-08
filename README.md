@@ -205,3 +205,10 @@ http://elm-chan.org/fsw/fontxedit.zip
 
 ![FONTX_Editor](https://user-images.githubusercontent.com/6020549/78730043-ab951f00-7976-11ea-85eb-54f01a97bc1b.jpg)
 
+
+This tool uses the following as default fonts:   
+- font/ILGH16XB.FNT
+- font/ILGH24XB.FNT
+- font/ILGH32XB.FNT
+Changing this file will change the font.
+
