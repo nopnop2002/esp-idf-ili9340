@@ -203,7 +203,8 @@ There is FONTX Editor.
 This runs on Windows10.   
 http://elm-chan.org/fsw/fontxedit.zip
 
-![FontxEditor](https://user-images.githubusercontent.com/6020549/78731116-c1f0aa00-7979-11ea-871d-f0d50636bb65.png)
+![FontxEditor](https://user-images.githubusercontent.com/6020549/78731275-3b889800-797a-11ea-81ba-096dbf07c4b8.png)
+
 
 This tool uses the following as default fonts:   
 - font/ILGH16XB.FNT
