@@ -25,6 +25,10 @@ menu "TFT Configuration"
             bool "ST7735"
             help
                 Display Driver is ST7735.
+        config ST7796
+            bool "ST7796"
+            help
+                Display Driver is ST7796S.
     endchoice
 
     config WIDTH

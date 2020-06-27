@@ -29,6 +29,8 @@ __MISO is not use.__
 # Tested TFT
 
 M5Stack   
+4.0" ST7796S 480x320   
+3.2" ILI9341 320x240   
 2.8" ILI9341 320x240   
 2.4" ILI9341 320x240   
 2.2" ILI9340 320x240   
@@ -67,6 +69,15 @@ JPEG file
 
 PNG file   
 ![M5Stack-PNG](https://user-images.githubusercontent.com/6020549/78613610-40c8e280-78a7-11ea-95b0-a89ce14dc196.JPG)
+
+---
+
+# 4.0" ST7796S 480x320
+
+![config_4_0](https://user-images.githubusercontent.com/6020549/85913177-64c80e80-b86d-11ea-9eeb-8895134958fb.jpg)
+
+Left:4.0" Right:2.4"
+![4_0_st779s](https://user-images.githubusercontent.com/6020549/85913118-e7040300-b86c-11ea-87fd-fdcd97c5bf26.JPG)
 
 ---
 

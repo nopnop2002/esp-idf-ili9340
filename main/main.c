@@ -114,6 +114,7 @@ TickType_t ArrowTest(TFT_t * dev, FontxFile *fx, uint16_t model, int width, int 
 	if (model == 0x9340) strcpy((char *)ascii, "ILI9340");
 	if (model == 0x9341) strcpy((char *)ascii, "ILI9341");
 	if (model == 0x7735) strcpy((char *)ascii, "ST7735");
+	if (model == 0x7796) strcpy((char *)ascii, "ST7796S");
 	if (width < height) {
 		xpos = ((width - fontHeight) / 2) - 1;
 		ypos = (height - (strlen((char *)ascii) * fontWidth)) / 2;
@@ -489,7 +490,7 @@ TickType_t ColorTest(TFT_t * dev, int width, int height) {
 	return diffTick;
 }
 
-#if CONFIG_ILI9340 || CONFIG_ILI9341
+#if CONFIG_ILI9340 || CONFIG_ILI9341 || CONFIG_ST7796
 TickType_t ScrollTest(TFT_t * dev, FontxFile *fx, int width, int height) {
 	TickType_t startTick, endTick, diffTick;
 	startTick = xTaskGetTickCount();
@@ -512,17 +513,14 @@ TickType_t ScrollTest(TFT_t * dev, FontxFile *fx, int width, int height) {
 	lcdSetFontDirection(dev, 0);
 	lcdFillScreen(dev, BLACK);
 
-	// Initialize scroll area
-	//lcdSetScrollArea(dev, 0, 0x0140, 0);
-	lcdResetScrollArea(dev);
-
 	strcpy((char *)ascii, "Vertical Smooth Scroll");
 	lcdDrawString(dev, fx, 0, fontHeight-1, ascii, RED);
 
 	color = CYAN;
 	uint16_t vsp = fontHeight*2;
 	uint16_t ypos = fontHeight*2-1;
-	for(int i=0;i<30;i++) {
+	//for(int i=0;i<30;i++) {
+	for(int i=0;i<lines+10;i++) {
 		ESP_LOGD(__FUNCTION__, "i=%d ypos=%d", i, ypos);
 		sprintf((char *)ascii, "This is text line %d", i);
 		if (i < lines) {
@@ -549,9 +547,11 @@ TickType_t ScrollTest(TFT_t * dev, FontxFile *fx, int width, int height) {
 	return diffTick;
 }
 
-void ScrollReset(TFT_t * dev) {
-	//lcdSetScrollArea(dev, 0, 0x0140, 0);
-	lcdResetScrollArea(dev);
+void ScrollReset(TFT_t * dev, int width, int height) {
+	//lcdResetScrollArea(dev, 320);
+	//lcdResetScrollArea(dev, 240);
+	lcdResetScrollArea(dev, height);
+	lcdScroll(dev, 0);
 }
 #endif
 
@@ -587,7 +587,8 @@ TickType_t ScrollTest(TFT_t * dev, FontxFile *fx, int width, int height) {
 	color = CYAN;
 	uint16_t vsp = fontHeight*1;
 	uint16_t ypos = fontHeight*2-1;
-	for(int i=0;i<30;i++) {
+	//for(int i=0;i<30;i++) {
+	for(int i=0;i<lines+10;i++) {
 		ESP_LOGD(__FUNCTION__, "i=%d ypos=%d vsp=%d", i, ypos, vsp);
 		sprintf((char *)ascii, "This is text line %d", i);
 		if (i < lines) {
@@ -615,8 +616,8 @@ TickType_t ScrollTest(TFT_t * dev, FontxFile *fx, int width, int height) {
 	return diffTick;
 }
 
-void ScrollReset(TFT_t * dev) {
-	lcdResetScrollArea(dev);
+void ScrollReset(TFT_t * dev, int width, int height) {
+	lcdResetScrollArea(dev, 0);
 }
 #endif
 
@@ -693,7 +694,8 @@ TickType_t ScrollTest(TFT_t * dev, FontxFile *fx, int width, int height) {
 	ESP_LOGI(__FUNCTION__, "elapsed time[ms]:%d",diffTick*portTICK_RATE_MS);
 	return diffTick;
 }
-void ScrollReset(TFT_t * dev) {
+void ScrollReset(TFT_t * dev, int width, int height) {
+
 }
 #endif
 
@@ -847,52 +849,57 @@ TickType_t JPEGTest(TFT_t * dev, char * file, int width, int height) {
 	lcdSetFontDirection(dev, 0);
 	lcdFillScreen(dev, BLACK);
 
+	int _width = width;
+	if (width > 240) _width = 240;
+	int _height = height;
+	if (height > 320) _height = 320;
 
 	pixel_s **pixels;
 	uint16_t imageWidth;
 	uint16_t imageHeight;
-	esp_err_t err = decode_image(&pixels, file, width, height, &imageWidth, &imageHeight);
+	esp_err_t err = decode_image(&pixels, file, _width, _height, &imageWidth, &imageHeight);
 	if (err == ESP_OK) {
+		ESP_LOGI(__FUNCTION__, "imageWidth=%d imageHeight=%d", imageWidth, imageHeight);
 
-		uint16_t _width = width;
-		uint16_t _cols = 0;
+		uint16_t jpegWidth = width;
+		uint16_t offsetX = 0;
 		if (width > imageWidth) {
-			_width = imageWidth;
-			_cols = (width - imageWidth) / 2;
+			jpegWidth = imageWidth;
+			offsetX = (width - imageWidth) / 2;
 		}
-		ESP_LOGD(__FUNCTION__, "_width=%d _cols=%d", _width, _cols);
+		ESP_LOGD(__FUNCTION__, "jpegWidth=%d offsetX=%d", jpegWidth, offsetX);
 
-		uint16_t _height = height;
-		uint16_t _rows = 0;
+		uint16_t jpegHeight = height;
+		uint16_t offsetY = 0;
 		if (height > imageHeight) {
-			_height = imageHeight;
-			_rows = (height - imageHeight) / 2;
+			jpegHeight = imageHeight;
+			offsetY = (height - imageHeight) / 2;
 		}
-		ESP_LOGD(__FUNCTION__, "_height=%d _rows=%d", _height, _rows);
-		uint16_t *colors = (uint16_t*)malloc(sizeof(uint16_t) * _width);
+		ESP_LOGD(__FUNCTION__, "jpegHeight=%d offsetY=%d", jpegHeight, offsetY);
+		uint16_t *colors = (uint16_t*)malloc(sizeof(uint16_t) * jpegWidth);
 
 #if 0
-		for(int y = 0; y < _height; y++){
-			for(int x = 0;x < _width; x++){
+		for(int y = 0; y < jpegHeight; y++){
+			for(int x = 0;x < jpegWidth; x++){
 				pixel_s pixel = pixels[y][x];
 				uint16_t color = rgb565_conv(pixel.red, pixel.green, pixel.blue);
-				lcdDrawPixel(dev, x+_cols, y+_rows, color);
+				lcdDrawPixel(dev, x+offsetX, y+offsetY, color);
 			}
 			vTaskDelay(1);
 		}
 #endif
 
-		for(int y = 0; y < _height; y++){
-			for(int x = 0;x < _width; x++){
+		for(int y = 0; y < jpegHeight; y++){
+			for(int x = 0;x < jpegWidth; x++){
 				pixel_s pixel = pixels[y][x];
 				colors[x] = rgb565_conv(pixel.red, pixel.green, pixel.blue);
 			}
-			lcdDrawMultiPixels(dev, _cols, y+_rows, _width, colors);
+			lcdDrawMultiPixels(dev, offsetX, y+offsetY, jpegWidth, colors);
 			vTaskDelay(1);
 		}
 
 		free(colors);
-		release_image(&pixels, width, height);
+		release_image(&pixels, _width, _height);
 		ESP_LOGD(__FUNCTION__, "Finish");
 	} else {
 		ESP_LOGE(__FUNCTION__, "decode_image err=%d imageWidth=%d imageHeight=%d", err, imageWidth, imageHeight);
@@ -963,6 +970,11 @@ TickType_t PNGTest(TFT_t * dev, char * file, int width, int height) {
 	lcdSetFontDirection(dev, 0);
 	lcdFillScreen(dev, BLACK);
 
+	int _width = width;
+	if (width > 240) _width = 240;
+	int _height = height;
+	if (height > 320) _height = 320;
+
 	// open PNG file
 	FILE* fp = fopen(file, "rb");
 	if (fp == NULL) {
@@ -974,7 +986,7 @@ TickType_t PNGTest(TFT_t * dev, char * file, int width, int height) {
 	size_t remain = 0;
 	int len;
 
-	pngle_t *pngle = pngle_new(width, height);
+	pngle_t *pngle = pngle_new(_width, _height);
 
 	pngle_set_init_callback(pngle, png_init);
 	pngle_set_draw_callback(pngle, png_draw);
@@ -1008,45 +1020,45 @@ TickType_t PNGTest(TFT_t * dev, char * file, int width, int height) {
 
 	fclose(fp);
 
-	uint16_t _width = width;
-	uint16_t _cols = 0;
+	uint16_t pngWidth = width;
+	uint16_t offsetX = 0;
 	if (width > pngle->imageWidth) {
-		_width = pngle->imageWidth;
-		_cols = (width - pngle->imageWidth) / 2;
+		pngWidth = pngle->imageWidth;
+		offsetX = (width - pngle->imageWidth) / 2;
 	}
-	ESP_LOGD(__FUNCTION__, "_width=%d _cols=%d", _width, _cols);
+	ESP_LOGD(__FUNCTION__, "pngWidth=%d offsetX=%d", pngWidth, offsetX);
 
-	uint16_t _height = height;
-	uint16_t _rows = 0;
+	uint16_t pngHeight = height;
+	uint16_t offsetY = 0;
 	if (height > pngle->imageHeight) {
-		_height = pngle->imageHeight;
-		_rows = (height - pngle->imageHeight) / 2;
+		pngHeight = pngle->imageHeight;
+		offsetY = (height - pngle->imageHeight) / 2;
 	}
-	ESP_LOGD(__FUNCTION__, "_height=%d _rows=%d", _height, _rows);
-	uint16_t *colors = (uint16_t*)malloc(sizeof(uint16_t) * _width);
+	ESP_LOGD(__FUNCTION__, "pngHeight=%d offsetY=%d", pngHeight, offsetY);
+	uint16_t *colors = (uint16_t*)malloc(sizeof(uint16_t) * pngWidth);
 
 #if 0
-	for(int y = 0; y < _height; y++){
-		for(int x = 0;x < _width; x++){
+	for(int y = 0; y < pngHeight; y++){
+		for(int x = 0;x < pngWidth; x++){
 			pixel_png pixel = pngle->pixels[y][x];
 			uint16_t color = rgb565_conv(pixel.red, pixel.green, pixel.blue);
-			lcdDrawPixel(dev, x+_cols, y+_rows, color);
+			lcdDrawPixel(dev, x+offsetX, y+offsetY, color);
 		}
 	}
 #endif
 
-	for(int y = 0; y < _height; y++){
-		for(int x = 0;x < _width; x++){
+	for(int y = 0; y < pngHeight; y++){
+		for(int x = 0;x < pngWidth; x++){
 			pixel_png pixel = pngle->pixels[y][x];
 			colors[x] = rgb565_conv(pixel.red, pixel.green, pixel.blue);
 			//uint16_t color = rgb565_conv(pixel.red, pixel.green, pixel.blue);
 			//colors[x] = ~color;
 		}
-		lcdDrawMultiPixels(dev, _cols, y+_rows, _width, colors);
+		lcdDrawMultiPixels(dev, offsetX, y+offsetY, pngWidth, colors);
 		vTaskDelay(1);
 	}
 	free(colors);
-	pngle_destroy(pngle, width, height);
+	pngle_destroy(pngle, _width, _height);
 
 	endTick = xTaskGetTickCount();
 	diffTick = endTick - startTick;
@@ -1089,6 +1101,9 @@ void ILI9341(void *pvParameters)
 #if CONFIG_ST7735
 	uint16_t model = 0x7735;
 #endif
+#if CONFIG_ST7796
+	uint16_t model = 0x7796;
+#endif
 	lcdInit(&dev, model, CONFIG_WIDTH, CONFIG_HEIGHT, CONFIG_OFFSETX, CONFIG_OFFSETY);
 
 #if CONFIG_INVERSION
@@ -1103,6 +1118,9 @@ void ILI9341(void *pvParameters)
 
 #if 0
 	while(1) {
+		ArrowTest(&dev, fx16G, model, CONFIG_WIDTH, CONFIG_HEIGHT);
+		WAIT;
+
 		char file[32];
 		strcpy(file, "/spiffs/image.bmp");
 		BMPTest(&dev, file, CONFIG_WIDTH, CONFIG_HEIGHT);
@@ -1115,6 +1133,11 @@ void ILI9341(void *pvParameters)
 		strcpy(file, "/spiffs/esp_logo.png");
 		PNGTest(&dev, file, CONFIG_WIDTH, CONFIG_HEIGHT);
 		WAIT;
+
+		ScrollTest(&dev, fx16G, CONFIG_WIDTH, CONFIG_HEIGHT);
+		WAIT;
+		ScrollReset(&dev, CONFIG_WIDTH, CONFIG_HEIGHT);
+
 	}
 #endif
 
@@ -1186,7 +1209,7 @@ void ILI9341(void *pvParameters)
 
 		ScrollTest(&dev, fx16G, CONFIG_WIDTH, CONFIG_HEIGHT);
 		WAIT;
-		ScrollReset(&dev);
+		ScrollReset(&dev, CONFIG_WIDTH, CONFIG_HEIGHT);
 
 		// Multi Font Test
 		uint16_t color;
