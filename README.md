@@ -106,7 +106,7 @@ Left:2.0" Right:2.4"
 
 ![config_2-0_176x220-11](https://user-images.githubusercontent.com/6020549/60471069-f2ded880-9c9d-11e9-9cef-5253a017f305.jpg)
 
-Left:2.0" 9225G Right:2.4"
+Left:2.0" Right:2.4"
 ![2_0_ili9225g](https://user-images.githubusercontent.com/6020549/85910094-03e20b80-b858-11ea-9e60-6efa28b0d644.JPG)
 
 ---
@@ -115,8 +115,8 @@ Left:2.0" 9225G Right:2.4"
 
 ![config_1-8_128x160-1](https://user-images.githubusercontent.com/6020549/59007797-fdef4600-8862-11e9-9048-6628e56a6fe8.jpg)
 
-Left:1.8" Right:2.0"
-![screen_1-8_128x160-2](https://user-images.githubusercontent.com/6020549/59007803-0778ae00-8863-11e9-9a5c-c217a1bfab66.JPG)
+Left:1.8" Right:2.4"
+![1_8_st7735](https://user-images.githubusercontent.com/6020549/85910349-3cceb000-b859-11ea-98a0-ecda6870d5aa.JPG)
 
 ---
 
