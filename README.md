@@ -97,8 +97,8 @@ Left:2.2" Right:2.4"
 
 ![config_2-0_176x220](https://user-images.githubusercontent.com/6020549/59140156-06678e00-89d5-11e9-9b82-1077b2e61c65.jpg)
 
-Left:2.2" Right:2.0"
-![screen_2-0_176x220](https://user-images.githubusercontent.com/6020549/59007713-a05af980-8862-11e9-8ea2-d60b84ea49bf.JPG)
+Left:2.0" Right:2.4"
+![2_0_ili9225](https://user-images.githubusercontent.com/6020549/85910092-004e8480-b858-11ea-98f9-2ba9efe5880a.JPG)
 
 ---
 
@@ -106,8 +106,8 @@ Left:2.2" Right:2.0"
 
 ![config_2-0_176x220-11](https://user-images.githubusercontent.com/6020549/60471069-f2ded880-9c9d-11e9-9cef-5253a017f305.jpg)
 
-Left:2.0" 9225G Right:2.0" 9225
-![screen_2-0_176x220-11](https://user-images.githubusercontent.com/6020549/60471071-f70af600-9c9d-11e9-8f5d-4d2b64fa0e09.JPG)
+Left:2.0" 9225G Right:2.4"
+![2_0_ili9225g](https://user-images.githubusercontent.com/6020549/85910094-03e20b80-b858-11ea-9e60-6efa28b0d644.JPG)
 
 ---
 
