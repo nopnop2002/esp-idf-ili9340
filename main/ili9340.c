@@ -961,10 +961,10 @@ void lcdDrawRoundRect(TFT_t * dev, uint16_t x1, uint16_t y1, uint16_t x2, uint16
 } 
 
 // Draw arrow
-// x1:Start X coordinate
-// y1:Start Y coordinate
-// x2:End   X coordinate
-// y2:End   Y coordinate
+// x0:Start X coordinate
+// y0:Start Y coordinate
+// x1:End   X coordinate
+// y1:End   Y coordinate
 // w:Width of the botom
 // color:color
 // Thanks http://k-hiura.cocolog-nifty.com/blog/2010/11/post-2a62.html
@@ -991,10 +991,10 @@ void lcdDrawArrow(TFT_t * dev, uint16_t x0,uint16_t y0,uint16_t x1,uint16_t y1,u
 
 
 // Draw arrow of filling
-// x1:Start X coordinate
-// y1:Start Y coordinate
-// x2:End   X coordinate
-// y2:End   Y coordinate
+// x0:Start X coordinate
+// y0:Start Y coordinate
+// x1:End   X coordinate
+// y1:End   Y coordinate
 // w:Width of the botom
 // color:color
 void lcdDrawFillArrow(TFT_t * dev, uint16_t x0,uint16_t y0,uint16_t x1,uint16_t y1,uint16_t w,uint16_t color) {
