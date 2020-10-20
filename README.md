@@ -219,8 +219,8 @@ lcdDrawString(&dev, yourFont, x, y, ascii, color);
 
 ---
 
-# Font File Editor   
-[There](http://elm-chan.org/fsw/fontxedit.zip) is a font file Editor.   
+# Font File Editor(FONTX Editor)   
+[There](http://elm-chan.org/fsw/fontxedit.zip) is a font file editor.   
 This can be done on Windows 10.   
 Developer page is [here](http://elm-chan.org/fsw_e.html).   
 
