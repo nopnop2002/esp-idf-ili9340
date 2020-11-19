@@ -1,6 +1,15 @@
 # esp-idf-ili9340
 SPI TFT Driver for esp-idf
 
+# Installation
+
+```
+git clone https://github.com/nopnop2002/esp-idf-ili9340
+cd esp-idf-ili9340/
+make menuconfig
+make flash
+```
+
 You have to set this config value with menuconfig.   
 - CONFIG_WIDTH   
 - CONFIG_HEIGHT   
@@ -10,13 +19,6 @@ You have to set this config value with menuconfig.
 - CONFIG_DC_GPIO   
 - CONFIG_RESET_GPIO   
 - CONFIG_BL_GPIO   
-
-```
-git clone https://github.com/nopnop2002/esp-idf-ili9340
-cd esp-idf-ili9340/
-make menuconfig
-make flash
-```
 
 ![config](https://user-images.githubusercontent.com/6020549/59007960-ba490c00-8863-11e9-8df9-457262ac0e43.jpg)
 
