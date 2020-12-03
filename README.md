@@ -1,13 +1,24 @@
 # esp-idf-ili9340
 SPI TFT Driver for esp-idf
 
-# Installation
+# Installation for ESP32
 
 ```
 git clone https://github.com/nopnop2002/esp-idf-ili9340
 cd esp-idf-ili9340/
-make menuconfig
-make flash
+idf.py set-target esp32
+idf.py menuconfig
+idf.py flash
+```
+
+# Installation for ESP32-S2
+
+```
+git clone https://github.com/nopnop2002/esp-idf-ili9340
+cd esp-idf-ili9340/
+idf.py set-target esp32s2
+idf.py menuconfig
+idf.py flash
 ```
 
 You have to set this config value with menuconfig.   
@@ -15,16 +26,16 @@ You have to set this config value with menuconfig.
 - CONFIG_HEIGHT   
 - CONFIG_OFFSETX   
 - CONFIG_OFFSETY   
+- CONFIG_MOSI_GPIO   
+- CONFIG_SCLK_GPIO   
 - CONFIG_CS_GPIO   
 - CONFIG_DC_GPIO   
 - CONFIG_RESET_GPIO   
 - CONFIG_BL_GPIO   
 
-![config](https://user-images.githubusercontent.com/6020549/59007960-ba490c00-8863-11e9-8df9-457262ac0e43.jpg)
-
-__MOSI is GPIO23.__   
-__SCLK is GPIO18.__   
 __MISO is not use.__   
+
+![config-menu](https://user-images.githubusercontent.com/6020549/101022538-db9fcb00-35b4-11eb-95a9-ad84a880c7fb.jpg)
 
 ---
 
@@ -49,7 +60,7 @@ M5Stack
 
 # M5Stack
 
-![config_M5Stack](https://user-images.githubusercontent.com/6020549/59007566-f4191300-8861-11e9-95f3-88156964707f.jpg)
+![config-m5stack](https://user-images.githubusercontent.com/6020549/101022626-f96d3000-35b4-11eb-8c60-a8a4896306d9.jpg)
 
 ![M5Stick-1](https://user-images.githubusercontent.com/6020549/57977479-7d43e380-7a34-11e9-99b6-6028500436e8.JPG)
 ![M5Stack-2](https://user-images.githubusercontent.com/6020549/59008264-f7fa6480-8864-11e9-92f6-ffbd979fa75e.JPG)
@@ -76,7 +87,7 @@ PNG file
 
 # 4.0" ST7796S 480x320
 
-![config_4_0](https://user-images.githubusercontent.com/6020549/85913177-64c80e80-b86d-11ea-9eeb-8895134958fb.jpg)
+![config-st7796](https://user-images.githubusercontent.com/6020549/101022680-0e49c380-35b5-11eb-914f-f522b33bb49a.jpg)
 
 Left:4.0" Right:2.4"
 ![4_0_st779s](https://user-images.githubusercontent.com/6020549/85913118-e7040300-b86c-11ea-87fd-fdcd97c5bf26.JPG)
@@ -87,7 +98,7 @@ Left:4.0" Right:2.4"
 # 2.8" ILI9341 320x240
 # 2.4" ILI9341 320x240
 
-![config_2-8_240x320](https://user-images.githubusercontent.com/6020549/59007585-072be300-8862-11e9-97bb-90d538167c0b.jpg)
+![config-ili9341](https://user-images.githubusercontent.com/6020549/101022718-1b66b280-35b5-11eb-8103-7bbb1f0a7a30.jpg)
 
 Left:3.2" Right:2.4"
 ![3_2_ili9341](https://user-images.githubusercontent.com/6020549/85909286-0b9fb100-b854-11ea-9935-942fe7344f25.JPG)
@@ -99,7 +110,7 @@ Left:2.8" Right:2.4"
 
 # 2.2" ILI9340 320x240
 
-![config_2-2_240x320](https://user-images.githubusercontent.com/6020549/59007751-ce403e00-8862-11e9-9472-6d7783d3aedd.jpg)
+![config-ili9340](https://user-images.githubusercontent.com/6020549/101022746-2588b100-35b5-11eb-8eaa-1f86cc4c9f93.jpg)
 
 Left:2.2" Right:2.4"
 ![screen_2-2_240x320](https://user-images.githubusercontent.com/6020549/59007758-d304f200-8862-11e9-8d61-fa4b734f4b9a.JPG)
@@ -108,7 +119,7 @@ Left:2.2" Right:2.4"
 
 # 2.0" ILI9225 176x220
 
-![config_2-0_176x220](https://user-images.githubusercontent.com/6020549/59140156-06678e00-89d5-11e9-9b82-1077b2e61c65.jpg)
+![config-ili9225](https://user-images.githubusercontent.com/6020549/101022807-3a654480-35b5-11eb-9e3d-b2eb5e396f08.jpg)
 
 Left:2.0" Right:2.4"
 ![2_0_ili9225](https://user-images.githubusercontent.com/6020549/85910092-004e8480-b858-11ea-98f9-2ba9efe5880a.JPG)
@@ -117,7 +128,7 @@ Left:2.0" Right:2.4"
 
 # 2.0" ILI9225G 176x220
 
-![config_2-0_176x220-11](https://user-images.githubusercontent.com/6020549/60471069-f2ded880-9c9d-11e9-9cef-5253a017f305.jpg)
+![config-ili9225g](https://user-images.githubusercontent.com/6020549/101022833-42bd7f80-35b5-11eb-95d9-2e821d4757e6.jpg)
 
 Left:2.0" Right:2.4"
 ![2_0_ili9225g](https://user-images.githubusercontent.com/6020549/85910094-03e20b80-b858-11ea-9e60-6efa28b0d644.JPG)
@@ -126,7 +137,7 @@ Left:2.0" Right:2.4"
 
 # 1.8" ST7735 128x160
 
-![config_1-8_128x160-1](https://user-images.githubusercontent.com/6020549/59007797-fdef4600-8862-11e9-9048-6628e56a6fe8.jpg)
+![config-st7735-128x160-1](https://user-images.githubusercontent.com/6020549/101023253-dc852c80-35b5-11eb-97c8-4873200f85e7.jpg)
 
 Left:1.8" Right:2.4"
 ![1_8_st7735](https://user-images.githubusercontent.com/6020549/85910349-3cceb000-b859-11ea-98a0-ecda6870d5aa.JPG)
@@ -135,7 +146,7 @@ Left:1.8" Right:2.4"
 
 # 1.8" ST7735 128x160
 
-![config_1-8_128x160-11](https://user-images.githubusercontent.com/6020549/59007826-1cedd800-8863-11e9-974d-d4b79abf8083.jpg)
+![config-st7735-128x160-2](https://user-images.githubusercontent.com/6020549/101023297-ec9d0c00-35b5-11eb-924b-a4aefc0dc9f2.jpg)
 ![screen_1-8_128x160-12](https://user-images.githubusercontent.com/6020549/59007829-21b28c00-8863-11e9-945d-91f1c2fa2d14.JPG)
 ![screen_1-8_128x160-13](https://user-images.githubusercontent.com/6020549/77221889-4cbb6180-6b91-11ea-9e3f-97d9ddafb82d.JPG)
 
@@ -143,7 +154,7 @@ Left:1.8" Right:2.4"
 
 # 1.8" ST7735 128x160
 
-![config_1-8_128x160-21](https://user-images.githubusercontent.com/6020549/59007843-32630200-8863-11e9-9801-b8d19b0546d5.jpg)
+![config-st7735-128x160-3](https://user-images.githubusercontent.com/6020549/101023341-f6267400-35b5-11eb-8835-7ea3278ba6eb.jpg)
 ![screen_1-8_128x160-21](https://user-images.githubusercontent.com/6020549/59007852-3858e300-8863-11e9-8f03-ce4ae9eb652b.JPG)
 ![screen_1-8_128x160-31](https://user-images.githubusercontent.com/6020549/59970608-b9271700-95a5-11e9-94f8-062740fe135c.JPG)
 
@@ -151,7 +162,7 @@ Left:1.8" Right:2.4"
 
 # 1.77" ST7735 128x160
 
-![config_1-77_128x160](https://user-images.githubusercontent.com/6020549/59970575-bb3ca600-95a4-11e9-8d8c-82f7feb33332.jpg)
+![config-st7735-128x160-4](https://user-images.githubusercontent.com/6020549/101023366-01799f80-35b6-11eb-8608-96bab43d909f.jpg)
 
 Left:1.77" Right:1.8"
 ![screen_1-77_128x160](https://user-images.githubusercontent.com/6020549/59970576-bd066980-95a4-11e9-9f4a-88d69733f034.JPG)
@@ -160,7 +171,7 @@ Left:1.77" Right:1.8"
 
 # 1.44" ST7735 128x160
 
-![config_1-8_128x160-1](https://user-images.githubusercontent.com/6020549/59007886-5aeafc00-8863-11e9-98f3-9b39967ee58d.jpg)
+![config-st7735-128x160-5](https://user-images.githubusercontent.com/6020549/101023395-0a6a7100-35b6-11eb-887c-3ebfc93bb0eb.jpg)
 
 Left:1.44" Right:2.0"
 ![screen_1-8_128x160-2](https://user-images.githubusercontent.com/6020549/59007892-63433700-8863-11e9-86a7-1b92e8b15efd.JPG)
@@ -168,7 +179,7 @@ Left:1.44" Right:2.0"
 ---
 
 # 1.44" ST7735 128x128
-![config_1-44_128x128-11](https://user-images.githubusercontent.com/6020549/59007912-7a822480-8863-11e9-92ce-f2ca6f69b4d3.jpg)
+![config-st7735-128x128](https://user-images.githubusercontent.com/6020549/101023420-16eec980-35b6-11eb-9c75-ca90a8b7f99a.jpg)
 ![screen_1-44_128x128-12](https://user-images.githubusercontent.com/6020549/59007915-7eae4200-8863-11e9-901f-037cbc0baed2.JPG)
 ![screen_1-44_128x128-13](https://user-images.githubusercontent.com/6020549/77222202-775ae980-6b94-11ea-8eed-0f6829833da8.JPG)
 
@@ -178,7 +189,7 @@ __GRAM Offset may be different__
 
 # 0.96" ST7735 80x160
 
-![config_0-96_80x160-1](https://user-images.githubusercontent.com/6020549/59007930-95549900-8863-11e9-8a02-ba2224fe2a96.jpg)
+![config-st7735-80x160](https://user-images.githubusercontent.com/6020549/101023455-240bb880-35b6-11eb-9008-e69c59efb825.jpg)
 
 Left:1.44" Right:0.96"
 ![screen_0-96_80x160-3](https://user-images.githubusercontent.com/6020549/59007940-9ede0100-8863-11e9-85ba-6eca86b6f441.JPG)

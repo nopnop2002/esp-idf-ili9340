@@ -1,113 +1,144 @@
 menu "TFT Configuration"
 
-    choice DRIVER
-        prompt "Display Driver"
-        default ILI9340
-        help
-            Select Display Driver.
-        config ILI9225
-            bool "ILI9225"
-            help
-                Display Driver is ILI9225.
-        config ILI9225G
-            bool "ILI9225G"
-            help
-                Display Driver is ILI9225G.
-        config ILI9340
-            bool "ILI9340"
-            help
-                Display Driver is ILI9340.
-        config ILI9341
-            bool "ILI9341"
-            help
-                Display Driver is ILI9341.
-        config ST7735
-            bool "ST7735"
-            help
-                Display Driver is ST7735.
-        config ST7796
-            bool "ST7796"
-            help
-                Display Driver is ST7796S.
-    endchoice
+	choice DRIVER
+		prompt "Display Driver"
+		default ILI9341
+		help
+			Select Display Driver.
+		config ILI9225
+			bool "ILI9225"
+			help
+				Display Driver is ILI9225.
+		config ILI9225G
+			bool "ILI9225G"
+			help
+				Display Driver is ILI9225G.
+		config ILI9340
+			bool "ILI9340"
+			help
+				Display Driver is ILI9340.
+		config ILI9341
+			bool "ILI9341"
+			help
+				Display Driver is ILI9341.
+		config ST7735
+			bool "ST7735"
+			help
+				Display Driver is ST7735.
+		config ST7796
+			bool "ST7796"
+			help
+				Display Driver is ST7796S.
+	endchoice
 
-    config WIDTH
-        int "SCREEN WIDTH"
-        range 0 999
-        default 240
-        help
-            The width resolution of the screen.
+	config WIDTH
+		int "SCREEN WIDTH"
+		range 0 999
+		default 320
+		help
+			The width resolution of the screen.
 
-    config HEIGHT
-        int "SCREEN HEIGHT"
-        range 0 999
-        default 320
-        help
-            The height resolution of the screen.
+	config HEIGHT
+		int "SCREEN HEIGHT"
+		range 0 999
+		default 240
+		help
+			The height resolution of the screen.
 
-    config OFFSETX
-        int "GRAM X OFFSET"
-        range 0 99
-        default 0
-        help
-            When your TFT have offset(X), set it.
+	config OFFSETX
+		int "GRAM X OFFSET"
+		range 0 99
+		default 0
+		help
+			When your TFT have offset(X), set it.
 
-    config OFFSETY
-        int "GRAM Y OFFSET"
-        range 0 99
-        default 0
-        help
-            When your TFT have offset(Y), set it.
+	config OFFSETY
+		int "GRAM Y OFFSET"
+		range 0 99
+		default 0
+		help
+			When your TFT have offset(Y), set it.
 
-    config CS_GPIO
-        int "CS GPIO number"
-        range 0 34
-        default 5
+    config MOSI_GPIO
+        int "MOSI GPIO number"
+        range 0 46
+        default 23 if IDF_TARGET_ESP32
+        default 35 if IDF_TARGET_ESP32S2
         help
-            GPIO number (IOxx) to SPI CS.
-            Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to CS.
-            GPIOs 35-39 are input-only so cannot be used as outputs.
-
-    config DC_GPIO
-        int "DC GPIO number"
-        range 0 34
-        default 26
-        help
-            GPIO number (IOxx) to SPI DC.
+            GPIO number (IOxx) to SPI MOSI.
             Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to DC.
-            GPIOs 35-39 are input-only so cannot be used as outputs.
+            On the ESP32, GPIOs 35-39 are input-only so cannot be used as outputs.
+            On the ESP32-S2, GPIO 46 is input-only so cannot be used as outputs.
 
-    config RESET_GPIO
-        int "RESET GPIO number"
-        range -1 34
-        default 2
-        help
-            GPIO number (IOxx) to RESET.
-            When it is -1, the RESET isn't performed.
-            Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to Reset.
-            GPIOs 35-39 are input-only so cannot be used as outputs.
 
-    config BL_GPIO
-        int "BACKLIGHT GPIO number"
-        range -1 34
-        default -1
+    config SCLK_GPIO
+        int "SCLK GPIO number"
+        range 0 46
+        default 18 if IDF_TARGET_ESP32
+        default 36 if IDF_TARGET_ESP32S2
         help
-            GPIO number (IOxx) to BACKLIGHT.
-            When it is -1, BACKLIGHT isn't performed.
-            Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to Reset.
-            GPIOs 35-39 are input-only so cannot be used as outputs.
+            GPIO number (IOxx) to SPI SCLK.
+            Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to DC.
+            On the ESP32, GPIOs 35-39 are input-only so cannot be used as outputs.
+            On the ESP32-S2, GPIO 46 is input-only so cannot be used as outputs.
 
-    config INVERSION
-        bool "Enable Display Inversion"
-        default false
-        help
-            Enable Display Inversion.
+	config CS_GPIO
+		int "CS GPIO number"
+		range 0 46
+		default 14 if IDF_TARGET_ESP32
+		default 34 if IDF_TARGET_ESP32S2
+		help
+			GPIO number (IOxx) to SPI CS.
+			Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to CS.
+			On the ESP32, GPIOs 35-39 are input-only so cannot be used as outputs.
+			On the ESP32-S2, GPIO 46 is input-only so cannot be used as outputs.
 
-    config RGB_COLOR
-        bool "Change BGR filter to RGB filter"
-        default false
-        help
-            Change BGR color filter to RGB color filter
+	config DC_GPIO
+		int "DC GPIO number"
+		range 0 46
+		default 27 if IDF_TARGET_ESP32
+		default 37 if IDF_TARGET_ESP32S2
+		help
+			GPIO number (IOxx) to SPI DC.
+			Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to DC.
+			On the ESP32, GPIOs 35-39 are input-only so cannot be used as outputs.
+			On the ESP32-S2, GPIO 46 is input-only so cannot be used as outputs.
+
+	config RESET_GPIO
+		int "RESET GPIO number"
+		range -1 46
+		default 33 if IDF_TARGET_ESP32
+		default 38 if IDF_TARGET_ESP32S2
+		help
+			GPIO number (IOxx) to RESET.
+			When it is -1, the RESET isn't performed.
+			Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to Reset.
+			On the ESP32, GPIOs 35-39 are input-only so cannot be used as outputs.
+			On the ESP32-S2, GPIO 46 is input-only so cannot be used as outputs.
+
+	config BL_GPIO
+		int "BACKLIGHT GPIO number"
+		range -1 46
+		default 32 if IDF_TARGET_ESP32
+		default 39 if IDF_TARGET_ESP32S2
+		help
+			GPIO number (IOxx) to BACKLIGHT.
+			When it is -1, BACKLIGHT isn't performed.
+			Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to Reset.
+			On the ESP32, GPIOs 35-39 are input-only so cannot be used as outputs.
+			On the ESP32-S2, GPIO 46 is input-only so cannot be used as outputs.
+
+	config INVERSION
+		bool "Enable Display Inversion"
+		default false
+		help
+			Enable Display Inversion.
+
+	config RGB_COLOR
+		bool "Change BGR filter to RGB filter"
+		default false
+		help
+			Change BGR color filter to RGB color filter
 
 
 endmenu

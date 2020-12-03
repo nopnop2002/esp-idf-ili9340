@@ -1084,7 +1084,7 @@ void ILI9341(void *pvParameters)
 	InitFontx(fx32M,"/spiffs/ILMH32XB.FNT",""); // 16x32Dot Mincyo
 	
 	TFT_t dev;
-	spi_master_init(&dev, CONFIG_CS_GPIO, CONFIG_DC_GPIO, CONFIG_RESET_GPIO, CONFIG_BL_GPIO);
+	spi_master_init(&dev, CONFIG_MOSI_GPIO, CONFIG_SCLK_GPIO, CONFIG_CS_GPIO, CONFIG_DC_GPIO, CONFIG_RESET_GPIO, CONFIG_BL_GPIO);
 
 #if CONFIG_ILI9225
 	uint16_t model = 0x9225;
@@ -1199,9 +1199,11 @@ void ILI9341(void *pvParameters)
 		BMPTest(&dev, file, CONFIG_WIDTH, CONFIG_HEIGHT);
 		WAIT;
 
+#ifdef CONFIG_IDF_TARGET_ESP32
 		strcpy(file, "/spiffs/esp32.jpeg");
 		JPEGTest(&dev, file, CONFIG_WIDTH, CONFIG_HEIGHT);
 		WAIT;
+#endif
 
 		strcpy(file, "/spiffs/esp_logo.png");
 		PNGTest(&dev, file, CONFIG_WIDTH, CONFIG_HEIGHT);
