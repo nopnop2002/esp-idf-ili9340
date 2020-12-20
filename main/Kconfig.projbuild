@@ -66,7 +66,7 @@ menu "TFT Configuration"
         default 35 if IDF_TARGET_ESP32S2
         help
             GPIO number (IOxx) to SPI MOSI.
-            Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to DC.
+            Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to MOSI.
             On the ESP32, GPIOs 35-39 are input-only so cannot be used as outputs.
             On the ESP32-S2, GPIO 46 is input-only so cannot be used as outputs.
 
@@ -78,7 +78,7 @@ menu "TFT Configuration"
         default 36 if IDF_TARGET_ESP32S2
         help
             GPIO number (IOxx) to SPI SCLK.
-            Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to DC.
+            Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to SCLK.
             On the ESP32, GPIOs 35-39 are input-only so cannot be used as outputs.
             On the ESP32-S2, GPIO 46 is input-only so cannot be used as outputs.
 
@@ -112,7 +112,7 @@ menu "TFT Configuration"
 		help
 			GPIO number (IOxx) to RESET.
 			When it is -1, the RESET isn't performed.
-			Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to Reset.
+			Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to RESER.
 			On the ESP32, GPIOs 35-39 are input-only so cannot be used as outputs.
 			On the ESP32-S2, GPIO 46 is input-only so cannot be used as outputs.
 
@@ -124,7 +124,7 @@ menu "TFT Configuration"
 		help
 			GPIO number (IOxx) to BACKLIGHT.
 			When it is -1, BACKLIGHT isn't performed.
-			Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to Reset.
+			Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to BACKLIGHT.
 			On the ESP32, GPIOs 35-39 are input-only so cannot be used as outputs.
 			On the ESP32-S2, GPIO 46 is input-only so cannot be used as outputs.
 
