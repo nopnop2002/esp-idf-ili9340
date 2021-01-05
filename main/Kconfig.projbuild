@@ -112,7 +112,7 @@ menu "TFT Configuration"
 		help
 			GPIO number (IOxx) to RESET.
 			When it is -1, the RESET isn't performed.
-			Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to RESER.
+			Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to RESET.
 			On the ESP32, GPIOs 35-39 are input-only so cannot be used as outputs.
 			On the ESP32-S2, GPIO 46 is input-only so cannot be used as outputs.
 
