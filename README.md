@@ -32,6 +32,8 @@ You have to set this config value with menuconfig.
 - CONFIG_DC_GPIO   
 - CONFIG_RESET_GPIO   
 - CONFIG_BL_GPIO   
+ __GPIO of ESP32 cannot supply too much current.__
+ __The TFT backlight is more stable when supplied from an external power source.__
 
 __MISO is not use.__   
 
@@ -88,9 +90,6 @@ PNG file
 # 4.0" ST7796S 480x320
 
 ![config-st7796](https://user-images.githubusercontent.com/6020549/101022680-0e49c380-35b5-11eb-914f-f522b33bb49a.jpg)
-
-__GPIO of ESP32 cannot supply too much current.__
-__The TFT backlight is more stable when supplied from an external power source.__
 
 Left:4.0" Right:2.4"
 ![4_0_st779s](https://user-images.githubusercontent.com/6020549/85913118-e7040300-b86c-11ea-87fd-fdcd97c5bf26.JPG)
