@@ -1195,7 +1195,11 @@ void ILI9341(void *pvParameters)
 		WAIT;
 
 		char file[32];
-		strcpy(file, "/spiffs/image.bmp");
+		if (CONFIG_WIDTH >= CONFIG_HEIGHT) {
+			strcpy(file, "/spiffs/esp32.bmp");
+		} else {
+			strcpy(file, "/spiffs/esp32_ro.bmp");
+		}
 		BMPTest(&dev, file, CONFIG_WIDTH, CONFIG_HEIGHT);
 		WAIT;
 
