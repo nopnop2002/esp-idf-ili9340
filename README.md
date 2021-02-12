@@ -254,7 +254,8 @@ Changing this file will change the font.
 ---
 
 # Reference   
-You can use TFT Shield like [this](https://user-images.githubusercontent.com/6020549/104253960-10a71380-54b9-11eb-8789-a12c2c769ab4.JPG).   
+You can use TFT Shield like this.   
+![TFT-Shield](https://user-images.githubusercontent.com/6020549/104253960-10a71380-54b9-11eb-8789-a12c2c769ab4.JPG)
 
 https://github.com/nopnop2002/esp-idf-parallel-tft
 
