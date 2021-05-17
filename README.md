@@ -37,7 +37,7 @@ You have to set this config value with menuconfig.
 - CONFIG_DC_GPIO   
 - CONFIG_RESET_GPIO   
 - CONFIG_BL_GPIO   
- __GPIO of ESP32 cannot supply too much current.__
+ __GPIO of ESP32 cannot supply too much current.__   
  __The TFT backlight is more stable when supplied from an external power source.__   
  __MISO is not use.__   
 
