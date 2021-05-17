@@ -87,8 +87,8 @@ uint8_t getScale(uint16_t screenWidth, uint16_t screenHeight, uint16_t imageWidt
 	double scale = scaleWidth;
 	if (scaleWidth < scaleHeight) scale = scaleHeight;
 	ESP_LOGD(__FUNCTION__, "scale=%f", scale);
-	if (scale < 2.0) return 1;
-	if (scale < 4.0) return 2;
+	if (scale <= 2.0) return 1;
+	if (scale <= 4.0) return 2;
 	return 3;
 
 }

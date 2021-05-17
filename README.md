@@ -21,6 +21,11 @@ idf.py menuconfig
 idf.py flash
 ```
 
+# ESP32-S2 Limitation   
+- tjpgd library does not exist in ESP32-S2 ROM.   
+- JPEG and PNG function is not supported because the ROM is small.   
+
+# Configuration   
 You have to set this config value with menuconfig.   
 - CONFIG_WIDTH   
 - CONFIG_HEIGHT   
@@ -78,10 +83,10 @@ M5Stack
 BMP file   
 ![M5Stack-BMP](https://user-images.githubusercontent.com/6020549/78413964-dcaee000-7654-11ea-88f2-e70662d761e1.JPG)
 
-JPEG file   
+JPEG file(ESP32 only)   
 ![M5Stack-JPEG](https://user-images.githubusercontent.com/6020549/78413968-e0426700-7654-11ea-9040-0fdfd0f2de2e.JPG)
 
-PNG file   
+PNG file(ESP32 only)   
 ![M5Stack-PNG](https://user-images.githubusercontent.com/6020549/78613610-40c8e280-78a7-11ea-95b0-a89ce14dc196.JPG)
 
 ---
