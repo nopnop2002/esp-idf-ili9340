@@ -759,7 +759,7 @@ void lcdDrawLine(TFT_t * dev, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2
 		}
 	}
 
-/* inclination >= 1 */
+	/* inclination >= 1 */
 	} else {
 		E = -dy;
 		for ( i = 0 ; i <= dy ; i++ ) {
