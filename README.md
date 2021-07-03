@@ -25,6 +25,10 @@ idf.py flash
 - tjpgd library does not exist in ESP32-S2 ROM.   
 - JPEG and PNG function is not supported because the ROM is small.   
 
+# ESP-IDF component version   
+Standalone ESP-IDF component version is [here](https://github.com/JarrettR/esp-idf-ili9340)
+
+
 # Configuration   
 You have to set this config value with menuconfig.   
 - CONFIG_WIDTH   
