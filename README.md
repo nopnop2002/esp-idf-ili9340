@@ -26,7 +26,7 @@ idf.py flash
 - JPEG and PNG function is not supported because the ROM is small.   
 
 # ESP-IDF component version   
-Standalone ESP-IDF component version is [here](https://github.com/JarrettR/esp-idf-ili9340)
+Standalone ESP-IDF component version is [here](https://github.com/JarrettR/esp-idf-ili9340).
 
 
 # Configuration   
