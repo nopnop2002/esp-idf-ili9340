@@ -20,10 +20,26 @@ idf.py set-target esp32s2
 idf.py menuconfig
 idf.py flash
 ```
+__Note__   
+tjpgd library does not exist in ESP32-S2 ROM.   
+Therefore, the JPEG file cannot be displayed.   
 
-# ESP32-S2 Limitation   
-- tjpgd library does not exist in ESP32-S2 ROM.   
-- JPEG and PNG function is not supported because the ROM is small.   
+
+# Installation for ESP32-C3
+
+```
+git clone https://github.com/nopnop2002/esp-idf-ili9340
+cd esp-idf-ili9340/
+idf.py set-target esp32c3
+idf.py menuconfig
+idf.py flash
+```
+
+__Note__   
+For some reason GPIO06, GPIO08, GPIO09, GPIO19 cannot be used for SPI clock pins on my board.   
+I looked at the ESP32-C3 datasheet, but I don't understand why.   
+This may be a problem only for my board.   
+
 
 # ESP-IDF component version   
 Standalone ESP-IDF component version is [here](https://github.com/JarrettR/esp-idf-ili9340).

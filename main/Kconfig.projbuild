@@ -64,6 +64,7 @@ menu "TFT Configuration"
         range 0 46
         default 23 if IDF_TARGET_ESP32
         default 35 if IDF_TARGET_ESP32S2
+		default 19 if IDF_TARGET_ESP32C3
         help
             GPIO number (IOxx) to SPI MOSI.
             Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to MOSI.
@@ -76,6 +77,7 @@ menu "TFT Configuration"
         range 0 46
         default 18 if IDF_TARGET_ESP32
         default 36 if IDF_TARGET_ESP32S2
+		default 18 if IDF_TARGET_ESP32C3
         help
             GPIO number (IOxx) to SPI SCLK.
             Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to SCLK.
@@ -87,6 +89,7 @@ menu "TFT Configuration"
 		range 0 46
 		default 14 if IDF_TARGET_ESP32
 		default 34 if IDF_TARGET_ESP32S2
+		default 9  if IDF_TARGET_ESP32C3
 		help
 			GPIO number (IOxx) to SPI CS.
 			Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to CS.
@@ -98,6 +101,7 @@ menu "TFT Configuration"
 		range 0 46
 		default 27 if IDF_TARGET_ESP32
 		default 37 if IDF_TARGET_ESP32S2
+		default 10 if IDF_TARGET_ESP32C3
 		help
 			GPIO number (IOxx) to SPI DC.
 			Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to DC.
@@ -109,6 +113,7 @@ menu "TFT Configuration"
 		range -1 46
 		default 33 if IDF_TARGET_ESP32
 		default 38 if IDF_TARGET_ESP32S2
+		default 1  if IDF_TARGET_ESP32C3
 		help
 			GPIO number (IOxx) to RESET.
 			When it is -1, the RESET isn't performed.
@@ -120,7 +125,8 @@ menu "TFT Configuration"
 		int "BACKLIGHT GPIO number"
 		range -1 46
 		default 32 if IDF_TARGET_ESP32
-		default 39 if IDF_TARGET_ESP32S2
+		default 33 if IDF_TARGET_ESP32S2
+		default 2  if IDF_TARGET_ESP32C3
 		help
 			GPIO number (IOxx) to BACKLIGHT.
 			When it is -1, BACKLIGHT isn't performed.
@@ -139,6 +145,5 @@ menu "TFT Configuration"
 		default false
 		help
 			Change BGR color filter to RGB color filter
-
 
 endmenu

@@ -15,10 +15,10 @@
 
 #ifdef CONFIG_IDF_TARGET_ESP32
 #define LCD_HOST    HSPI_HOST
-#define DMA_CHAN    2
 #elif defined CONFIG_IDF_TARGET_ESP32S2
 #define LCD_HOST    SPI2_HOST
-#define DMA_CHAN    LCD_HOST
+#elif defined CONFIG_IDF_TARGET_ESP32C3
+#define LCD_HOST    SPI2_HOST
 #endif
 
 //static const int GPIO_MOSI = 23;
@@ -70,7 +70,7 @@ void spi_master_init(TFT_t * dev, int16_t GPIO_MOSI, int16_t GPIO_SCLK, int16_t 
 		.quadhd_io_num = -1
 	};
 
-	ret = spi_bus_initialize( LCD_HOST, &buscfg, DMA_CHAN );
+	ret = spi_bus_initialize( LCD_HOST, &buscfg, SPI_DMA_CH_AUTO );
 	ESP_LOGD(TAG, "spi_bus_initialize=%d",ret);
 	assert(ret==ESP_OK);
 
