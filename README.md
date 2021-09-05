@@ -247,15 +247,6 @@ Your font file is uploaded to SPIFFS partition using meke flash.
 
 Please refer [this](http://elm-chan.org/docs/dosv/fontx_e.html) page about FONTX format.   
 
-```
-FontxFile yourFont[2];
-InitFontx(yourFont,"/spiffs/your_font_file_name","");
-uint8_t ascii[10];
-strcpy((char *)ascii, "MyFont");
-uint16_t color = RED;
-lcdDrawString(&dev, yourFont, x, y, ascii, color);
-```
-
 ---
 
 # Font File Editor(FONTX Editor)   
@@ -265,7 +256,6 @@ Developer page is [here](http://elm-chan.org/fsw_e.html).
 
 ![FontxEditor](https://user-images.githubusercontent.com/6020549/78731275-3b889800-797a-11ea-81ba-096dbf07c4b8.png)
 
-
 This library uses the following as default fonts:   
 - font/ILGH16XB.FNT // 8x16Dot Gothic
 - font/ILGH24XB.FNT // 12x24Dot Gothic
@@ -274,7 +264,54 @@ This library uses the following as default fonts:
 - font/ILMH24XB.FNT // 12x24Dot Mincyo
 - font/ILMH32XB.FNT // 16x32Dot Mincyo
 
+From 0x00 to 0x7f, the characters image of Alphanumeric are stored.   
+From 0x80 to 0xff, the characters image of Japanese are stored.   
 Changing this file will change the font.
+
+# How to build your own font file   
+step1)   
+download fontxedit.exe.   
+
+step2)   
+download BDF font file from Internet.   
+I downloaded from [here](https://github.com/fcambus/spleen).   
+fontxedit.exe can __ONLY__ import Monospaced bitmap fonts file.   
+Monospaced bitmap fonts can also be downloaded [here](https://github.com/Tecate/bitmap-fonts).
+
+step3)   
+import the BDF font file into your fontxedit.exe.   
+this tool can convert from BDF to FONTX.   
+![FONTX-EDITTOR-1](https://user-images.githubusercontent.com/6020549/112736427-d7e5e900-8f95-11eb-80d5-11dd9df42903.jpg)
+
+step4)   
+adjust font size.   
+![FONTX-EDITTOR-2](https://user-images.githubusercontent.com/6020549/112736434-e6cc9b80-8f95-11eb-8b8e-b523746c1c96.jpg)
+
+step5)   
+check font pattern.   
+![FONTX-EDITTOR-13](https://user-images.githubusercontent.com/6020549/112746492-11e0da80-8fea-11eb-94f1-8d299b2dc756.jpg)
+
+step6)   
+save as .fnt file from your fontedit.exe.   
+![FONTX-EDITTOR-14](https://user-images.githubusercontent.com/6020549/112746501-2329e700-8fea-11eb-9a3a-4481c1a14ddc.jpg)
+
+step7)   
+upload your font file to $HOME/esp-idf-st7789/fonts directory.   
+
+step8)   
+add font to use   
+```
+FontxFile fx32L[2];
+InitFontx(fx32L,"/spiffs/LATIN32B.FNT",""); // 16x32Dot LATIN
+```
+Font file that From 0x00 to 0x7f, the characters image of Standard ASCII are stored.   
+![M5Statck-Font-1](https://user-images.githubusercontent.com/6020549/132110943-98e8f481-8840-4e96-b649-f525aa427826.JPG)
+
+Font file that From 0x80 to 0xff, the characters image of Japanese are stored.   
+![M5Statck-Font-2](https://user-images.githubusercontent.com/6020549/132110947-d161678f-0424-4934-91b6-22eb12a57435.JPG)
+
+Font file that From 0x80 to 0xff, the characters image of Latin are stored.   
+![M5Statck-Font-3](https://user-images.githubusercontent.com/6020549/132110951-e7faaaa9-cdf2-429d-8eea-d20fe0748524.JPG)
 
 ---
 
