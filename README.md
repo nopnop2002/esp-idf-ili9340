@@ -296,7 +296,7 @@ save as .fnt file from your fontedit.exe.
 ![FONTX-EDITTOR-14](https://user-images.githubusercontent.com/6020549/112746501-2329e700-8fea-11eb-9a3a-4481c1a14ddc.jpg)
 
 step7)   
-upload your font file to $HOME/esp-idf-st7789/fonts directory.   
+upload your font file to $HOME/esp-idf-ili9340/fonts directory.   
 
 step8)   
 add font to use   
