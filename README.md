@@ -1,6 +1,10 @@
 # esp-idf-ili9340
 SPI TFT Driver for esp-idf
 
+# Software requirements
+esp-idf v4.4 or later.   
+This is because this version supports ESP32-C3.   
+
 # Installation for ESP32
 
 ```
