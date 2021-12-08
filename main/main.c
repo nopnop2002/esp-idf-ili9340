@@ -1317,7 +1317,7 @@ void ILI9341(void *pvParameters)
 	lcdBGRFilter(&dev);
 #endif
 
-#if 1
+#if 0
 	while(1) {
 		FillTest(&dev, CONFIG_WIDTH, CONFIG_HEIGHT);
 		WAIT;
