@@ -350,7 +350,7 @@ XPT2046 and HR2046 are very similar. But HR2046 does not work properly.
 |LED|--|3.3V|3.3V|3.3V||
 |MISO|--|N/C|N/C|N/C||
 |T_CLK|--|GPIO18|GPIO36|GPIO18|(*2)|
-|T_CS|--|GPIO4|GPIO4|GPIO4||
+|T_CS|--|GPIO4|GPIO4|GPIO4|(*1)|
 |T_DIN|--|GPIO23|GPIO35|GPIO19|(*2)|
 |T_OUT|--|GPIO19|GPIO33|GPIO3|(*2)|
 |T_IRQ|--|GPIO5|GPIO5|GPIO5|(*1)|
