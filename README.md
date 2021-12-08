@@ -319,6 +319,51 @@ Font file that From 0x80 to 0xff, the characters image of Latin are stored.
 
 ---
 
+# XPT2046 Touch Screen   
+There is a TFT equipped with XPT2046.   
+![XPT2046-3](https://user-images.githubusercontent.com/6020549/144333924-5236bff3-3f4d-4be4-8e99-b6e31878e4f3.jpg)
+
+A library of XPT2046 Touch Screen is included in this project.   
+Use the menu to enable XPT2046.   
+![config-xpt2046](https://user-images.githubusercontent.com/6020549/145126148-2603bbc3-0f3f-4121-adf0-7e64fddacb79.jpg)
+
+There is a TFT equipped with HR2046.   
+XPT2046 and HR2046 are very similar. But HR2046 does not work properly.   
+![XPT2046-2](https://user-images.githubusercontent.com/6020549/144332571-717f33b1-df03-4a0a-9a23-c7c99b9d4d32.JPG)
+
+## Wirering for XPT2046  
+
+|TFT||ESP32|ESP32-S2|ESP32-C3||
+|:-:|:-:|:-:|:-:|:-:|:-:|
+|VCC|--|3.3V|3.3V|3.3V||
+|GND|--|GND|GND|GND||
+|CS|--|GPIO14|GPIO34|GPIO9||
+|RES|--|GPIO33|GPIO38|GPIO1|(*1)|
+|D/C|--|GPIO27|GPIO37|GPIO10|(*1)|
+|MOSI|--|GPIO23|GPIO35|GPIO19|(*2)|
+|SCK|--|GPIO18|GPIO36|GPIO18|(*2)|
+|LED|--|3.3V|3.3V|3.3V||
+|MISO|--|N/C|N/C|N/C||
+|T_CLK|--|GPIO18|GPIO36|GPIO18|(*2)|
+|T_CS|--|GPIO4|GPIO4|GPIO4||
+|T_DIN|--|GPIO23|GPIO35|GPIO4|(*2)|
+|T_OUT|--|GPIO19|GPIO33|GPIO3|(*2)|
+|T_IRQ|--|GPIO5|GPIO5|GPIO5|(*1)|
+
+(*1) You can change any pin.   
+
+(*2) SPI is shared by TFT and XPT2046.   
+
+## Caribration   
+Keep touching the point.   
+![XPT2046-1](https://user-images.githubusercontent.com/6020549/145127021-6f311ab1-0def-4577-9212-39b3848756ae.JPG)
+![XPT2046-2](https://user-images.githubusercontent.com/6020549/145127026-be6496bc-90d6-48f7-8a0e-da7c1a7ac618.JPG)
+
+## Draw with touch   
+![XPT2046-3](https://user-images.githubusercontent.com/6020549/145127161-c92ab0c9-a5d7-41f0-99c3-8a1981eb1597.JPG)
+
+---
+
 # Reference   
 You can use TFT Shield like this:   
 ![TFT-Shield](https://user-images.githubusercontent.com/6020549/104253960-10a71380-54b9-11eb-8789-a12c2c769ab4.JPG)

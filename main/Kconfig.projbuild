@@ -71,7 +71,6 @@ menu "TFT Configuration"
 			On the ESP32, GPIOs 35-39 are input-only so cannot be used as outputs.
 			On the ESP32-S2, GPIO 46 is input-only so cannot be used as outputs.
 
-
 	config SCLK_GPIO
 		int "SCLK GPIO number"
 		range 0 46
@@ -84,14 +83,14 @@ menu "TFT Configuration"
 			On the ESP32, GPIOs 35-39 are input-only so cannot be used as outputs.
 			On the ESP32-S2, GPIO 46 is input-only so cannot be used as outputs.
 
-	config CS_GPIO
+	config TFT_CS_GPIO
 		int "CS GPIO number"
 		range 0 46
 		default 14 if IDF_TARGET_ESP32
 		default 34 if IDF_TARGET_ESP32S2
 		default 9  if IDF_TARGET_ESP32C3
 		help
-			GPIO number (IOxx) to SPI CS.
+			GPIO number (IOxx) to TFT CS.
 			Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to CS.
 			On the ESP32, GPIOs 35-39 are input-only so cannot be used as outputs.
 			On the ESP32-S2, GPIO 46 is input-only so cannot be used as outputs.
@@ -125,7 +124,7 @@ menu "TFT Configuration"
 		int "BACKLIGHT GPIO number"
 		range -1 46
 		default 32 if IDF_TARGET_ESP32
-		default 33 if IDF_TARGET_ESP32S2
+		default 39 if IDF_TARGET_ESP32S2
 		default 2  if IDF_TARGET_ESP32C3
 		help
 			GPIO number (IOxx) to BACKLIGHT.
@@ -144,6 +143,61 @@ menu "TFT Configuration"
 		bool "Change BGR filter to RGB filter"
 		default false
 		help
-			Change BGR color filter to RGB color filter
+			Change BGR color filter to RGB color filter.
+
+	config XPT2046
+		bool "Enable XPT2046 Touch Contoller"
+		default false
+		help
+			Enable XPT2046 Touch Contolle.
+
+	config MISO_GPIO
+		depends on XPT2046
+		int "MISO GPIO number"
+		range 0 46
+		default 19 if IDF_TARGET_ESP32
+		default 33 if IDF_TARGET_ESP32S2
+		default 3  if IDF_TARGET_ESP32C3
+		help
+			GPIO number (IOxx) to SPI MISO.
+			Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to MOSI.
+			On the ESP32, GPIOs 35-39 are input-only so cannot be used as outputs.
+			On the ESP32-S2, GPIO 46 is input-only so cannot be used as outputs.
+
+	config XPT_CS_GPIO
+		depends on XPT2046
+		int "XPT2046 CS GPIO number"
+		range 0 46
+		default 4 if IDF_TARGET_ESP32
+		default 4 if IDF_TARGET_ESP32S2
+		default 4  if IDF_TARGET_ESP32C3
+		help
+			GPIO number (IOxx) to XPT2046 CS.
+			Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to CS.
+			On the ESP32, GPIOs 35-39 are input-only so cannot be used as outputs.
+			On the ESP32-S2, GPIO 46 is input-only so cannot be used as outputs.
+
+	config XPT_IRQ_GPIO
+		depends on XPT2046
+		int "XPT2046 IRQ GPIO number"
+		range 0 46
+		default 5 if IDF_TARGET_ESP32
+		default 5 if IDF_TARGET_ESP32S2
+		default 5  if IDF_TARGET_ESP32C3
+		help
+			GPIO number (IOxx) to XPT2046 IRQ.
+			Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to CS.
+			On the ESP32, GPIOs 35-39 are input-only so cannot be used as outputs.
+			On the ESP32-S2, GPIO 46 is input-only so cannot be used as outputs.
+
+	config XPT_ACCURACY
+		depends on XPT2046
+		int "Touch position accuracy"
+		range 2 10
+		default 5
+		help
+			Tolerance of touch position.
+			If the difference from the previous position is within this range, it is considered valid.
+			The higher the value, the less accurate the position, but the less responsive it is.
 
 endmenu

@@ -26,21 +26,32 @@
 
 static const int SPI_Command_Mode = 0;
 static const int SPI_Data_Mode = 1;
-//static const int SPI_Frequency = SPI_MASTER_FREQ_20M;
-////static const int SPI_Frequency = SPI_MASTER_FREQ_26M;
-static const int SPI_Frequency = SPI_MASTER_FREQ_40M;
-////static const int SPI_Frequency = SPI_MASTER_FREQ_80M;
+//static const int TFT_Frequency = SPI_MASTER_FREQ_20M;
+////static const int TFT_Frequency = SPI_MASTER_FREQ_26M;
+static const int TFT_Frequency = SPI_MASTER_FREQ_40M;
+////static const int TFT_Frequency = SPI_MASTER_FREQ_80M;
 
+#if CONFIG_XPT2046
+static const int XPT_Frequency = 1*1000*1000;
+//static const int XPT_Frequency = 2*1000*1000;
+//static const int XPT_Frequency = 4*1000*1000;
 
-void spi_master_init(TFT_t * dev, int16_t GPIO_MOSI, int16_t GPIO_SCLK, int16_t GPIO_CS, int16_t GPIO_DC, int16_t GPIO_RESET, int16_t GPIO_BL)
+//#define GPIO_MISO 19
+//#define XPT_CS	4
+//#define XPT_IRQ 5
+#endif
+
+void spi_master_init(TFT_t * dev, int16_t GPIO_MOSI, int16_t GPIO_SCLK, int16_t TFT_CS, int16_t GPIO_DC, int16_t GPIO_RESET, int16_t GPIO_BL,
+	int16_t GPIO_MISO, int16_t XPT_CS, int16_t XPT_IRQ)
 {
 	esp_err_t ret;
 
-	ESP_LOGI(TAG, "GPIO_CS=%d",GPIO_CS);
-	//gpio_pad_select_gpio( GPIO_CS );
-	gpio_reset_pin( GPIO_CS );
-	gpio_set_direction( GPIO_CS, GPIO_MODE_OUTPUT );
-	gpio_set_level( GPIO_CS, 0 );
+	ESP_LOGI(TAG, "TFT_CS=%d",TFT_CS);
+	//gpio_pad_select_gpio( TFT_CS );
+	gpio_reset_pin( TFT_CS );
+	gpio_set_direction( TFT_CS, GPIO_MODE_OUTPUT );
+	//gpio_set_level( TFT_CS, 0 );
+	gpio_set_level( TFT_CS, 1 );
 
 	ESP_LOGI(TAG, "GPIO_DC=%d",GPIO_DC);
 	//gpio_pad_select_gpio( GPIO_DC );
@@ -66,6 +77,15 @@ void spi_master_init(TFT_t * dev, int16_t GPIO_MOSI, int16_t GPIO_SCLK, int16_t 
 		gpio_set_level( GPIO_BL, 0 );
 	}
 
+#if CONFIG_XPT2046
+	spi_bus_config_t buscfg = {
+		.sclk_io_num = GPIO_SCLK,
+		.mosi_io_num = GPIO_MOSI,
+		.miso_io_num = GPIO_MISO,
+		.quadwp_io_num = -1,
+		.quadhd_io_num = -1
+	};
+#else
 	spi_bus_config_t buscfg = {
 		.sclk_io_num = GPIO_SCLK,
 		.mosi_io_num = GPIO_MOSI,
@@ -73,25 +93,59 @@ void spi_master_init(TFT_t * dev, int16_t GPIO_MOSI, int16_t GPIO_SCLK, int16_t 
 		.quadwp_io_num = -1,
 		.quadhd_io_num = -1
 	};
+#endif
 
 	ret = spi_bus_initialize( LCD_HOST, &buscfg, SPI_DMA_CH_AUTO );
 	ESP_LOGD(TAG, "spi_bus_initialize=%d",ret);
 	assert(ret==ESP_OK);
 
-	spi_device_interface_config_t devcfg={
-		.clock_speed_hz = SPI_Frequency,
-		.spics_io_num = GPIO_CS,
+	spi_device_interface_config_t tft_devcfg={
+		.clock_speed_hz = TFT_Frequency,
+		.spics_io_num = TFT_CS,
 		.queue_size = 7,
 		.flags = SPI_DEVICE_NO_DUMMY,
 	};
 
-	spi_device_handle_t handle;
-	ret = spi_bus_add_device( LCD_HOST, &devcfg, &handle);
+	spi_device_handle_t tft_handle;
+	ret = spi_bus_add_device( LCD_HOST, &tft_devcfg, &tft_handle);
 	ESP_LOGD(TAG, "spi_bus_add_device=%d",ret);
 	assert(ret==ESP_OK);
 	dev->_dc = GPIO_DC;
 	dev->_bl = GPIO_BL;
-	dev->_SPIHandle = handle;
+	dev->_TFT_Handle = tft_handle;
+
+#if CONFIG_XPT2046
+	ESP_LOGI(TAG, "XPT_CS=%d",XPT_CS);
+	//gpio_pad_select_gpio( XPT_CS );
+	gpio_reset_pin( XPT_CS );
+	gpio_set_direction( XPT_CS, GPIO_MODE_OUTPUT );
+	gpio_set_level( XPT_CS, 1 );
+
+	// set the IRQ as a input
+	gpio_config_t io_conf = {};
+	io_conf.intr_type = GPIO_INTR_DISABLE;
+	io_conf.pin_bit_mask = (1ULL<<XPT_IRQ);
+	io_conf.mode = GPIO_MODE_INPUT;
+	io_conf.pull_up_en = 1;
+	gpio_config(&io_conf);
+	//gpio_reset_pin( XPT_IRQ );
+	//gpio_set_direction( XPT_IRQ, GPIO_MODE_DEF_INPUT );
+
+	spi_device_interface_config_t xpt_devcfg={
+		.clock_speed_hz = XPT_Frequency,
+		.spics_io_num = XPT_CS,
+		.queue_size = 7,
+		.flags = SPI_DEVICE_NO_DUMMY,
+	};
+
+	spi_device_handle_t xpt_handle;
+	ret = spi_bus_add_device( LCD_HOST, &xpt_devcfg, &xpt_handle);
+	ESP_LOGD(TAG, "spi_bus_add_device=%d",ret);
+	assert(ret==ESP_OK);
+	dev->_XPT_Handle = xpt_handle;
+	dev->_irq = XPT_IRQ;
+	dev->_calibration = true;
+#endif
 }
 
 
@@ -121,7 +175,7 @@ bool spi_master_write_comm_byte(TFT_t * dev, uint8_t cmd)
 	static uint8_t Byte = 0;
 	Byte = cmd;
 	gpio_set_level( dev->_dc, SPI_Command_Mode );
-	return spi_master_write_byte( dev->_SPIHandle, &Byte, 1 );
+	return spi_master_write_byte( dev->_TFT_Handle, &Byte, 1 );
 }
 
 bool spi_master_write_comm_word(TFT_t * dev, uint16_t cmd)
@@ -130,7 +184,7 @@ bool spi_master_write_comm_word(TFT_t * dev, uint16_t cmd)
 	Byte[0] = (cmd >> 8) & 0xFF;
 	Byte[1] = cmd & 0xFF;
 	gpio_set_level( dev->_dc, SPI_Command_Mode );
-	return spi_master_write_byte( dev->_SPIHandle, Byte, 2 );
+	return spi_master_write_byte( dev->_TFT_Handle, Byte, 2 );
 }
 
 
@@ -139,7 +193,7 @@ bool spi_master_write_data_byte(TFT_t * dev, uint8_t data)
 	static uint8_t Byte = 0;
 	Byte = data;
 	gpio_set_level( dev->_dc, SPI_Data_Mode );
-	return spi_master_write_byte( dev->_SPIHandle, &Byte, 1 );
+	return spi_master_write_byte( dev->_TFT_Handle, &Byte, 1 );
 }
 
 
@@ -149,7 +203,7 @@ bool spi_master_write_data_word(TFT_t * dev, uint16_t data)
 	Byte[0] = (data >> 8) & 0xFF;
 	Byte[1] = data & 0xFF;
 	gpio_set_level( dev->_dc, SPI_Data_Mode );
-	return spi_master_write_byte( dev->_SPIHandle, Byte, 2);
+	return spi_master_write_byte( dev->_TFT_Handle, Byte, 2);
 }
 
 bool spi_master_write_addr(TFT_t * dev, uint16_t addr1, uint16_t addr2)
@@ -160,7 +214,7 @@ bool spi_master_write_addr(TFT_t * dev, uint16_t addr1, uint16_t addr2)
 	Byte[2] = (addr2 >> 8) & 0xFF;
 	Byte[3] = addr2 & 0xFF;
 	gpio_set_level( dev->_dc, SPI_Data_Mode );
-	return spi_master_write_byte( dev->_SPIHandle, Byte, 4);
+	return spi_master_write_byte( dev->_TFT_Handle, Byte, 4);
 }
 
 bool spi_master_write_color(TFT_t * dev, uint16_t color, uint16_t size)
@@ -172,7 +226,7 @@ bool spi_master_write_color(TFT_t * dev, uint16_t color, uint16_t size)
 		Byte[index++] = color & 0xFF;
 	}
 	gpio_set_level( dev->_dc, SPI_Data_Mode );
-	return spi_master_write_byte( dev->_SPIHandle, Byte, size*2);
+	return spi_master_write_byte( dev->_TFT_Handle, Byte, size*2);
 }
 
 // Add 202001
@@ -185,7 +239,7 @@ bool spi_master_write_colors(TFT_t * dev, uint16_t * colors, uint16_t size)
 		Byte[index++] = colors[i] & 0xFF;
 	}
 	gpio_set_level( dev->_dc, SPI_Data_Mode );
-	return spi_master_write_byte( dev->_SPIHandle, Byte, size*2);
+	return spi_master_write_byte( dev->_TFT_Handle, Byte, size*2);
 }
 
 
@@ -939,7 +993,7 @@ void lcdDrawRoundRect(TFT_t * dev, uint16_t x1, uint16_t y1, uint16_t x2, uint16
 	if(x1>x2) {
 		temp=x1; x1=x2; x2=temp;
 	} // endif
-	  
+		
 	if(y1>y2) {
 		temp=y1; y1=y2; y2=temp;
 	} // endif
@@ -969,7 +1023,7 @@ void lcdDrawRoundRect(TFT_t * dev, uint16_t x1, uint16_t y1, uint16_t x2, uint16
 	lcdDrawLine(dev, x1+r, y2, x2-r, y2, color);
 	ESP_LOGD(TAG, "y1+r=%d y2-r=%d",y1+r, y2-r);
 	lcdDrawLine(dev, x1, y1+r, x1, y2-r, color);
-	lcdDrawLine(dev, x2, y1+r, x2, y2-r, color);  
+	lcdDrawLine(dev, x2, y1+r, x2, y2-r, color);	
 } 
 
 // Draw arrow
@@ -1076,10 +1130,10 @@ int lcdDrawChar(TFT_t * dev, FontxFile *fxs, uint16_t x, uint16_t y, uint8_t asc
 	int16_t xsd = 0;
 	int16_t ysd = 0;
 	int16_t next = 0;
-	int16_t x0  = 0;
-	int16_t x1  = 0;
-	int16_t y0  = 0;
-	int16_t y1  = 0;
+	int16_t x0	= 0;
+	int16_t x1	= 0;
+	int16_t y0	= 0;
+	int16_t y1	= 0;
 	if (dev->_font_direction == 0) {
 		xd1 = +1;
 		yd1 = +1; //-1;
@@ -1482,3 +1536,49 @@ void lcdScroll(TFT_t * dev, uint16_t vsp){
 	} // endif 0x9225/0x9226
 }
 
+#define MAX_LEN 3
+#define	XPT_START	0x80
+#define XPT_XPOS	0x50
+#define XPT_YPOS	0x10
+#define XPT_8BIT  0x80
+#define XPT_SER		0x04
+#define XPT_DEF		0x03
+
+
+int xptGetit(TFT_t * dev, int cmd){
+	char rbuf[MAX_LEN];
+	char wbuf[MAX_LEN];
+
+	memset(wbuf, 0, sizeof(rbuf));
+	memset(rbuf, 0, sizeof(rbuf));
+	wbuf[0] = cmd;
+	spi_transaction_t SPITransaction;
+	esp_err_t ret;
+
+	memset( &SPITransaction, 0, sizeof( spi_transaction_t ) );
+	SPITransaction.length = MAX_LEN * 8;
+	SPITransaction.tx_buffer = wbuf;
+	SPITransaction.rx_buffer = rbuf;
+#if 1
+	ret = spi_device_transmit( dev->_XPT_Handle, &SPITransaction );
+#else
+	ret = spi_device_polling_transmit( dev->_XPT_Handle, &SPITransaction );
+#endif
+	assert(ret==ESP_OK); 
+	ESP_LOGD(TAG, "rbuf[0]=%02x rbuf[1]=%02x rbuf[2]=%02x", rbuf[0], rbuf[1], rbuf[2]);
+	// 12bit Conversion
+	//int pos = (rbuf[1]<<8)+rbuf[2];
+	int pos = (rbuf[1]<<4)+(rbuf[2]>>4);
+	return(pos);
+}
+
+void xptGetxy(TFT_t * dev, int *xp, int *yp){
+#if 0
+	*xp = xptGetit(dev, (XPT_START | XPT_XPOS) );
+	*yp = xptGetit(dev, (XPT_START | XPT_YPOS) );
+#endif
+#if 1
+	*xp = xptGetit(dev, (XPT_START | XPT_XPOS | XPT_SER) );
+	*yp = xptGetit(dev, (XPT_START | XPT_YPOS | XPT_SER) );
+#endif
+}

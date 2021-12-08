@@ -33,10 +33,22 @@ typedef struct {
 	uint16_t _font_underline_color;
 	int16_t _dc;
 	int16_t _bl;
-	spi_device_handle_t _SPIHandle;
+	int16_t _irq;
+	spi_device_handle_t _TFT_Handle;
+	spi_device_handle_t _XPT_Handle;
+	bool _calibration;
+	int16_t _min_xp; // Minimum xp calibration
+	int16_t _min_yp; // Minimum yp calibration
+	int16_t _max_xp; // Maximum xp calibration
+	int16_t _max_yp; // Maximum yp calibration
+	int16_t _min_xc; // Minimum x coordinate
+	int16_t _min_yc; // Minimum y coordinate
+	int16_t _max_xc; // Maximum x coordinate
+	int16_t _max_yc; // Maximum y coordinate
 } TFT_t;
 
-void spi_master_init(TFT_t * dev, int16_t GPIO_MOSI, int16_t GPIO_SCLK, int16_t GPIO_CS, int16_t GPIO_DC, int16_t GPIO_RESET, int16_t GPIO_BL);
+void spi_master_init(TFT_t * dev, int16_t GPIO_MOSI, int16_t GPIO_SCLK, int16_t TFT_CS, int16_t GPIO_DC, int16_t GPIO_RESET, int16_t GPIO_BL,
+  int16_t GPIO_MISO, int16_t XPT_CS, int16_t XPT_IRQ);
 bool spi_master_write_byte(spi_device_handle_t SPIHandle, const uint8_t* Data, size_t DataLength);
 bool spi_master_write_comm_byte(TFT_t * dev, uint8_t cmd);
 bool spi_master_write_comm_word(TFT_t * dev, uint16_t cmd);
@@ -85,5 +97,7 @@ void lcdBacklightOn(TFT_t * dev);
 void lcdSetScrollArea(TFT_t * dev, uint16_t tfa, uint16_t vsa, uint16_t bfa);
 void lcdResetScrollArea(TFT_t * dev, uint16_t vsa);
 void lcdScroll(TFT_t * dev, uint16_t vsp);
+int xptGetit(TFT_t * dev, int cmd);
+void xptGetxy(TFT_t * dev, int *xp, int *yp);
 #endif /* MAIN_ILI9340_H_ */
 
