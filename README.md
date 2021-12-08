@@ -1,5 +1,5 @@
 # esp-idf-ili9340
-SPI TFT Driver for esp-idf
+SPI TFT and XPT2046 touch contoller driver for esp-idf.
 
 # Software requirements
 esp-idf v4.4 or later.   
