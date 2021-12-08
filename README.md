@@ -359,7 +359,7 @@ XPT2046 and HR2046 are very similar. But HR2046 does not work properly.
 
 (*2) SPI is shared by TFT and XPT2046.   
 
-## Caribration   
+## Calibration   
 Keep touching the point.   
 ![XPT2046-1](https://user-images.githubusercontent.com/6020549/145127021-6f311ab1-0def-4577-9212-39b3848756ae.JPG)
 ![XPT2046-2](https://user-images.githubusercontent.com/6020549/145127026-be6496bc-90d6-48f7-8a0e-da7c1a7ac618.JPG)
