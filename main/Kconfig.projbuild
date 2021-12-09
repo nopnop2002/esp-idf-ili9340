@@ -160,9 +160,7 @@ menu "TFT Configuration"
 		default 3  if IDF_TARGET_ESP32C3
 		help
 			GPIO number (IOxx) to SPI MISO.
-			Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to MOSI.
-			On the ESP32, GPIOs 35-39 are input-only so cannot be used as outputs.
-			On the ESP32-S2, GPIO 46 is input-only so cannot be used as outputs.
+			Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to MISO.
 
 	config XPT_CS_GPIO
 		depends on XPT2046
@@ -170,7 +168,7 @@ menu "TFT Configuration"
 		range 0 46
 		default 4 if IDF_TARGET_ESP32
 		default 4 if IDF_TARGET_ESP32S2
-		default 4  if IDF_TARGET_ESP32C3
+		default 4 if IDF_TARGET_ESP32C3
 		help
 			GPIO number (IOxx) to XPT2046 CS.
 			Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to CS.
@@ -183,12 +181,11 @@ menu "TFT Configuration"
 		range 0 46
 		default 5 if IDF_TARGET_ESP32
 		default 5 if IDF_TARGET_ESP32S2
-		default 5  if IDF_TARGET_ESP32C3
+		default 5 if IDF_TARGET_ESP32C3
 		help
 			GPIO number (IOxx) to XPT2046 IRQ.
-			Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to CS.
-			On the ESP32, GPIOs 35-39 are input-only so cannot be used as outputs.
-			On the ESP32-S2, GPIO 46 is input-only so cannot be used as outputs.
+			Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to IRQ.
+			On the ESP32, GPIO12 is used as a bootstrapping pin to select output voltage of an internal regulator which powers the flash chip (VDD_SDIO),
 
 	config XPT_ACCURACY
 		depends on XPT2046
