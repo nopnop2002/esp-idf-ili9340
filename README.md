@@ -1,5 +1,5 @@
 # esp-idf-ili9340
-SPI TFT and XPT2046 touch controller driver for esp-idf.
+SPI TFT and XPT2046 touch screen controller driver for esp-idf.
 
 # Software requirements
 esp-idf v4.4 or later.   
@@ -330,6 +330,8 @@ Use the menu to enable XPT2046.
 - Touch position accuacy   
 The coordinates read from XPT2046 are not stable.   
 The difference between the coordinates read last time and the coordinates read this time is determined, and if it is within this range, it is regarded as a valid coordinate.   
+Decreasing this value will make the position more accurate, but less responsive.   
+Increasing this value will make the position more inaccurate but more responsive.   
 
 
 There is a TFT equipped with HR2046.   
