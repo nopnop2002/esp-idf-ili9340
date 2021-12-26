@@ -122,6 +122,7 @@ void spi_master_init(TFT_t * dev, int16_t GPIO_MOSI, int16_t GPIO_SCLK, int16_t 
 	gpio_set_level( XPT_CS, 1 );
 
 	// set the IRQ as a input
+	ESP_LOGI(TAG, "XPT_IRQ=%d",XPT_IRQ);
 	gpio_config_t io_conf = {};
 	io_conf.intr_type = GPIO_INTR_DISABLE;
 	io_conf.pin_bit_mask = (1ULL<<XPT_IRQ);

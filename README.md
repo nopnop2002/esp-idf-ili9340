@@ -361,6 +361,14 @@ XPT2046 and HR2046 are very similar. But HR2046 does not work properly.
 
 (*2) SPI is shared by TFT and XPT2046.   
 
+## Check if XPT2046 works properly   
+You can check if XPT2046 works properly.   
+![config-xpt2046-2](https://user-images.githubusercontent.com/6020549/147399576-2df1e2da-44cb-4bdb-ae1d-8fc7c32cddbd.jpg)
+
+If you touch it at this time, the touched coordinates will be displayed.   
+![TouchPosition-1](https://user-images.githubusercontent.com/6020549/147400381-cdd61863-c619-45e0-95ee-2aba593b22da.jpg)
+![TouchPosition-2](https://user-images.githubusercontent.com/6020549/147400385-20b035b4-653a-4605-9d36-6d325a1f68a3.jpg)
+
 ## Calibration   
 Keep touching the point.   
 ![XPT2046-1](https://user-images.githubusercontent.com/6020549/145127021-6f311ab1-0def-4577-9212-39b3848756ae.JPG)
@@ -368,6 +376,7 @@ Keep touching the point.
 
 ## Draw with touch   
 ![XPT2046-3](https://user-images.githubusercontent.com/6020549/145127161-c92ab0c9-a5d7-41f0-99c3-8a1981eb1597.JPG)
+
 
 ---
 

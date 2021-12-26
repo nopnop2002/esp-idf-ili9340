@@ -197,4 +197,11 @@ menu "TFT Configuration"
 			If the difference from the previous position is within this range, it is considered valid.
 			The higher the value, the less accurate the position, but the less responsive it is.
 
+	config XPT_CHECK
+		depends on XPT2046
+		bool "Enable XPT2046 Touch Check"
+		default false
+		help
+			Enable XPT2046 Touch Check.
+
 endmenu
