@@ -368,6 +368,8 @@ You can check if XPT2046 works properly.
 If you touch it at this time, the touched coordinates will be displayed.   
 If there is no touch for 10 seconds, it will end.   
 ![TouchPosition-1](https://user-images.githubusercontent.com/6020549/147400381-cdd61863-c619-45e0-95ee-2aba593b22da.jpg)
+
+Touch the vertical and horizontal directions to check the X and Y coordinates.   
 ![TouchPosition-2](https://user-images.githubusercontent.com/6020549/147400385-20b035b4-653a-4605-9d36-6d325a1f68a3.jpg)
 
 ## Calibration   
