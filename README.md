@@ -366,6 +366,7 @@ You can check if XPT2046 works properly.
 ![config-xpt2046-2](https://user-images.githubusercontent.com/6020549/147399576-2df1e2da-44cb-4bdb-ae1d-8fc7c32cddbd.jpg)
 
 If you touch it at this time, the touched coordinates will be displayed.   
+If there is no touch for 10 seconds, it will end.   
 ![TouchPosition-1](https://user-images.githubusercontent.com/6020549/147400381-cdd61863-c619-45e0-95ee-2aba593b22da.jpg)
 ![TouchPosition-2](https://user-images.githubusercontent.com/6020549/147400385-20b035b4-653a-4605-9d36-6d325a1f68a3.jpg)
 
@@ -375,6 +376,7 @@ Keep touching the point.
 ![XPT2046-2](https://user-images.githubusercontent.com/6020549/145127026-be6496bc-90d6-48f7-8a0e-da7c1a7ac618.JPG)
 
 ## Draw with touch   
+If there is no touch for 10 seconds, it will end.   
 ![XPT2046-3](https://user-images.githubusercontent.com/6020549/145127161-c92ab0c9-a5d7-41f0-99c3-8a1981eb1597.JPG)
 
 
