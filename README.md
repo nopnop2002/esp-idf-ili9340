@@ -363,7 +363,7 @@ XPT2046 and HR2046 are very similar. But HR2046 does not work properly.
 
 ## Check if XPT2046 works properly   
 You can check if XPT2046 works properly.   
-![config-xpt2046-2](https://user-images.githubusercontent.com/6020549/147399576-2df1e2da-44cb-4bdb-ae1d-8fc7c32cddbd.jpg)
+![config-xpt2046-2](https://user-images.githubusercontent.com/6020549/147400683-dfeb8db6-009b-4902-8557-09b6e6ad0539.jpg)
 
 If you touch it at this time, the touched coordinates will be displayed.   
 If there is no touch for 10 seconds, it will end.   
