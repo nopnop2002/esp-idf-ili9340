@@ -369,9 +369,9 @@ If you touch it at this time, the touched coordinates will be displayed.
 If there is no touch for 10 seconds, it will end.   
 ![TouchPosition-1](https://user-images.githubusercontent.com/6020549/147400381-cdd61863-c619-45e0-95ee-2aba593b22da.jpg)
 
-Touch the vertical and horizontal directions to check the X and Y coordinates.   
+Move the touch-pen vertically and horizontally to check the X and Y coordinates.   
 What you get here is the physical coordinates.   
-See [here](https://github.com/nopnop2002/esp-idf-ili9340/issues/39) for physical coordinates.   
+See [here](https://github.com/nopnop2002/esp-idf-ili9340/issues/39) about physical coordinates.   
 ![TouchPosition-2](https://user-images.githubusercontent.com/6020549/147400385-20b035b4-653a-4605-9d36-6d325a1f68a3.jpg)
 
 ## Calibration   
