@@ -303,7 +303,7 @@ There is a TFT equipped with XPT2046.
 
 A library of XPT2046 Touch Screen is included in this project.   
 Use the menu to enable XPT2046.   
-![config-xpt2046](https://user-images.githubusercontent.com/6020549/145126148-2603bbc3-0f3f-4121-adf0-7e64fddacb79.jpg)
+![config-xpt2046-1](https://user-images.githubusercontent.com/6020549/167235381-0d72389f-51a0-417d-8693-542d0ac5482d.jpg)
 
 - Touch position accuacy   
 The coordinates read from XPT2046 are not stable.   
@@ -345,7 +345,7 @@ XPT2046 and HR2046 are very similar. But HR2046 does not work properly.
 
 ## Check if XPT2046 works properly   
 You can check if XPT2046 works properly.   
-![config-xpt2046-2](https://user-images.githubusercontent.com/6020549/147400683-dfeb8db6-009b-4902-8557-09b6e6ad0539.jpg)
+![config-xpt2046-2](https://user-images.githubusercontent.com/6020549/167235292-47c73d4c-e581-448e-8749-8f733b1e8492.jpg)
 
 If you touch it at this time, the touched coordinates will be displayed.   
 If there is no touch for 10 seconds, it will end.   
