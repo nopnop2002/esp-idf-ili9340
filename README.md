@@ -5,49 +5,27 @@ SPI TFT and XPT2046 touch screen controller driver for esp-idf.
 esp-idf v4.4 or later.   
 This is because this version supports ESP32-C3.   
 
-# Installation for ESP32
+# Installation
 
 ```
 git clone https://github.com/nopnop2002/esp-idf-ili9340
 cd esp-idf-ili9340/
-idf.py set-target esp32
+idf.py set-target {esp32/esp32s2/esp32s3/esp32c3}
 idf.py menuconfig
 idf.py flash
 ```
 
-# Installation for ESP32-S2
 
-```
-git clone https://github.com/nopnop2002/esp-idf-ili9340
-cd esp-idf-ili9340/
-idf.py set-target esp32s2
-idf.py menuconfig
-idf.py flash
-```
-__Note__   
-tjpgd library does not exist in ESP32-S2 ROM.   
-Therefore, the JPEG file cannot be displayed.   
+__Note for ESP32S2__   
+Pull Up of the RESET pin may be required. I inserted a 100 ohm resistor between Vcc and RESET.   
 
+__Note for ESP32S3__   
+Pull Up of the RESET pin may be required. I inserted a 100 ohm resistor between Vcc and RESET.   
 
-# Installation for ESP32-C3
-
-```
-git clone https://github.com/nopnop2002/esp-idf-ili9340
-cd esp-idf-ili9340/
-idf.py set-target esp32c3
-idf.py menuconfig
-idf.py flash
-```
-
-__Note__   
+__Note for ESP32C2__   
 For some reason, there are development boards that cannot use GPIO06, GPIO08, GPIO09, GPIO19 for SPI clock pins.   
 According to the ESP32C3 specifications, these pins can also be used as SPI clocks.   
 I used a raw ESP-C3-13 to verify that these pins could be used as SPI clocks.   
-
-
-# ESP-IDF component version   
-Standalone ESP-IDF component version is [here](https://github.com/JarrettR/esp-idf-ili9340).
-
 
 # Configuration   
 You have to set this config value with menuconfig.   
@@ -340,26 +318,28 @@ XPT2046 and HR2046 are very similar. But HR2046 does not work properly.
 
 ## Wirering for XPT2046  
 
-|TFT||ESP32|ESP32-S2|ESP32-C3||
-|:-:|:-:|:-:|:-:|:-:|:-:|
-|VCC|--|3.3V|3.3V|3.3V||
-|GND|--|GND|GND|GND||
-|CS|--|GPIO14|GPIO34|GPIO9||
-|RES|--|GPIO33|GPIO38|GPIO1|(*1)|
-|D/C|--|GPIO27|GPIO37|GPIO10|(*1)|
-|MOSI|--|GPIO23|GPIO35|GPIO19|(*2)|
-|SCK|--|GPIO18|GPIO36|GPIO18|(*2)|
-|LED|--|3.3V|3.3V|3.3V||
-|MISO|--|N/C|N/C|N/C||
-|T_CLK|--|GPIO18|GPIO36|GPIO18|(*2)|
-|T_CS|--|GPIO4|GPIO4|GPIO4|(*1)|
-|T_DIN|--|GPIO23|GPIO35|GPIO19|(*2)|
-|T_OUT|--|GPIO19|GPIO33|GPIO3|(*2)|
-|T_IRQ|--|GPIO5|GPIO5|GPIO5|(*1)|
+|TFT||ESP32|ESP32-S2|ESP32-S3|ESP32-C3||
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|VCC|--|3.3V|3.3V|3.3V|3V3||
+|GND|--|GND|GND|GND|GND||
+|CS|--|GPIO14|GPIO34|GPIO34|GPIO9||
+|RES|--|GPIO33|GPIO41|GPIO41|GPIO1|(*1)|
+|D/C|--|GPIO27|GPIO40|GPIO40|GPIO10|(*1)|
+|MOSI|--|GPIO23|GPIO35|GPIO35|GPIO19|(*2)|
+|SCK|--|GPIO18|GPIO36|GPIO36|GPIO18|(*2)|
+|LED|--|3.3V|3.3V|3.3V|3.3V|(*3)|
+|MISO|--|N/C|N/C|N/C|N/C||
+|T_CLK|--|GPIO18|GPIO36|GPIO36|GPIO18|(*2)|
+|T_CS|--|GPIO22|GPIO38|GPIO42|GPIO5|(*1)|
+|T_DIN|--|GPIO23|GPIO35|GPIO35|GPIO19|(*2)|
+|T_OUT|--|GPIO19|GPIO37|GPIO37|GPIO3|(*2)|
+|T_IRQ|--|GPIO21|GPIO39|GPIO45|GPIO4|(*1)|
 
 (*1) You can change any pin.   
 
 (*2) SPI is shared by TFT and XPT2046.   
+
+(*3) It can be controlled using gpio. However, you need to switch 3.3V using a transistor.   
 
 ## Check if XPT2046 works properly   
 You can check if XPT2046 works properly.   
