@@ -341,7 +341,7 @@ XPT2046 and HR2046 are very similar. But HR2046 does not work properly.
 
 (*3) It can be controlled using gpio. However, you need to switch 3.3V using a transistor.   
 
-(*4) I found that there is a limit to the GPIOs that can be used when the touch panel is enabled.   
+(*4) I found that there are limits to the GPIOs that can be used as touch panel controls.   
 
 ## Check if XPT2046 works properly   
 You can check if XPT2046 works properly.   
