@@ -330,16 +330,18 @@ XPT2046 and HR2046 are very similar. But HR2046 does not work properly.
 |LED|--|3.3V|3.3V|3.3V|3.3V|(*3)|
 |MISO|--|N/C|N/C|N/C|N/C||
 |T_CLK|--|GPIO18|GPIO36|GPIO36|GPIO18|(*2)|
-|T_CS|--|GPIO22|GPIO38|GPIO42|GPIO5|(*1)|
+|T_CS|--|GPIO22|GPIO38|GPIO42|GPIO5|(*4)|
 |T_DIN|--|GPIO23|GPIO35|GPIO35|GPIO19|(*2)|
 |T_OUT|--|GPIO19|GPIO37|GPIO37|GPIO3|(*2)|
-|T_IRQ|--|GPIO21|GPIO39|GPIO45|GPIO4|(*1)|
+|T_IRQ|--|GPIO21|GPIO39|GPIO45|GPIO4|(*4)|
 
 (*1) You can change any pin.   
 
 (*2) SPI is shared by TFT and XPT2046.   
 
 (*3) It can be controlled using gpio. However, you need to switch 3.3V using a transistor.   
+
+(*4) I found that there is a limit to the GPIOs that can be used when the touch panel is enabled.   
 
 ## Check if XPT2046 works properly   
 You can check if XPT2046 works properly.   
