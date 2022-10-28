@@ -335,7 +335,7 @@ XPT2046 and HR2046 are very similar. But HR2046 does not work properly.
 |T_OUT|--|GPIO19|GPIO37|GPIO37|GPIO3|(*1)(*2)|
 |T_IRQ|--|GPIO21|GPIO39|GPIO45|GPIO4|(*1)(*4)|
 
-(*1) You can change any pin.   
+(*1) You can change it to any pin using menuconfig.   
 
 (*2) SPI is shared by TFT and XPT2046.   
 
