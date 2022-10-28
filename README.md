@@ -40,7 +40,7 @@ You have to set this config value with menuconfig.
 - CONFIG_RESET_GPIO   
 - CONFIG_BL_GPIO   
  __GPIO of ESP32 cannot supply too much current.__   
- __The TFT backlight is more stable when supplied from an external power source.__   
+ __TFT backlight becomes brighter when powered by an external power source.__   
  __TFT MISO is not use.__   
 
 ![config-menu](https://user-images.githubusercontent.com/6020549/101022538-db9fcb00-35b4-11eb-95a9-ad84a880c7fb.jpg)
@@ -325,21 +325,21 @@ XPT2046 and HR2046 are very similar. But HR2046 does not work properly.
 |CS|--|GPIO14|GPIO34|GPIO34|GPIO9||
 |RES|--|GPIO33|GPIO41|GPIO41|GPIO1|(*1)|
 |D/C|--|GPIO27|GPIO40|GPIO40|GPIO10|(*1)|
-|MOSI|--|GPIO23|GPIO35|GPIO35|GPIO19|(*2)|
-|SCK|--|GPIO18|GPIO36|GPIO36|GPIO18|(*2)|
-|LED|--|3.3V|3.3V|3.3V|3.3V|(*3)|
+|MOSI|--|GPIO23|GPIO35|GPIO35|GPIO19|(*1)(*2)|
+|SCK|--|GPIO18|GPIO36|GPIO36|GPIO18|(*1)(*2)|
+|LED|--|3.3V|3.3V|3.3V|3.3V|(*1)(*3)|
 |MISO|--|N/C|N/C|N/C|N/C||
-|T_CLK|--|GPIO18|GPIO36|GPIO36|GPIO18|(*2)|
-|T_CS|--|GPIO22|GPIO38|GPIO42|GPIO5|(*4)|
-|T_DIN|--|GPIO23|GPIO35|GPIO35|GPIO19|(*2)|
-|T_OUT|--|GPIO19|GPIO37|GPIO37|GPIO3|(*2)|
-|T_IRQ|--|GPIO21|GPIO39|GPIO45|GPIO4|(*4)|
+|T_CLK|--|GPIO18|GPIO36|GPIO36|GPIO18|(*1)(*2)|
+|T_CS|--|GPIO22|GPIO38|GPIO42|GPIO5|(*1)(*4)|
+|T_DIN|--|GPIO23|GPIO35|GPIO35|GPIO19|(*1)(*2)|
+|T_OUT|--|GPIO19|GPIO37|GPIO37|GPIO3|(*1)(*2)|
+|T_IRQ|--|GPIO21|GPIO39|GPIO45|GPIO4|(*1)(*4)|
 
 (*1) You can change any pin.   
 
 (*2) SPI is shared by TFT and XPT2046.   
 
-(*3) It can be controlled using gpio. However, you need to switch 3.3V using a transistor.   
+(*3) It can be controlled using gpio. However, GPIO of ESP32 cannot supply too much current. TFT backlight becomes brighter when powered by an external power source.   
 
 (*4) I found that there are limits to the GPIOs that can be used as touch panel controls.   
 
