@@ -1,4 +1,5 @@
 #include <string.h>
+#include <inttypes.h>
 #include <math.h>
 
 #include "freertos/FreeRTOS.h"
@@ -13,6 +14,7 @@
 #define TAG "ILI9340"
 #define	_DEBUG_ 0
 
+#if 0
 #ifdef CONFIG_IDF_TARGET_ESP32
 #define LCD_HOST HSPI_HOST
 #elif defined CONFIG_IDF_TARGET_ESP32S2
@@ -22,6 +24,14 @@
 #elif defined CONFIG_IDF_TARGET_ESP32C3
 #define LCD_HOST SPI2_HOST
 #endif
+#endif
+
+#if CONFIG_SPI2_HOST
+#define HOST_ID SPI2_HOST
+#elif CONFIG_SPI3_HOST
+#define HOST_ID SPI3_HOST
+#endif
+
 
 //static const int GPIO_MOSI = 23;
 //static const int GPIO_SCLK = 18;
@@ -97,7 +107,7 @@ void spi_master_init(TFT_t * dev, int16_t GPIO_MOSI, int16_t GPIO_SCLK, int16_t 
 	};
 #endif
 
-	ret = spi_bus_initialize( LCD_HOST, &buscfg, SPI_DMA_CH_AUTO );
+	ret = spi_bus_initialize( HOST_ID, &buscfg, SPI_DMA_CH_AUTO );
 	ESP_LOGD(TAG, "spi_bus_initialize=%d",ret);
 	assert(ret==ESP_OK);
 
@@ -109,7 +119,7 @@ void spi_master_init(TFT_t * dev, int16_t GPIO_MOSI, int16_t GPIO_SCLK, int16_t 
 	};
 
 	spi_device_handle_t tft_handle;
-	ret = spi_bus_add_device( LCD_HOST, &tft_devcfg, &tft_handle);
+	ret = spi_bus_add_device( HOST_ID, &tft_devcfg, &tft_handle);
 	ESP_LOGD(TAG, "spi_bus_add_device=%d",ret);
 	assert(ret==ESP_OK);
 	dev->_dc = GPIO_DC;
@@ -142,7 +152,7 @@ void spi_master_init(TFT_t * dev, int16_t GPIO_MOSI, int16_t GPIO_SCLK, int16_t 
 	};
 
 	spi_device_handle_t xpt_handle;
-	ret = spi_bus_add_device( LCD_HOST, &xpt_devcfg, &xpt_handle);
+	ret = spi_bus_add_device( HOST_ID, &xpt_devcfg, &xpt_handle);
 	ESP_LOGD(TAG, "spi_bus_add_device=%d",ret);
 	assert(ret==ESP_OK);
 	dev->_XPT_Handle = xpt_handle;
@@ -249,7 +259,7 @@ bool spi_master_write_colors(TFT_t * dev, uint16_t * colors, uint16_t size)
 void delayMS(int ms) {
 	int _ms = ms + (portTICK_PERIOD_MS - 1);
 	TickType_t xTicksToDelay = _ms / portTICK_PERIOD_MS;
-	ESP_LOGD(TAG, "ms=%d _ms=%d portTICK_PERIOD_MS=%d xTicksToDelay=%d",ms,_ms,portTICK_PERIOD_MS,xTicksToDelay);
+	ESP_LOGD(TAG, "ms=%d _ms=%d portTICK_PERIOD_MS=%"PRIu32" xTicksToDelay=%"PRIu32,ms,_ms,portTICK_PERIOD_MS,xTicksToDelay);
 	vTaskDelay(xTicksToDelay);
 }
 
@@ -598,7 +608,7 @@ void lcdDrawMultiPixels(TFT_t * dev, uint16_t x, uint16_t y, uint16_t size, uint
 
 	ESP_LOGD(TAG,"offset(x)=%d offset(y)=%d",dev->_offsetx,dev->_offsety);
 	uint16_t _x1 = x + dev->_offsetx;
-	uint16_t _x2 = _x1 + size;
+	uint16_t _x2 = _x1 + (size-1);
 	uint16_t _y1 = y + dev->_offsety;
 	uint16_t _y2 = _y1;
 	ESP_LOGD(TAG,"_x1=%d _x2=%d _y1=%d _y2=%d",_x1, _x2, _y1, _y2);
@@ -853,8 +863,8 @@ void lcdDrawRect(TFT_t * dev, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2
 // yc:Center Y coordinate
 // w:Width of rectangle
 // h:Height of rectangle
-// angle :Angle of rectangle
-// color :color
+// angle:Angle of rectangle
+// color:color
 
 //When the origin is (0, 0), the point (x1, y1) after rotating the point (x, y) by the angle is obtained by the following calculation.
 // x1 = x * cos(angle) - y * sin(angle)
@@ -896,8 +906,8 @@ void lcdDrawRectAngle(TFT_t * dev, uint16_t xc, uint16_t yc, uint16_t w, uint16_
 // yc:Center Y coordinate
 // w:Width of triangle
 // h:Height of triangle
-// angle :Angle of triangle
-// color :color
+// angle:Angle of triangle
+// color:color
 
 //When the origin is (0, 0), the point (x1, y1) after rotating the point (x, y) by the angle is obtained by the following calculation.
 // x1 = x * cos(angle) - y * sin(angle)
@@ -1109,7 +1119,7 @@ uint16_t rgb565_conv(uint16_t r,uint16_t g,uint16_t b) {
 // Draw ASCII character
 // x:X coordinate
 // y:Y coordinate
-// ascii: ascii code
+// ascii:ascii code
 // color:color
 int lcdDrawChar(TFT_t * dev, FontxFile *fxs, uint16_t x, uint16_t y, uint8_t ascii, uint16_t color) {
 	uint16_t xx,yy,bit,ofs;
@@ -1265,7 +1275,7 @@ int lcdDrawString(TFT_t * dev, FontxFile *fx, uint16_t x, uint16_t y, uint8_t * 
 // Draw character using code
 // x:X coordinate
 // y:Y coordinate
-// code: charcter code
+// code:character code
 // color:color
 int lcdDrawCode(TFT_t * dev, FontxFile *fx, uint16_t x,uint16_t y,uint8_t code,uint16_t color) {
 	if(_DEBUG_)printf("code=%x x=%d y=%d\n",code,x,y);
@@ -1288,7 +1298,7 @@ int lcdDrawCode(TFT_t * dev, FontxFile *fx, uint16_t x,uint16_t y,uint8_t code,u
 // Draw SJIS character
 // x:X coordinate
 // y:Y coordinate
-// sjis: SJIS code
+// sjis:SJIS code
 // color:color
 int lcdDrawSJISChar(TFT_t * dev, FontxFile *fxs, uint16_t x,uint16_t y,uint16_t sjis,uint16_t color) {
 	uint16_t xx,yy,bit,ofs;
@@ -1395,7 +1405,7 @@ int lcdDrawSJISChar(TFT_t * dev, FontxFile *fxs, uint16_t x,uint16_t y,uint16_t 
 // Draw UTF8 character
 // x:X coordinate
 // y:Y coordinate
-// utf8: UTF8 code
+// utf8:UTF8 code
 // color:color
 int lcdDrawUTF8Char(TFT_t * dev, FontxFile *fx, uint16_t x,uint16_t y,uint8_t *utf8,uint16_t color) {
 	uint16_t sjis[1];
@@ -1408,7 +1418,7 @@ int lcdDrawUTF8Char(TFT_t * dev, FontxFile *fx, uint16_t x,uint16_t y,uint8_t *u
 // Draw UTF8 string
 // x:X coordinate
 // y:Y coordinate
-// utfs: UTF8 string
+// utfs:UTF8 string
 // color:color
 int lcdDrawUTF8String(TFT_t * dev, FontxFile *fx, uint16_t x, uint16_t y, unsigned char *utfs, uint16_t color) {
 

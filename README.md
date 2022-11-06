@@ -297,6 +297,19 @@ Font file that From 0x80 to 0xff, the characters image of Latin are stored.
 
 ---
 
+# SPI BUS selection   
+![config-spi-bus](https://user-images.githubusercontent.com/6020549/200149000-d88f62ed-9f9a-41d6-8067-ac4bb94d5803.jpg)
+
+The ESP32 series has three SPI BUSs.   
+SPI1_HOST is used for communication with Flash memory.   
+You can use SPI2_HOST and SPI3_HOST freely.   
+When you use SDSPI(SD Card via SPI), SDSPI uses SPI2_HOST BUS.   
+When using this module at the same time as SDSPI or other SPI device using SPI2_HOST, it needs to be changed to SPI3_HOST.   
+When you don't use SDSPI, both SPI2_HOST and SPI3_HOST will work.   
+Previously it was called HSPI_HOST / VSPI_HOST, but now it is called SPI2_HOST / SPI3_HOST.   
+
+---
+
 # XPT2046 Touch Screen   
 There is a TFT equipped with XPT2046.   
 ![XPT2046-3](https://user-images.githubusercontent.com/6020549/144333924-5236bff3-3f4d-4be4-8e99-b6e31878e4f3.jpg)
