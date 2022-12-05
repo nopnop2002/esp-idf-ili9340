@@ -18,6 +18,8 @@ idf.py flash
 
 __Note for ESP32S2__   
 Pull Up of the RESET pin may be required. I inserted a 100 ohm resistor between Vcc and RESET.   
+The tjpgd library is not present in ESP32-S2 ROM.   
+You cannot be displayed JPEG files.   
 
 __Note for ESP32S3__   
 Pull Up of the RESET pin may be required. I inserted a 100 ohm resistor between Vcc and RESET.   
