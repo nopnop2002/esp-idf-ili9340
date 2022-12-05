@@ -1059,14 +1059,29 @@ TickType_t CodeTest(TFT_t * dev, FontxFile *fx, int width, int height, uint16_t 
 }
 
 #if CONFIG_XPT2046
-void TouchPosition(TFT_t * dev, TickType_t timeout) {
+void TouchPosition(TFT_t * dev, FontxFile *fx, int width, int height, TickType_t timeout) {
 	ESP_LOGW(TAG, "Start TouchPosition");
-	TickType_t lastTouched = xTaskGetTickCount();
 
-	// Enable XPT2046
-  int _xp;
-  int _yp;
-  xptGetxy(dev, &_xp, &_yp);
+	// get font width & height
+	uint8_t buffer[FontxGlyphBufSize];
+	uint8_t fontWidth;
+	uint8_t fontHeight;
+	GetFontx(fx, 0, buffer, &fontWidth, &fontHeight);
+	ESP_LOGD(__FUNCTION__,"fontWidth=%d fontHeight=%d",fontWidth,fontHeight);
+
+	TickType_t lastTouched = xTaskGetTickCount();
+	lcdFillScreen(dev, BLACK);
+	uint8_t ascii[24];
+	strcpy((char *)ascii, "Touch any place");
+	int ypos = ((height - fontHeight) / 2) - 1;
+	int xpos = (width + (strlen((char *)ascii) * fontWidth)) / 2;
+	lcdSetFontDirection(dev, DIRECTION180);
+	lcdDrawString(dev, fx, xpos, ypos, ascii, WHITE);
+
+	// Clear XPT2046
+	int _xp;
+	int _yp;
+  	xptGetxy(dev, &_xp, &_yp);
 
 	bool isRunning = true;
 	while(isRunning) {
@@ -1122,10 +1137,10 @@ void TouchCalibration(TFT_t * dev, FontxFile *fx, int width, int height) {
 	int16_t yp = INT16_MAX;
 	int counter = 0;
 
-	// Enable XPT2046
-  int _xp;
-  int _yp;
-  xptGetxy(dev, &_xp, &_yp);
+	// Clear XPT2046
+  	int _xp;
+  	int _yp;
+  	xptGetxy(dev, &_xp, &_yp);
 
 	while(1) {
 		int level = gpio_get_level(dev->_irq);
@@ -1235,10 +1250,10 @@ void TouchTest(TFT_t * dev, FontxFile *fx, int width, int height, TickType_t tim
 	float _ys = dev->_max_yc - dev->_min_yc;
 	ESP_LOGI(TAG, "_xs=%f _ys=%f", _xs, _ys);
 
-  // Enable XPT2046
-  int _xp;
-  int _yp;
-  xptGetxy(dev, &_xp, &_yp);
+	// Clear XPT2046
+	int _xp;
+	int _yp;
+	xptGetxy(dev, &_xp, &_yp);
 
 	TickType_t lastTouched = xTaskGetTickCount();
 	bool isRunning = true;
@@ -1356,7 +1371,7 @@ void ILI9341(void *pvParameters)
 
 #if CONFIG_XPT2046
 #if CONFIG_XPT_CHECK
-	TouchPosition(&dev, 1000);
+	TouchPosition(&dev, fx24G, CONFIG_WIDTH, CONFIG_HEIGHT, 1000);
 #endif
 #endif
 
@@ -1374,6 +1389,11 @@ void ILI9341(void *pvParameters)
 #endif
 
 	while(1) {
+
+#if CONFIG_XPT2046
+		TouchCalibration(&dev, fx24G, CONFIG_WIDTH, CONFIG_HEIGHT);
+		TouchTest(&dev, fx24G, CONFIG_WIDTH, CONFIG_HEIGHT, 1000);
+#endif
 
 		FillTest(&dev, CONFIG_WIDTH, CONFIG_HEIGHT);
 		WAIT;
@@ -1434,11 +1454,6 @@ void ILI9341(void *pvParameters)
 
 		CodeTest(&dev, fx32L, CONFIG_WIDTH, CONFIG_HEIGHT, 0x80, 0xff);
 		WAIT;
-
-#if CONFIG_XPT2046
-		TouchCalibration(&dev, fx24G, CONFIG_WIDTH, CONFIG_HEIGHT);
-		TouchTest(&dev, fx24G, CONFIG_WIDTH, CONFIG_HEIGHT, 1000);
-#endif
 
 		char file[32];
 		if (CONFIG_WIDTH >= CONFIG_HEIGHT) {

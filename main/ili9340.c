@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <string.h>
 #include <inttypes.h>
 #include <math.h>
@@ -14,22 +15,12 @@
 #define TAG "ILI9340"
 #define	_DEBUG_ 0
 
-#if 0
-#ifdef CONFIG_IDF_TARGET_ESP32
-#define LCD_HOST HSPI_HOST
-#elif defined CONFIG_IDF_TARGET_ESP32S2
-#define LCD_HOST SPI2_HOST
-#elif defined CONFIG_IDF_TARGET_ESP32S3
-#define LCD_HOST SPI2_HOST
-#elif defined CONFIG_IDF_TARGET_ESP32C3
-#define LCD_HOST SPI2_HOST
-#endif
-#endif
-
 #if CONFIG_SPI2_HOST
 #define HOST_ID SPI2_HOST
 #elif CONFIG_SPI3_HOST
 #define HOST_ID SPI3_HOST
+#else
+#define HOST_ID SPI2_HOST // When not to use menuconfig
 #endif
 
 
@@ -59,21 +50,18 @@ void spi_master_init(TFT_t * dev, int16_t GPIO_MOSI, int16_t GPIO_SCLK, int16_t 
 	esp_err_t ret;
 
 	ESP_LOGI(TAG, "TFT_CS=%d",TFT_CS);
-	//gpio_pad_select_gpio( TFT_CS );
 	gpio_reset_pin( TFT_CS );
 	gpio_set_direction( TFT_CS, GPIO_MODE_OUTPUT );
 	//gpio_set_level( TFT_CS, 0 );
 	gpio_set_level( TFT_CS, 1 );
 
 	ESP_LOGI(TAG, "GPIO_DC=%d",GPIO_DC);
-	//gpio_pad_select_gpio( GPIO_DC );
 	gpio_reset_pin( GPIO_DC );
 	gpio_set_direction( GPIO_DC, GPIO_MODE_OUTPUT );
 	gpio_set_level( GPIO_DC, 0 );
 
 	ESP_LOGI(TAG, "GPIO_RESET=%d",GPIO_RESET);
 	if ( GPIO_RESET >= 0 ) {
-		//gpio_pad_select_gpio( GPIO_RESET );
 		gpio_reset_pin( GPIO_RESET );
 		gpio_set_direction( GPIO_RESET, GPIO_MODE_OUTPUT );
 		gpio_set_level( GPIO_RESET, 0 );
@@ -83,7 +71,6 @@ void spi_master_init(TFT_t * dev, int16_t GPIO_MOSI, int16_t GPIO_SCLK, int16_t 
 
 	ESP_LOGI(TAG, "GPIO_BL=%d",GPIO_BL);
 	if ( GPIO_BL >= 0 ) {
-		//gpio_pad_select_gpio( GPIO_BL );
 		gpio_reset_pin( GPIO_BL );
 		gpio_set_direction( GPIO_BL, GPIO_MODE_OUTPUT );
 		gpio_set_level( GPIO_BL, 0 );
@@ -128,7 +115,6 @@ void spi_master_init(TFT_t * dev, int16_t GPIO_MOSI, int16_t GPIO_SCLK, int16_t 
 
 #if CONFIG_XPT2046
 	ESP_LOGI(TAG, "XPT_CS=%d",XPT_CS);
-	//gpio_pad_select_gpio( XPT_CS );
 	gpio_reset_pin( XPT_CS );
 	gpio_set_direction( XPT_CS, GPIO_MODE_OUTPUT );
 	gpio_set_level( XPT_CS, 1 );
