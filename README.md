@@ -22,7 +22,7 @@ Pull Up of the RESET pin may be required. I inserted a 100 ohm resistor between 
 __Note for ESP32S3__   
 Pull Up of the RESET pin may be required. I inserted a 100 ohm resistor between Vcc and RESET.   
 
-__Note for ESP32C2__   
+__Note for ESP32C3__   
 For some reason, there are development boards that cannot use GPIO06, GPIO08, GPIO09, GPIO19 for SPI clock pins.   
 According to the ESP32C3 specifications, these pins can also be used as SPI clocks.   
 I used a raw ESP-C3-13 to verify that these pins could be used as SPI clocks.   
