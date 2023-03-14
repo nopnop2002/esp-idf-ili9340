@@ -17,12 +17,11 @@ idf.py flash
 
 
 __Note for ESP32S2__   
-Pull Up of the RESET pin may be required. I inserted a 100 ohm resistor between Vcc and RESET.   
-The tjpgd library is not present in ESP32-S2 ROM.   
-You cannot be displayed JPEG files.   
+Pull Up of the RESET pin may be required. I inserted a 10K ohm resistor between Vcc and RESET.   
+Since the ROM is small, it is not possible to display PNG and JPEG.   
 
 __Note for ESP32S3__   
-Pull Up of the RESET pin may be required. I inserted a 100 ohm resistor between Vcc and RESET.   
+Pull Up of the RESET pin may be required. I inserted a 10K ohm resistor between Vcc and RESET.   
 
 __Note for ESP32C3__   
 For some reason, there are development boards that cannot use GPIO06, GPIO08, GPIO09, GPIO19 for SPI clock pins.   
