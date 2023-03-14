@@ -27,7 +27,13 @@
 
 #include <stdint.h>
 #include <stdbool.h>
-#include "esp32/rom/miniz.h"
+#include "freertos/FreeRTOS.h"
+
+#if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 0, 0)
+#include "miniz.h"
+#else
+#include "rom/miniz.h"
+#endif
 
 #ifdef __cplusplus
 extern "C" {
