@@ -117,6 +117,15 @@ Left:2.8" Right:2.4"
 
 ---
 
+# 2.8" ILI9341 Built-In 320x240
+
+![config-ESP32-2432S028R](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/2d6dfc02-747d-46fb-8881-65dffdadcf14)
+![ESP32-2432S028R-1](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/e9e4b502-4063-49b2-b58a-d60aeccdd380)
+![ESP32-2432S028R-2](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/af351771-6c08-4949-b541-1c9d35e97c8e)
+
+
+---
+
 # 2.2" ILI9340 320x240
 
 ![config-ili9340](https://user-images.githubusercontent.com/6020549/101022746-2588b100-35b5-11eb-8eaa-1f86cc4c9f93.jpg)
