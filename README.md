@@ -48,20 +48,20 @@ You have to set this config value with menuconfig.
 
 ---
 
-# Tested TFT
-
-M5Stack   
-4.0" ST7796S 480x320   
-3.2" ILI9341 320x240   
-2.8" ILI9341 320x240   
-2.4" ILI9341 320x240   
-2.2" ILI9340 320x240   
-2.0" ILI9225 176x220   
-2.0" ILI9225G 176x220   
-1.8" ST7735 128x160   
-1.77" ST7735 128x160   
-1.44" ST7735 128x128   
-0.96" ST7735 80x160   
+# Tested TFT   
+- M5Stack   
+- ESP32-2432S028R
+- 4.0" ST7796S 480x320   
+- 3.2" ILI9341 320x240   
+- 2.8" ILI9341 320x240   
+- 2.4" ILI9341 320x240   
+- 2.2" ILI9340 320x240   
+- 2.0" ILI9225 176x220   
+- 2.0" ILI9225G 176x220   
+- 1.8" ST7735 128x160   
+- 1.77" ST7735 128x160   
+- 1.44" ST7735 128x128   
+- 0.96" ST7735 80x160   
 
 ![spi-tft](https://user-images.githubusercontent.com/6020549/59512687-3098de80-8ef4-11e9-9759-530ffe47d659.JPG)
 
