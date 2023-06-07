@@ -389,6 +389,12 @@ If there is no touch for 10 seconds, it will end.
 ![XPT2046-3](https://user-images.githubusercontent.com/6020549/145127161-c92ab0c9-a5d7-41f0-99c3-8a1981eb1597.JPG)
 ![XPT2046-4](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/fa87dff0-2df3-4a4c-b104-1e71fa27833f)
 
+### Select with touch   
+If there is no touch for 10 seconds, it will end.   
+I borrowed the icon from [here](https://www.flaticon.com/packs/social-media-343).   
+![XPT2046-11](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/1236576e-ec13-40f9-8e0d-27fc46f4b12d)
+![XPT2046-12](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/245355d9-2e8a-4aa6-9bd8-4070d8dcc393)
+
 ---
 
 # SPI BUS selection   
