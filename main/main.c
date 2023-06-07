@@ -1070,7 +1070,7 @@ TickType_t CodeTest(TFT_t * dev, FontxFile *fx, int width, int height, uint16_t 
 
 #if CONFIG_XPT2046_ENABLE_SAME_BUS || CONFIG_XPT2046_ENABLE_DIFF_BUS
 void TouchPosition(TFT_t * dev, FontxFile *fx, int width, int height, TickType_t timeout) {
-	ESP_LOGW(TAG, "Start TouchPosition");
+	ESP_LOGW(__FUNCTION__, "Start TouchPosition");
 
 	// get font width & height
 	uint8_t buffer[FontxGlyphBufSize];
@@ -1096,10 +1096,10 @@ void TouchPosition(TFT_t * dev, FontxFile *fx, int width, int height, TickType_t
 	bool isRunning = true;
 	while(isRunning) {
 		int level = gpio_get_level(dev->_irq);
-		ESP_LOGD(TAG, "gpio_get_level=%d", level);
+		ESP_LOGD(__FUNCTION__, "gpio_get_level=%d", level);
 		if (level == 0) {
 			xptGetxy(dev, &_xp, &_yp);
-			ESP_LOGI(TAG, "TouchPosition _xp=%d _yp=%d", _xp, _yp);
+			ESP_LOGI(__FUNCTION__, "TouchPosition _xp=%d _yp=%d", _xp, _yp);
 			lastTouched = xTaskGetTickCount();
 		} else {
 			TickType_t current = xTaskGetTickCount();
@@ -1108,7 +1108,7 @@ void TouchPosition(TFT_t * dev, FontxFile *fx, int width, int height, TickType_t
 			}
 		}
 	} // end while
-	ESP_LOGW(TAG, "End TouchPosition");
+	ESP_LOGW(__FUNCTION__, "End TouchPosition");
 }
 
 void TouchCalibration(TFT_t * dev, FontxFile *fx, int width, int height) {
@@ -1154,10 +1154,10 @@ void TouchCalibration(TFT_t * dev, FontxFile *fx, int width, int height) {
 
 	while(1) {
 		int level = gpio_get_level(dev->_irq);
-		ESP_LOGD(TAG, "gpio_get_level=%d", level);
+		ESP_LOGD(__FUNCTION__, "gpio_get_level=%d", level);
 		if (level == 1) continue;
 		xptGetxy(dev, &_xp, &_yp);
-		ESP_LOGI(TAG, "counter=%d _xp=%d _yp=%d xp=%d yp=%d", counter, _xp, _yp, xp, yp);
+		ESP_LOGI(__FUNCTION__, "counter=%d _xp=%d _yp=%d xp=%d yp=%d", counter, _xp, _yp, xp, yp);
 		if (_xp > xp) xp = _xp;
 		if (_yp < yp) yp = _yp;
 		counter++;
@@ -1167,7 +1167,7 @@ void TouchCalibration(TFT_t * dev, FontxFile *fx, int width, int height) {
 			xpos = xpos - fontWidth - 5;
 		}
 	} // end while
-	ESP_LOGI(TAG, "_min_xp=%d _min_yp=%d", xp, yp);
+	ESP_LOGI(__FUNCTION__, "_min_xp=%d _min_yp=%d", xp, yp);
 	dev->_min_xp = xp;
 	dev->_min_yp = yp;
 
@@ -1175,7 +1175,7 @@ void TouchCalibration(TFT_t * dev, FontxFile *fx, int width, int height) {
 	lcdFillScreen(dev, BLACK);
 	while(1) {
 		int level = gpio_get_level(dev->_irq);
-		ESP_LOGD(TAG, "gpio_get_level=%d", level);
+		ESP_LOGD(__FUNCTION__, "gpio_get_level=%d", level);
 		if (level == 1) break;
 		xptGetxy(dev, &_xp, &_yp);
 	} // end while
@@ -1200,10 +1200,10 @@ void TouchCalibration(TFT_t * dev, FontxFile *fx, int width, int height) {
 	counter = 0;
 	while(1) {
 		int level = gpio_get_level(dev->_irq);
-		ESP_LOGD(TAG, "gpio_get_level=%d", level);
+		ESP_LOGD(__FUNCTION__, "gpio_get_level=%d", level);
 		if (level == 1) continue;
 		xptGetxy(dev, &_xp, &_yp);
-		ESP_LOGI(TAG, "counter=%d _xp=%d _yp=%d xp=%d yp=%d", counter, _xp, _yp, xp, yp);
+		ESP_LOGI(__FUNCTION__, "counter=%d _xp=%d _yp=%d xp=%d yp=%d", counter, _xp, _yp, xp, yp);
 		if (_xp < xp) xp = _xp;
 		if (_yp > yp) yp = _yp;
 		counter++;
@@ -1213,7 +1213,7 @@ void TouchCalibration(TFT_t * dev, FontxFile *fx, int width, int height) {
 			xpos = xpos - fontWidth - 5;
 		}
 	} // end while
-	ESP_LOGI(TAG, "max_xp=%d max_yp=%d", xp, yp);
+	ESP_LOGI(__FUNCTION__, "max_xp=%d max_yp=%d", xp, yp);
 	dev->_max_xp = xp;
 	dev->_max_yp = yp;
 
@@ -1221,12 +1221,41 @@ void TouchCalibration(TFT_t * dev, FontxFile *fx, int width, int height) {
 	lcdFillScreen(dev, BLACK);
 	while(1) {
 		int level = gpio_get_level(dev->_irq);
-		ESP_LOGD(TAG, "gpio_get_level=%d", level);
+		ESP_LOGD(__FUNCTION__, "gpio_get_level=%d", level);
 		if (level == 1) break;
 		xptGetxy(dev, &_xp, &_yp);
 	} // end while
 	dev->_calibration = false;
 }
+
+bool isTouched(TFT_t * dev, int *xpos, int *ypos) {
+	int level = gpio_get_level(dev->_irq);
+	ESP_LOGD(__FUNCTION__, "gpio_get_level=%d", level);
+	if (level == 1) return false; // Not touched
+
+	float _xd = dev->_max_xp - dev->_min_xp;
+	float _yd = dev->_max_yp - dev->_min_yp;
+	float _xs = dev->_max_xc - dev->_min_xc;
+	float _ys = dev->_max_yc - dev->_min_yc;
+	ESP_LOGD(__FUNCTION__, "_xs=%f _ys=%f", _xs, _ys);
+
+	int _xp;
+	int _yp;
+	xptGetxy(dev, &_xp, &_yp);
+	ESP_LOGD(__FUNCTION__, "_max_xp=%d _min_xp=%d _xp=%d", dev->_max_xp, dev->_min_xp, _xp);
+	ESP_LOGD(__FUNCTION__, "_max_yp=%d _min_yp=%d _yp=%d", dev->_max_yp, dev->_min_yp, _yp);
+	if (_xp > dev->_min_xp && _xp <= dev->_max_xp) return false;
+	if (_yp < dev->_min_yp && _yp > dev->_max_yp) return false;
+
+	// Convert from position to coordinate
+	//_xpos = ( (float)(_xp - dev->_min_xp) / _xd * _xs ) + 10;
+	//_ypos = ( (float)(_yp - dev->_min_yp) / _yd * _ys ) + 10;
+	*xpos = ( (float)(_xp - dev->_min_xp) / _xd * _xs ) + dev->_min_xc;
+	*ypos = ( (float)(_yp - dev->_min_yp) / _yd * _ys ) + dev->_min_yc;
+	ESP_LOGD(__FUNCTION__, "*xpos=%d *ypos=%d", *xpos, *ypos);
+	return true;
+}
+
 
 void TouchPenTest(TFT_t * dev, FontxFile *fx, int width, int height, TickType_t timeout) {
 	// get font width & height
@@ -1252,67 +1281,37 @@ void TouchPenTest(TFT_t * dev, FontxFile *fx, int width, int height, TickType_t 
 	xpos = (width + (strlen((char *)ascii) * fontWidth)) / 2;
 	lcdDrawString(dev, fx, xpos, ypos, ascii, WHITE);
 
-	float _xd = dev->_max_xp - dev->_min_xp;
-	float _yd = dev->_max_yp - dev->_min_yp;
-	//float _xs = width-10-10;
-	//float _ys = height-10-10;
-	float _xs = dev->_max_xc - dev->_min_xc;
-	float _ys = dev->_max_yc - dev->_min_yc;
-	ESP_LOGI(TAG, "_xs=%f _ys=%f", _xs, _ys);
-
 	// Clear XPT2046
 	int _xp;
 	int _yp;
 	xptGetxy(dev, &_xp, &_yp);
 
 	TickType_t lastTouched = xTaskGetTickCount();
-	bool isRunning = true;
-	while(isRunning) {
-		int _xpos = 0;
-		int _ypos = 0;
-		int _xpos_prev = 0;
-		int _ypos_prev = 0;
+	int _xpos = 0;
+	int _ypos = 0;
+	int _xpos_prev = 0;
+	int _ypos_prev = 0;
 
-		while(1){
-			int level = gpio_get_level(dev->_irq);
-			ESP_LOGD(TAG, "gpio_get_level=%d", level);
-			if (level == 0) {
-				xptGetxy(dev, &_xp, &_yp);
-				ESP_LOGI(TAG, "_max_xp=%d _min_xp=%d _xp=%d", dev->_max_xp, dev->_min_xp, _xp);
-				ESP_LOGI(TAG, "_max_yp=%d _min_yp=%d _yp=%d", dev->_max_yp, dev->_min_yp, _yp);
-				if (_xp > dev->_min_xp && _xp <= dev->_max_xp) continue;
-				if (_yp < dev->_min_yp && _yp > dev->_max_yp) continue;
-				// Convert from position to coordinate
-				//_xpos = ( (float)(_xp - dev->_min_xp) / _xd * _xs ) + 10;
-				//_ypos = ( (float)(_yp - dev->_min_yp) / _yd * _ys ) + 10;
-				_xpos = ( (float)(_xp - dev->_min_xp) / _xd * _xs ) + dev->_min_xc;
-				_ypos = ( (float)(_yp - dev->_min_yp) / _yd * _ys ) + dev->_min_yc;
-				ESP_LOGI(TAG, "_xpos=%d _ypos=%d", _xpos, _ypos);
-#if 1
-				// Valid if the current coordinates are close to the previous coordinates
-				if ( (_xpos > _xpos_prev-CONFIG_XPT_ACCURACY && _xpos < _xpos_prev+CONFIG_XPT_ACCURACY) && 
-					(_ypos > _ypos_prev-CONFIG_XPT_ACCURACY && _ypos < _ypos_prev+CONFIG_XPT_ACCURACY) ) break;
-				//if (_xpos == _xpos_prev && _ypos == _ypos_prev) break;
-				_xpos_prev = _xpos;
-				_ypos_prev = _ypos;
-#else
-				break;
-#endif
-			} else {
-				TickType_t current = xTaskGetTickCount();
-				//if (current - lastTouched > 1000) {
-				if (current - lastTouched > timeout) {
-					isRunning = false;
-					break;
-				}
+	while(1){
+		if (isTouched(dev, &_xpos, &_ypos)) {
+			ESP_LOGI(__FUNCTION__, "_xpos=%d _xpos_prev=%d", _xpos, _xpos_prev);
+			ESP_LOGI(__FUNCTION__, "_ypos=%d _ypos_prev=%d", _ypos, _ypos_prev);
+			// Ignore if the new coordinates are close to the previous coordinates
+			if ( (_xpos > _xpos_prev-CONFIG_XPT_ACCURACY && _xpos < _xpos_prev+CONFIG_XPT_ACCURACY) && 
+				 (_ypos > _ypos_prev-CONFIG_XPT_ACCURACY && _ypos < _ypos_prev+CONFIG_XPT_ACCURACY) ) {
+				ESP_LOGI(__FUNCTION__, "_xpos=%d _ypos=%d", _xpos, _ypos);
+				lcdDrawFillCircle(dev, _xpos-1, _ypos-1, 3, CYAN);
+				lastTouched = xTaskGetTickCount();
+			}
 
-			} // end if
-		} // end while
+			_xpos_prev = _xpos;
+			_ypos_prev = _ypos;
 
-		ESP_LOGI(TAG, "_xpos=%d _ypos=%d", _xpos, _ypos);
-		lcdDrawFillCircle(dev, _xpos-1, _ypos-1, 3, CYAN);
-		lastTouched = xTaskGetTickCount();
-	}
+		} else {
+			TickType_t current = xTaskGetTickCount();
+			if (current - lastTouched > timeout) break;
+		} // end if
+	} // end while
 }
 #endif // CONFIG_XPT2046_ENABLE_SAME_BUS || CONFIG_XPT2046_ENABLE_DIFF_BUS
 
@@ -1398,6 +1397,7 @@ void ILI9341(void *pvParameters)
 #endif
 
 #if 0
+	// for test
 	while(1) {
 #if CONFIG_XPT2046_ENABLE_SAME_BUS || CONFIG_XPT2046_ENABLE_DIFF_BUS
 		TouchCalibration(&dev, fx24G, CONFIG_WIDTH, CONFIG_HEIGHT);
@@ -1406,29 +1406,7 @@ void ILI9341(void *pvParameters)
 
 		ArrowTest(&dev, fx16G, model, CONFIG_WIDTH, CONFIG_HEIGHT);
 		WAIT;
-
-		char file[32];
-		if (CONFIG_WIDTH >= CONFIG_HEIGHT) {
-			strcpy(file, "/images/esp32.bmp");
-		} else {
-			strcpy(file, "/images/esp32_ro.bmp");
-		}
-		BMPTest(&dev, file, CONFIG_WIDTH, CONFIG_HEIGHT);
-		WAIT;
-
-#ifdef ENABLE_JPG
-		strcpy(file, "/images/esp32.jpeg");
-		JPEGTest(&dev, file, CONFIG_WIDTH, CONFIG_HEIGHT);
-		WAIT;
-#endif
-
-#ifdef ENABLE_PNG
-		strcpy(file, "/images/esp_logo.png");
-		PNGTest(&dev, file, CONFIG_WIDTH, CONFIG_HEIGHT);
-		WAIT;
-#endif
 	}
-
 #endif
 
 	while(1) {
