@@ -318,20 +318,19 @@ XPT2046 shares the TFT and SPI bus.
 Use the menu to enable XPT2046.   
 ![config-xpt2046-1](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/28d8785f-e3e2-4b2e-a450-f036517c552b)
 
-There is a TFT equipped with HR2046.   
-XPT2046 and HR2046 are very similar. But HR2046 does not work properly.   
-![XPT2046-2](https://user-images.githubusercontent.com/6020549/144332571-717f33b1-df03-4a0a-9a23-c7c99b9d4d32.JPG)
-
-
 - Touch position accuacy   
 The coordinates read from XPT2046 are not stable.   
 The difference between the coordinates read last time and the coordinates read this time is determined, and if it is within this range, it is regarded as a valid coordinate.   
 Decreasing this value will make the position more accurate, but less responsive.   
 Increasing this value will make the position more inaccurate but more responsive.   
 
+### HR2046 Touch Screen   
+There is a TFT equipped with HR2046.   
+XPT2046 and HR2046 are very similar. But HR2046 does not work properly.   
+![XPT2046-2](https://user-images.githubusercontent.com/6020549/144332571-717f33b1-df03-4a0a-9a23-c7c99b9d4d32.JPG)
 
 
-## Wirering for XPT2046  
+### Wirering for XPT2046  
 
 |TFT||ESP32|ESP32-S2/S3|ESP32-C3||
 |:-:|:-:|:-:|:-:|:-:|:-:|
@@ -358,7 +357,7 @@ Increasing this value will make the position more inaccurate but more responsive
 
 (*4) I found that there are limits to the GPIOs that can be used as touch panel controls.   
 
-## Check if XPT2046 works properly   
+### Check if XPT2046 works properly   
 You can check if XPT2046 works properly.   
 ![config-xpt2046-2](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/12e26a1b-b88f-4f08-8f05-7ff70020adc4)
 
@@ -371,7 +370,7 @@ What you get here is the physical coordinates.
 See [here](https://github.com/nopnop2002/esp-idf-ili9340/issues/39) about physical coordinates.   
 ![TouchPosition-2](https://user-images.githubusercontent.com/6020549/147400385-20b035b4-653a-4605-9d36-6d325a1f68a3.jpg)
 
-## Using ESP32-2432S028R   
+### Using ESP32-2432S028R   
 This module also has an XPT2046.   
 ![ESP32-2432S028R-2](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/af351771-6c08-4949-b541-1c9d35e97c8e)
 
@@ -380,15 +379,16 @@ SPI SCLK and MISO use a separate GPIO than TFT SCLK.
 ![config-xpt2046-3](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/8942ead0-9020-4fcf-a2b1-4434d1d1c42a)
 
 
-## Calibration   
+### Calibration   
 Keep touching the point.   
 ![XPT2046-1](https://user-images.githubusercontent.com/6020549/145127021-6f311ab1-0def-4577-9212-39b3848756ae.JPG)
 ![XPT2046-2](https://user-images.githubusercontent.com/6020549/145127026-be6496bc-90d6-48f7-8a0e-da7c1a7ac618.JPG)
 
-## Draw with touch   
+### Draw with touch   
 If there is no touch for 10 seconds, it will end.   
 ![XPT2046-3](https://user-images.githubusercontent.com/6020549/145127161-c92ab0c9-a5d7-41f0-99c3-8a1981eb1597.JPG)
 ![XPT2046-4](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/fa87dff0-2df3-4a4c-b104-1e71fa27833f)
+
 ---
 
 # SPI BUS selection   
