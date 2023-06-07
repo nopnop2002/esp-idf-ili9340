@@ -309,7 +309,7 @@ Font file that From 0x80 to 0xff, the characters image of Latin are stored.
 ---
 
 # SPI BUS selection   
-![config-spi-bus](https://user-images.githubusercontent.com/6020549/200149000-d88f62ed-9f9a-41d6-8067-ac4bb94d5803.jpg)
+![config-spi-bus](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/bdfd8436-31c7-435f-b21d-3d4b8e5350d3)
 
 The ESP32 series has three SPI BUSs.   
 SPI1_HOST is used for communication with Flash memory.   
