@@ -42,7 +42,7 @@ You have to set this config value with menuconfig.
 - CONFIG_BL_GPIO   
  __GPIO of ESP32 cannot supply too much current.__   
  __TFT backlight becomes brighter when powered by an external power source.__   
- __TFT MISO is not use.__   
+__TFT MISO is not use.__   
 
 ![config-menu](https://user-images.githubusercontent.com/6020549/101022538-db9fcb00-35b4-11eb-95a9-ad84a880c7fb.jpg)
 
