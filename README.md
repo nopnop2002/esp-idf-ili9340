@@ -306,18 +306,6 @@ Font file that From 0x80 to 0xff, the characters image of Japanese are stored.
 Font file that From 0x80 to 0xff, the characters image of Latin are stored.   
 ![M5Statck-Font-3](https://user-images.githubusercontent.com/6020549/132110951-e7faaaa9-cdf2-429d-8eea-d20fe0748524.JPG)
 
----
-
-# SPI BUS selection   
-![config-spi-bus](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/bdfd8436-31c7-435f-b21d-3d4b8e5350d3)
-
-The ESP32 series has three SPI BUSs.   
-SPI1_HOST is used for communication with Flash memory.   
-You can use SPI2_HOST and SPI3_HOST freely.   
-When you use SDSPI(SD Card via SPI), SDSPI uses SPI2_HOST BUS.   
-When using this module at the same time as SDSPI or other SPI device using SPI2_HOST, it needs to be changed to SPI3_HOST.   
-When you don't use SDSPI, both SPI2_HOST and SPI3_HOST will work.   
-Previously it was called HSPI_HOST / VSPI_HOST, but now it is called SPI2_HOST / SPI3_HOST.   
 
 ---
 
@@ -401,6 +389,18 @@ Keep touching the point.
 If there is no touch for 10 seconds, it will end.   
 ![XPT2046-3](https://user-images.githubusercontent.com/6020549/145127161-c92ab0c9-a5d7-41f0-99c3-8a1981eb1597.JPG)
 ![XPT2046-4](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/fa87dff0-2df3-4a4c-b104-1e71fa27833f)
+---
+
+# SPI BUS selection   
+![config-spi-bus](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/bdfd8436-31c7-435f-b21d-3d4b8e5350d3)
+
+The ESP32 series has three SPI BUSs.   
+SPI1_HOST is used for communication with Flash memory.   
+You can use SPI2_HOST and SPI3_HOST freely.   
+When you use SDSPI(SD Card via SPI), SDSPI uses SPI2_HOST BUS.   
+When using this module at the same time as SDSPI or other SPI device using SPI2_HOST, it needs to be changed to SPI3_HOST.   
+When you don't use SDSPI, both SPI2_HOST and SPI3_HOST will work.   
+Previously it was called HSPI_HOST / VSPI_HOST, but now it is called SPI2_HOST / SPI3_HOST.   
 
 ---
 
