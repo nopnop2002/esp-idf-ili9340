@@ -376,7 +376,7 @@ This module also has an XPT2046.
 ![ESP32-2432S028R-2](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/af351771-6c08-4949-b541-1c9d35e97c8e)
 
 XPT2046 uses a different SPI bus than TFT.   
-SPI SCLK and MISO use a separate GPIO than TFT SCLK.   
+XPT2046's SCLK and MISO use separate GPIOs from the TFT.   
 ![config-xpt2046-3](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/8942ead0-9020-4fcf-a2b1-4434d1d1c42a)
 
 
