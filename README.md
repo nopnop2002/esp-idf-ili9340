@@ -328,7 +328,7 @@ There is a TFT equipped with XPT2046.
 
 XPT2046 shares the TFT and SPI bus.   
 Use the menu to enable XPT2046.   
-![config-xpt2046-1](https://user-images.githubusercontent.com/6020549/167235381-0d72389f-51a0-417d-8693-542d0ac5482d.jpg)
+![config-xpt2046-1](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/28d8785f-e3e2-4b2e-a450-f036517c552b)
 
 This module also has an XPT2046.   
 ![ESP32-2432S028R-2](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/af351771-6c08-4949-b541-1c9d35e97c8e)
@@ -377,7 +377,7 @@ XPT2046 and HR2046 are very similar. But HR2046 does not work properly.
 
 ## Check if XPT2046 works properly   
 You can check if XPT2046 works properly.   
-![config-xpt2046-2](https://user-images.githubusercontent.com/6020549/167235292-47c73d4c-e581-448e-8749-8f733b1e8492.jpg)
+![config-xpt2046-2](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/12e26a1b-b88f-4f08-8f05-7ff70020adc4)
 
 If you touch it at this time, the touched coordinates will be displayed.   
 If there is no touch for 10 seconds, it will end.   
