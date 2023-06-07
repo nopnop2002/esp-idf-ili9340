@@ -24,7 +24,7 @@
 #define INTERVAL 400
 #define WAIT vTaskDelay(INTERVAL)
 
-static const char *TAG = "ILI9340";
+static const char *TAG = "MAIN";
 
 // You have to set these CONFIG value using menuconfig.
 #if 0
@@ -709,6 +709,11 @@ TickType_t BMPTest(TFT_t * dev, char * file, int width, int height) {
 
 	// read bmp header
 	bmpfile_t *result = (bmpfile_t*)malloc(sizeof(bmpfile_t));
+	if (result == NULL) {
+		ESP_LOGE(__FUNCTION__, "malloc fail");
+		return 0;
+	}
+
 	ret = fread(result->header.magic, 1, 2, fp);
 	assert(ret == 2);
 	ESP_LOGD(__FUNCTION__,"result->header.magic=%c %c", result->header.magic[0], result->header.magic[1]);
@@ -792,6 +797,12 @@ TickType_t BMPTest(TFT_t * dev, char * file, int width, int height) {
 #define BUFFPIXEL 20
 		uint8_t sdbuffer[3*BUFFPIXEL]; // pixel buffer (R+G+B per pixel)
 		uint16_t *colors = (uint16_t*)malloc(sizeof(uint16_t) * w);
+		if (colors == NULL) {
+			ESP_LOGE(__FUNCTION__, "malloc fail");
+			free(result);
+			fclose(fp);
+			return 0;
+		}
 
 		for (int row=0; row<h; row++) { // For each scanline...
 			if (row < _rows || row > _rowe) continue;
@@ -870,6 +881,11 @@ TickType_t JPEGTest(TFT_t * dev, char * file, int width, int height) {
 		}
 		ESP_LOGD(__FUNCTION__, "jpegHeight=%d offsetY=%d", jpegHeight, offsetY);
 		uint16_t *colors = (uint16_t*)malloc(sizeof(uint16_t) * jpegWidth);
+		if (colors == NULL) {
+			ESP_LOGE(__FUNCTION__, "malloc fail");
+			release_image(&pixels, _width, _height);
+			return 0;
+		}
 
 #if 0
 		for(int y = 0; y < jpegHeight; y++){
@@ -978,6 +994,11 @@ TickType_t PNGTest(TFT_t * dev, char * file, int width, int height) {
 	}
 	ESP_LOGD(__FUNCTION__, "pngHeight=%d offsetY=%d", pngHeight, offsetY);
 	uint16_t *colors = (uint16_t*)malloc(sizeof(uint16_t) * pngWidth);
+	if (colors == NULL) {
+		ESP_LOGE(__FUNCTION__, "malloc fail");
+		pngle_destroy(pngle, _width, _height);
+		return 0;
+	}
 
 #if 0
 	for(int y = 0; y < pngHeight; y++){
@@ -1323,7 +1344,7 @@ void ILI9341(void *pvParameters)
 	int XPT_SCLK_GPIO = -1;
 	int XPT_MOSI_GPIO = -1;
 #elif CONFIG_XPT2046_ENABLE_DIFF_BUS
-	ESP_LOGI(TAG, "Enable Touch Contoller using the same SPI bus as TFT");
+	ESP_LOGI(TAG, "Enable Touch Contoller using the different SPI bus from TFT");
 	int XPT_MISO_GPIO = CONFIG_XPT_MISO_GPIO;
 	int XPT_CS_GPIO = CONFIG_XPT_CS_GPIO;
 	int XPT_IRQ_GPIO = CONFIG_XPT_IRQ_GPIO;
