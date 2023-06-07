@@ -330,12 +330,10 @@ XPT2046 shares the TFT and SPI bus.
 Use the menu to enable XPT2046.   
 ![config-xpt2046-1](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/28d8785f-e3e2-4b2e-a450-f036517c552b)
 
-This module also has an XPT2046.   
-![ESP32-2432S028R-2](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/af351771-6c08-4949-b541-1c9d35e97c8e)
+There is a TFT equipped with HR2046.   
+XPT2046 and HR2046 are very similar. But HR2046 does not work properly.   
+![XPT2046-2](https://user-images.githubusercontent.com/6020549/144332571-717f33b1-df03-4a0a-9a23-c7c99b9d4d32.JPG)
 
-XPT2046 uses a different SPI bus than TFT.   
-SPI SCLK and MISO use a separate GPIO than TFT SCLK.   
-![config-xpt2046-3](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/8942ead0-9020-4fcf-a2b1-4434d1d1c42a)
 
 - Touch position accuacy   
 The coordinates read from XPT2046 are not stable.   
@@ -344,9 +342,6 @@ Decreasing this value will make the position more accurate, but less responsive.
 Increasing this value will make the position more inaccurate but more responsive.   
 
 
-There is a TFT equipped with HR2046.   
-XPT2046 and HR2046 are very similar. But HR2046 does not work properly.   
-![XPT2046-2](https://user-images.githubusercontent.com/6020549/144332571-717f33b1-df03-4a0a-9a23-c7c99b9d4d32.JPG)
 
 ## Wirering for XPT2046  
 
@@ -387,6 +382,15 @@ Move the touch-pen vertically and horizontally to check the X and Y coordinates.
 What you get here is the physical coordinates.   
 See [here](https://github.com/nopnop2002/esp-idf-ili9340/issues/39) about physical coordinates.   
 ![TouchPosition-2](https://user-images.githubusercontent.com/6020549/147400385-20b035b4-653a-4605-9d36-6d325a1f68a3.jpg)
+
+## Using ESP32-2432S028R   
+This module also has an XPT2046.   
+![ESP32-2432S028R-2](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/af351771-6c08-4949-b541-1c9d35e97c8e)
+
+XPT2046 uses a different SPI bus than TFT.   
+SPI SCLK and MISO use a separate GPIO than TFT SCLK.   
+![config-xpt2046-3](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/8942ead0-9020-4fcf-a2b1-4434d1d1c42a)
+
 
 ## Calibration   
 Keep touching the point.   
