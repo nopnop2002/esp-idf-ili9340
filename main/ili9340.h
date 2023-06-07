@@ -47,8 +47,8 @@ typedef struct {
 	int16_t _max_yc; // Maximum y coordinate
 } TFT_t;
 
-void spi_master_init(TFT_t * dev, int16_t GPIO_MOSI, int16_t GPIO_SCLK, int16_t TFT_CS, int16_t GPIO_DC, int16_t GPIO_RESET, int16_t GPIO_BL,
-  int16_t GPIO_MISO, int16_t XPT_CS, int16_t XPT_IRQ);
+void spi_master_init(TFT_t * dev, int16_t TFT_MOSI, int16_t TFT_SCLK, int16_t TFT_CS, int16_t GPIO_DC, int16_t GPIO_RESET, int16_t GPIO_BL,
+	int16_t XPT_MISO, int16_t XPT_CS, int16_t XPT_IRQ, int16_t XPT_SCLK, int16_t XPT_MOSI);
 bool spi_master_write_byte(spi_device_handle_t SPIHandle, const uint8_t* Data, size_t DataLength);
 bool spi_master_write_comm_byte(TFT_t * dev, uint8_t cmd);
 bool spi_master_write_comm_word(TFT_t * dev, uint16_t cmd);

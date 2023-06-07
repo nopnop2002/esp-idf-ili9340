@@ -2,7 +2,7 @@ menu "TFT Configuration"
 
 	config GPIO_RANGE_MAX
 		int
-		default 33 if IDF_TARGET_ESP32
+		default 39 if IDF_TARGET_ESP32
 		default 46 if IDF_TARGET_ESP32S2
 		default 48 if IDF_TARGET_ESP32S3
 		default 19 if IDF_TARGET_ESP32C3
@@ -152,7 +152,25 @@ menu "TFT Configuration"
 		help
 			Change BGR color filter to RGB color filter.
 
+	choice XPT2046
+		prompt "XPT2046 Touch Contoller"
+		default "XPT2046_DISABLE"
+		help
+			Select XPT2046 Touch Contoller.
+		config XPT2046_DISABLE
+			bool "Disable Touch Contoller"
+		config XPT2046_ENABLE_SAME_BUS
+			bool "Enable Touch Contoller using the same SPI bus as TFT"
+			help
+				Enable Touch Contoller using the same SPI bus as TFT.
+		config XPT2046_ENABLE_DIFF_BUS
+			bool "Enable Touch Contoller using a different SPI bus than TFT"
+			help
+				Enable Touch Contoller using a different SPI bus than TFT.
+	endchoice
+
 	choice SPI_HOST
+		depends on XPT2046_DISABLE || XPT2046_ENABLE_SAME
 		prompt "SPI peripheral that controls this bus"
 		default SPI2_HOST
 		help
@@ -168,50 +186,64 @@ menu "TFT Configuration"
 				USE SPI3_HOST. This is also called VSPI_HOST
 	endchoice
 
-	config XPT2046
-		bool "Enable XPT2046 Touch Contoller"
-		default false
-		help
-			Enable XPT2046 Touch Contolle.
 
-	config MISO_GPIO
-		depends on XPT2046
-		int "MISO GPIO number"
+	config XPT_MISO_GPIO
+		depends on XPT2046_ENABLE_SAME_BUS || XPT2046_ENABLE_DIFF_BUS
+		int "XPT2046 MISO GPIO number"
 		range 0 GPIO_RANGE_MAX
 		default 19 if IDF_TARGET_ESP32
 		default 37 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
 		default 6
 		help
-			GPIO number (IOxx) to SPI MISO.
+			GPIO number (IOxx) to XPT2046 MISO.
 			Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to MISO.
 
 	config XPT_CS_GPIO
-		depends on XPT2046
+		depends on XPT2046_ENABLE_SAME_BUS || XPT2046_ENABLE_DIFF_BUS
 		int "XPT2046 CS GPIO number"
 		range 0 GPIO_RANGE_MAX
-		default 22 if IDF_TARGET_ESP32
+		default 21 if IDF_TARGET_ESP32
 		default 38 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
 		default 7
 		help
 			GPIO number (IOxx) to XPT2046 CS.
 			Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to CS.
-			On the ESP32, GPIOs 35-39 are input-only so cannot be used as outputs.
-			On the ESP32-S2, GPIO 46 is input-only so cannot be used as outputs.
 
 	config XPT_IRQ_GPIO
-		depends on XPT2046
+		depends on XPT2046_ENABLE_SAME_BUS || XPT2046_ENABLE_DIFF_BUS
 		int "XPT2046 IRQ GPIO number"
 		range 0 GPIO_RANGE_MAX
-		default 21 if IDF_TARGET_ESP32
+		default 22 if IDF_TARGET_ESP32
 		default 39 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
 		default 8
 		help
 			GPIO number (IOxx) to XPT2046 IRQ.
 			Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to IRQ.
-			On the ESP32, GPIO12 is used as a bootstrapping pin to select output voltage of an internal regulator which powers the flash chip (VDD_SDIO),
+
+	config XPT_SCLK_GPIO
+		depends on XPT2046_ENABLE_DIFF_BUS
+		int "XPT2046 SCLK GPIO number"
+		range 0 GPIO_RANGE_MAX
+		default 25 if IDF_TARGET_ESP32
+		default 40 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
+		default 8
+		help
+			GPIO number (IOxx) to XPT2046 CLK.
+			Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to IRQ.
+
+	config XPT_MOSI_GPIO
+		depends on XPT2046_ENABLE_DIFF_BUS
+		int "XPT2046 MOSI GPIO number"
+		range 0 GPIO_RANGE_MAX
+		default 26 if IDF_TARGET_ESP32
+		default 41 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
+		default 8
+		help
+			GPIO number (IOxx) to XPT2046 CLK.
+			Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to IRQ.
 
 	config XPT_ACCURACY
-		depends on XPT2046
+		depends on XPT2046_ENABLE_SAME_BUS || XPT2046_ENABLE_DIFF_BUS
 		int "Touch position accuracy"
 		range 2 10
 		default 5
@@ -221,7 +253,7 @@ menu "TFT Configuration"
 			The higher the value, the less accurate the position, but the less responsive it is.
 
 	config XPT_CHECK
-		depends on XPT2046
+		depends on XPT2046_ENABLE_SAME_BUS || XPT2046_ENABLE_DIFF_BUS
 		bool "Enable XPT2046 Touch Check"
 		default false
 		help

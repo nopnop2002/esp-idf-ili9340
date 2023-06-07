@@ -16,16 +16,17 @@
 #define	_DEBUG_ 0
 
 #if CONFIG_SPI2_HOST
-#define HOST_ID SPI2_HOST
+#define TFT_ID SPI2_HOST
 #elif CONFIG_SPI3_HOST
-#define HOST_ID SPI3_HOST
+#define TFT_ID SPI3_HOST
 #else
-#define HOST_ID SPI2_HOST // When not to use menuconfig
+#define TFT_ID SPI2_HOST // When not to use menuconfig
+#define XPT_ID SPI3_HOST // When not to use menuconfig
 #endif
 
 
-//static const int GPIO_MOSI = 23;
-//static const int GPIO_SCLK = 18;
+//static const int TFT_MOSI = 23;
+//static const int TFT_SCLK = 18;
 
 static const int SPI_Command_Mode = 0;
 static const int SPI_Data_Mode = 1;
@@ -34,21 +35,23 @@ static const int SPI_Data_Mode = 1;
 static const int TFT_Frequency = SPI_MASTER_FREQ_40M;
 ////static const int TFT_Frequency = SPI_MASTER_FREQ_80M;
 
-#if CONFIG_XPT2046
+#if CONFIG_XPT2046_ENABLE_SAME_BUS || CONFIG_XPT2046_ENABLE_DIFF_BUS
 static const int XPT_Frequency = 1*1000*1000;
 //static const int XPT_Frequency = 2*1000*1000;
 //static const int XPT_Frequency = 4*1000*1000;
 
-//#define GPIO_MISO 19
+//#define XPT_MISO 19
 //#define XPT_CS	4
 //#define XPT_IRQ 5
 #endif
 
-void spi_master_init(TFT_t * dev, int16_t GPIO_MOSI, int16_t GPIO_SCLK, int16_t TFT_CS, int16_t GPIO_DC, int16_t GPIO_RESET, int16_t GPIO_BL,
-	int16_t GPIO_MISO, int16_t XPT_CS, int16_t XPT_IRQ)
+void spi_master_init(TFT_t * dev, int16_t TFT_MOSI, int16_t TFT_SCLK, int16_t TFT_CS, int16_t GPIO_DC, int16_t GPIO_RESET, int16_t GPIO_BL,
+	int16_t XPT_MISO, int16_t XPT_CS, int16_t XPT_IRQ, int16_t XPT_SCLK, int16_t XPT_MOSI)
 {
 	esp_err_t ret;
 
+	ESP_LOGI(TAG, "TFT_MOSI=%d",TFT_MOSI);
+	ESP_LOGI(TAG, "TFT_SCLK=%d",TFT_SCLK);
 	ESP_LOGI(TAG, "TFT_CS=%d",TFT_CS);
 	gpio_reset_pin( TFT_CS );
 	gpio_set_direction( TFT_CS, GPIO_MODE_OUTPUT );
@@ -76,26 +79,26 @@ void spi_master_init(TFT_t * dev, int16_t GPIO_MOSI, int16_t GPIO_SCLK, int16_t 
 		gpio_set_level( GPIO_BL, 0 );
 	}
 
-#if CONFIG_XPT2046
-	spi_bus_config_t buscfg = {
-		.sclk_io_num = GPIO_SCLK,
-		.mosi_io_num = GPIO_MOSI,
-		.miso_io_num = GPIO_MISO,
+#if CONFIG_XPT2046_ENABLE_SAME_BUS
+	spi_bus_config_t tft_buscfg = {
+		.sclk_io_num = TFT_SCLK,
+		.mosi_io_num = TFT_MOSI,
+		.miso_io_num = XPT_MISO,
 		.quadwp_io_num = -1,
 		.quadhd_io_num = -1
 	};
 #else
-	spi_bus_config_t buscfg = {
-		.sclk_io_num = GPIO_SCLK,
-		.mosi_io_num = GPIO_MOSI,
+	spi_bus_config_t tft_buscfg = {
+		.sclk_io_num = TFT_SCLK,
+		.mosi_io_num = TFT_MOSI,
 		.miso_io_num = -1,
 		.quadwp_io_num = -1,
 		.quadhd_io_num = -1
 	};
 #endif
 
-	ret = spi_bus_initialize( HOST_ID, &buscfg, SPI_DMA_CH_AUTO );
-	ESP_LOGD(TAG, "spi_bus_initialize=%d",ret);
+	ret = spi_bus_initialize( TFT_ID, &tft_buscfg, SPI_DMA_CH_AUTO );
+	ESP_LOGI(TAG, "spi_bus_initialize(TFT) ret=%d TFT_ID=%d",ret, TFT_ID);
 	assert(ret==ESP_OK);
 
 	spi_device_interface_config_t tft_devcfg={
@@ -106,14 +109,31 @@ void spi_master_init(TFT_t * dev, int16_t GPIO_MOSI, int16_t GPIO_SCLK, int16_t 
 	};
 
 	spi_device_handle_t tft_handle;
-	ret = spi_bus_add_device( HOST_ID, &tft_devcfg, &tft_handle);
+	ret = spi_bus_add_device( TFT_ID, &tft_devcfg, &tft_handle);
 	ESP_LOGD(TAG, "spi_bus_add_device=%d",ret);
 	assert(ret==ESP_OK);
 	dev->_dc = GPIO_DC;
 	dev->_bl = GPIO_BL;
 	dev->_TFT_Handle = tft_handle;
 
-#if CONFIG_XPT2046
+#if CONFIG_XPT2046_ENABLE_DIFF_BUS
+	ESP_LOGI(TAG, "XPT_SCLK=%d",XPT_SCLK);
+	ESP_LOGI(TAG, "XPT_MOSI=%d",XPT_MOSI);
+	ESP_LOGI(TAG, "XPT_MISO=%d",XPT_MISO);
+	spi_bus_config_t xpt_buscfg = {
+		.sclk_io_num = XPT_SCLK,
+		.mosi_io_num = XPT_MOSI,
+		.miso_io_num = XPT_MISO,
+		.quadwp_io_num = -1,
+		.quadhd_io_num = -1
+	};
+
+	ret = spi_bus_initialize( XPT_ID, &xpt_buscfg, SPI_DMA_CH_AUTO );
+	ESP_LOGI(TAG, "spi_bus_initialize(XPT) ret=%d XPT_ID=%d",ret, XPT_ID);
+	assert(ret==ESP_OK);
+#endif
+
+#if CONFIG_XPT2046_ENABLE_SAME_BUS || CONFIG_XPT2046_ENABLE_DIFF_BUS
 	ESP_LOGI(TAG, "XPT_CS=%d",XPT_CS);
 	gpio_reset_pin( XPT_CS );
 	gpio_set_direction( XPT_CS, GPIO_MODE_OUTPUT );
@@ -138,7 +158,11 @@ void spi_master_init(TFT_t * dev, int16_t GPIO_MOSI, int16_t GPIO_SCLK, int16_t 
 	};
 
 	spi_device_handle_t xpt_handle;
-	ret = spi_bus_add_device( HOST_ID, &xpt_devcfg, &xpt_handle);
+#if CONFIG_XPT2046_ENABLE_SAME_BUS
+	ret = spi_bus_add_device( TFT_ID, &xpt_devcfg, &xpt_handle);
+#else
+	ret = spi_bus_add_device( XPT_ID, &xpt_devcfg, &xpt_handle);
+#endif
 	ESP_LOGD(TAG, "spi_bus_add_device=%d",ret);
 	assert(ret==ESP_OK);
 	dev->_XPT_Handle = xpt_handle;

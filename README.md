@@ -118,6 +118,7 @@ Left:2.8" Right:2.4"
 ---
 
 # 2.8" ILI9341 Built-In 320x240
+Vendor part number is ESP32-2432S028R.   
 
 ![config-ESP32-2432S028R](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/2d6dfc02-747d-46fb-8881-65dffdadcf14)
 ![ESP32-2432S028R-1](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/e9e4b502-4063-49b2-b58a-d60aeccdd380)
@@ -321,12 +322,20 @@ Previously it was called HSPI_HOST / VSPI_HOST, but now it is called SPI2_HOST /
 ---
 
 # XPT2046 Touch Screen   
+A library of XPT2046 Touch Screen is included in this project.   
 There is a TFT equipped with XPT2046.   
 ![XPT2046-3](https://user-images.githubusercontent.com/6020549/144333924-5236bff3-3f4d-4be4-8e99-b6e31878e4f3.jpg)
 
-A library of XPT2046 Touch Screen is included in this project.   
+XPT2046 shares the TFT and SPI bus.   
 Use the menu to enable XPT2046.   
 ![config-xpt2046-1](https://user-images.githubusercontent.com/6020549/167235381-0d72389f-51a0-417d-8693-542d0ac5482d.jpg)
+
+This module also has an XPT2046.   
+![ESP32-2432S028R-2](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/af351771-6c08-4949-b541-1c9d35e97c8e)
+
+XPT2046 uses a different SPI bus than TFT.   
+SPI SCLK and MISO use a separate GPIO than TFT SCLK.   
+![config-xpt2046-3](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/8942ead0-9020-4fcf-a2b1-4434d1d1c42a)
 
 - Touch position accuacy   
 The coordinates read from XPT2046 are not stable.   
@@ -387,7 +396,7 @@ Keep touching the point.
 ## Draw with touch   
 If there is no touch for 10 seconds, it will end.   
 ![XPT2046-3](https://user-images.githubusercontent.com/6020549/145127161-c92ab0c9-a5d7-41f0-99c3-8a1981eb1597.JPG)
-
+![XPT2046-4](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/fa87dff0-2df3-4a4c-b104-1e71fa27833f)
 
 ---
 

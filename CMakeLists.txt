@@ -9,4 +9,6 @@ project(ili9340)
 # that fits the partition named 'storage'. FLASH_IN_PROJECT indicates that
 # the generated image should be flashed when the entire project is flashed to
 # the target with 'idf.py -p PORT flash
-spiffs_create_partition_image(storage font FLASH_IN_PROJECT)
+spiffs_create_partition_image(storage0 font FLASH_IN_PROJECT)
+spiffs_create_partition_image(storage1 icons FLASH_IN_PROJECT)
+spiffs_create_partition_image(storage2 images FLASH_IN_PROJECT)

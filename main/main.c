@@ -26,17 +26,6 @@
 
 static const char *TAG = "ILI9340";
 
-static void SPIFFS_Directory(char * path) {
-	DIR* dir = opendir(path);
-	assert(dir != NULL);
-	while (true) {
-		struct dirent*pe = readdir(dir);
-		if (!pe) break;
-		ESP_LOGI(__FUNCTION__,"d_name=%s d_ino=%d d_type=%x", pe->d_name,pe->d_ino, pe->d_type);
-	}
-	closedir(dir);
-}
-
 // You have to set these CONFIG value using menuconfig.
 #if 0
 #define CONFIG_WIDTH	240
@@ -1058,7 +1047,7 @@ TickType_t CodeTest(TFT_t * dev, FontxFile *fx, int width, int height, uint16_t 
 	return diffTick;
 }
 
-#if CONFIG_XPT2046
+#if CONFIG_XPT2046_ENABLE_SAME_BUS || CONFIG_XPT2046_ENABLE_DIFF_BUS
 void TouchPosition(TFT_t * dev, FontxFile *fx, int width, int height, TickType_t timeout) {
 	ESP_LOGW(TAG, "Start TouchPosition");
 
@@ -1081,7 +1070,7 @@ void TouchPosition(TFT_t * dev, FontxFile *fx, int width, int height, TickType_t
 	// Clear XPT2046
 	int _xp;
 	int _yp;
-  	xptGetxy(dev, &_xp, &_yp);
+	xptGetxy(dev, &_xp, &_yp);
 
 	bool isRunning = true;
 	while(isRunning) {
@@ -1138,9 +1127,9 @@ void TouchCalibration(TFT_t * dev, FontxFile *fx, int width, int height) {
 	int counter = 0;
 
 	// Clear XPT2046
-  	int _xp;
-  	int _yp;
-  	xptGetxy(dev, &_xp, &_yp);
+	int _xp;
+	int _yp;
+	xptGetxy(dev, &_xp, &_yp);
 
 	while(1) {
 		int level = gpio_get_level(dev->_irq);
@@ -1218,7 +1207,7 @@ void TouchCalibration(TFT_t * dev, FontxFile *fx, int width, int height) {
 	dev->_calibration = false;
 }
 
-void TouchTest(TFT_t * dev, FontxFile *fx, int width, int height, TickType_t timeout) {
+void TouchPenTest(TFT_t * dev, FontxFile *fx, int width, int height, TickType_t timeout) {
 	// get font width & height
 	uint8_t buffer[FontxGlyphBufSize];
 	uint8_t fontWidth;
@@ -1304,7 +1293,7 @@ void TouchTest(TFT_t * dev, FontxFile *fx, int width, int height, TickType_t tim
 		lastTouched = xTaskGetTickCount();
 	}
 }
-#endif
+#endif // CONFIG_XPT2046_ENABLE_SAME_BUS || CONFIG_XPT2046_ENABLE_DIFF_BUS
 
 void ILI9341(void *pvParameters)
 {
@@ -1326,18 +1315,30 @@ void ILI9341(void *pvParameters)
 	InitFontx(fx32M,"/spiffs/ILMH32XB.FNT",""); // 16x32Dot Mincyo
 	
 	TFT_t dev;
-#if CONFIG_XPT2046
-	ESP_LOGI(TAG, "Enable XPT2046 Touch Contoller");
-	int MISO_GPIO = CONFIG_MISO_GPIO;
+#if CONFIG_XPT2046_ENABLE_SAME_BUS
+	ESP_LOGI(TAG, "Enable Touch Contoller using the same SPI bus as TFT");
+	int XPT_MISO_GPIO = CONFIG_XPT_MISO_GPIO;
 	int XPT_CS_GPIO = CONFIG_XPT_CS_GPIO;
 	int XPT_IRQ_GPIO = CONFIG_XPT_IRQ_GPIO;
+	int XPT_SCLK_GPIO = -1;
+	int XPT_MOSI_GPIO = -1;
+#elif CONFIG_XPT2046_ENABLE_DIFF_BUS
+	ESP_LOGI(TAG, "Enable Touch Contoller using the same SPI bus as TFT");
+	int XPT_MISO_GPIO = CONFIG_XPT_MISO_GPIO;
+	int XPT_CS_GPIO = CONFIG_XPT_CS_GPIO;
+	int XPT_IRQ_GPIO = CONFIG_XPT_IRQ_GPIO;
+	int XPT_SCLK_GPIO = CONFIG_XPT_SCLK_GPIO;
+	int XPT_MOSI_GPIO = CONFIG_XPT_MOSI_GPIO;
 #else
-	int MISO_GPIO = -1;
+	ESP_LOGI(TAG, "Disable Touch Contoller");
+	int XPT_MISO_GPIO = -1;
 	int XPT_CS_GPIO = -1;
 	int XPT_IRQ_GPIO = -1;
+	int XPT_SCLK_GPIO = -1;
+	int XPT_MOSI_GPIO = -1;
 #endif
 	spi_master_init(&dev, CONFIG_MOSI_GPIO, CONFIG_SCLK_GPIO, CONFIG_TFT_CS_GPIO, CONFIG_DC_GPIO, 
-		CONFIG_RESET_GPIO, CONFIG_BL_GPIO, MISO_GPIO, XPT_CS_GPIO, XPT_IRQ_GPIO);
+		CONFIG_RESET_GPIO, CONFIG_BL_GPIO, XPT_MISO_GPIO, XPT_CS_GPIO, XPT_IRQ_GPIO, XPT_SCLK_GPIO, XPT_MOSI_GPIO);
 
 #if CONFIG_ILI9225
 	uint16_t model = 0x9225;
@@ -1369,7 +1370,7 @@ void ILI9341(void *pvParameters)
 	lcdBGRFilter(&dev);
 #endif
 
-#if CONFIG_XPT2046
+#if CONFIG_XPT2046_ENABLE_SAME_BUS || CONFIG_XPT2046_ENABLE_DIFF_BUS
 #if CONFIG_XPT_CHECK
 	TouchPosition(&dev, fx24G, CONFIG_WIDTH, CONFIG_HEIGHT, 1000);
 #endif
@@ -1377,12 +1378,33 @@ void ILI9341(void *pvParameters)
 
 #if 0
 	while(1) {
-		FillTest(&dev, CONFIG_WIDTH, CONFIG_HEIGHT);
+#if CONFIG_XPT2046_ENABLE_SAME_BUS || CONFIG_XPT2046_ENABLE_DIFF_BUS
+		TouchCalibration(&dev, fx24G, CONFIG_WIDTH, CONFIG_HEIGHT);
+		TouchPenTest(&dev, fx24G, CONFIG_WIDTH, CONFIG_HEIGHT, 1000);
+#endif
+
+		ArrowTest(&dev, fx16G, model, CONFIG_WIDTH, CONFIG_HEIGHT);
 		WAIT;
 
-#if CONFIG_XPT2046
-		TouchCalibration(&dev, fx24G, CONFIG_WIDTH, CONFIG_HEIGHT);
-		TouchTest(&dev, fx24G, CONFIG_WIDTH, CONFIG_HEIGHT, 2000);
+		char file[32];
+		if (CONFIG_WIDTH >= CONFIG_HEIGHT) {
+			strcpy(file, "/images/esp32.bmp");
+		} else {
+			strcpy(file, "/images/esp32_ro.bmp");
+		}
+		BMPTest(&dev, file, CONFIG_WIDTH, CONFIG_HEIGHT);
+		WAIT;
+
+#ifdef ENABLE_JPG
+		strcpy(file, "/images/esp32.jpeg");
+		JPEGTest(&dev, file, CONFIG_WIDTH, CONFIG_HEIGHT);
+		WAIT;
+#endif
+
+#ifdef ENABLE_PNG
+		strcpy(file, "/images/esp_logo.png");
+		PNGTest(&dev, file, CONFIG_WIDTH, CONFIG_HEIGHT);
+		WAIT;
 #endif
 	}
 
@@ -1390,9 +1412,9 @@ void ILI9341(void *pvParameters)
 
 	while(1) {
 
-#if CONFIG_XPT2046
+#if CONFIG_XPT2046_ENABLE_SAME_BUS || CONFIG_XPT2046_ENABLE_DIFF_BUS
 		TouchCalibration(&dev, fx24G, CONFIG_WIDTH, CONFIG_HEIGHT);
-		TouchTest(&dev, fx24G, CONFIG_WIDTH, CONFIG_HEIGHT, 1000);
+		TouchPenTest(&dev, fx24G, CONFIG_WIDTH, CONFIG_HEIGHT, 1000);
 #endif
 
 		FillTest(&dev, CONFIG_WIDTH, CONFIG_HEIGHT);
@@ -1457,21 +1479,21 @@ void ILI9341(void *pvParameters)
 
 		char file[32];
 		if (CONFIG_WIDTH >= CONFIG_HEIGHT) {
-			strcpy(file, "/spiffs/esp32.bmp");
+			strcpy(file, "/images/esp32.bmp");
 		} else {
-			strcpy(file, "/spiffs/esp32_ro.bmp");
+			strcpy(file, "/images/esp32_ro.bmp");
 		}
 		BMPTest(&dev, file, CONFIG_WIDTH, CONFIG_HEIGHT);
 		WAIT;
 
 #ifdef ENABLE_JPG
-		strcpy(file, "/spiffs/esp32.jpeg");
+		strcpy(file, "/images/esp32.jpeg");
 		JPEGTest(&dev, file, CONFIG_WIDTH, CONFIG_HEIGHT);
 		WAIT;
 #endif
 
 #ifdef ENABLE_PNG
-		strcpy(file, "/spiffs/esp_logo.png");
+		strcpy(file, "/images/esp_logo.png");
 		PNGTest(&dev, file, CONFIG_WIDTH, CONFIG_HEIGHT);
 		WAIT;
 #endif
@@ -1542,15 +1564,22 @@ void ILI9341(void *pvParameters)
 	}
 }
 
+static void listSPIFFS(char * path) {
+	DIR* dir = opendir(path);
+	assert(dir != NULL);
+	while (true) {
+		struct dirent*pe = readdir(dir);
+		if (!pe) break;
+		ESP_LOGI(__FUNCTION__,"d_name=%s d_ino=%d d_type=%x", pe->d_name,pe->d_ino, pe->d_type);
+	}
+	closedir(dir);
+}
 
-void app_main(void)
-{
-	ESP_LOGI(TAG, "Initializing SPIFFS");
-
+esp_err_t mountSPIFFS(char * path, char * label, int max_files) {
 	esp_vfs_spiffs_conf_t conf = {
-		.base_path = "/spiffs",
-		.partition_label = NULL,
-		.max_files = 16,
+		.base_path = path,
+		.partition_label = label,
+		.max_files = max_files,
 		.format_if_mount_failed =true
 	};
 
@@ -1559,24 +1588,57 @@ void app_main(void)
 	esp_err_t ret = esp_vfs_spiffs_register(&conf);
 
 	if (ret != ESP_OK) {
-		if (ret == ESP_FAIL) {
+		if (ret ==ESP_FAIL) {
 			ESP_LOGE(TAG, "Failed to mount or format filesystem");
-		} else if (ret == ESP_ERR_NOT_FOUND) {
+		} else if (ret== ESP_ERR_NOT_FOUND) {
 			ESP_LOGE(TAG, "Failed to find SPIFFS partition");
 		} else {
 			ESP_LOGE(TAG, "Failed to initialize SPIFFS (%s)",esp_err_to_name(ret));
 		}
-		return;
+		return ret;
 	}
 
+#if 0
+	ESP_LOGI(TAG, "Performing SPIFFS_check().");
+	ret = esp_spiffs_check(conf.partition_label);
+	if (ret != ESP_OK) {
+		ESP_LOGE(TAG, "SPIFFS_check() failed (%s)", esp_err_to_name(ret));
+		return ret;
+	} else {
+			ESP_LOGI(TAG, "SPIFFS_check() successful");
+	}
+#endif
+
 	size_t total = 0, used = 0;
-	ret = esp_spiffs_info(NULL, &total,&used);
+	ret = esp_spiffs_info(conf.partition_label, &total, &used);
 	if (ret != ESP_OK) {
 		ESP_LOGE(TAG,"Failed to get SPIFFS partition information (%s)",esp_err_to_name(ret));
 	} else {
+		ESP_LOGI(TAG,"Mount %s to %s success", path, label);
 		ESP_LOGI(TAG,"Partition size: total: %d, used: %d", total, used);
 	}
 
-	SPIFFS_Directory("/spiffs/");
+	return ret;
+}
+
+
+void app_main(void)
+{
+	ESP_LOGI(TAG, "Initializing SPIFFS");
+	esp_err_t ret;
+	ret = mountSPIFFS("/spiffs", "storage0", 10);
+	if (ret != ESP_OK) return;
+	listSPIFFS("/spiffs/");
+
+	// Image file borrowed from here
+	// https://www.flaticon.com/packs/social-media-343
+	ret = mountSPIFFS("/icons", "storage1", 10);
+	if (ret != ESP_OK) return;
+	listSPIFFS("/icons/");
+
+	ret = mountSPIFFS("/images", "storage2", 14);
+	if (ret != ESP_OK) return;
+	listSPIFFS("/images/");
+
 	xTaskCreate(ILI9341, "ILI9341", 1024*6, NULL, 2, NULL);
 }
