@@ -351,7 +351,7 @@ XPT2046 and HR2046 are very similar. But HR2046 does not work properly.
 
 (*1) You can change it to any gpio using menuconfig. But some gpio's are input only.   
 
-(*2) SPI is shared by TFT and XPT2046.   
+(*2) These are shared by TFT and XPT2046.   
 
 (*3) It can be controlled using gpio. However, GPIO of ESP32 cannot supply too much current. TFT backlight becomes brighter when powered by an external power source.   
 
