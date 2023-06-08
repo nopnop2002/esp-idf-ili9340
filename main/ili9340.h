@@ -4,21 +4,17 @@
 #include "driver/spi_master.h"
 #include "fontx.h"
 
-#define RED			0xf800
-#define GREEN			0x07e0
-#define BLUE			0x001f
-#define BLACK			0x0000
-#define WHITE			0xffff
-#define GRAY			0x8c51
-#define YELLOW			0xFFE0
-#define CYAN			0x07FF
-#define PURPLE			0xF81F
+#define RED		0xf800
+#define GREEN	0x07e0
+#define BLUE	0x001f
+#define BLACK	0x0000
+#define WHITE	0xffff
+#define GRAY	0x8c51
+#define YELLOW	0xFFE0
+#define CYAN	0x07FF
+#define PURPLE	0xF81F
 
-
-#define DIRECTION0		0
-#define DIRECTION90		1
-#define DIRECTION180		2
-#define DIRECTION270		3
+typedef enum {DIRECTION0, DIRECTION90, DIRECTION180, DIRECTION270} DIRECTION;
 
 typedef struct {
 	uint16_t _model;
