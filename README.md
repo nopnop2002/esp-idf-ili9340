@@ -389,6 +389,21 @@ If there is no touch for 10 seconds, it will end.
 ![XPT2046-3](https://user-images.githubusercontent.com/6020549/145127161-c92ab0c9-a5d7-41f0-99c3-8a1981eb1597.JPG)
 ![XPT2046-4](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/fa87dff0-2df3-4a4c-b104-1e71fa27833f)
 
+## Button with touch   
+You can only enter up to 15 characters.   
+If there is no touch for 10 seconds, it will end.   
+![TouchKeyboard](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/fdba50c7-e349-4fba-8b70-5d50a96aa708)
+
+## Move with touch   
+If there is no touch for 10 seconds, it will end.   
+![TouchMove-1](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/d6cd524d-b576-4109-bcf7-98e26f36f99c)
+![TouchMove-2](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/7be77525-9f61-4deb-9025-f502ab6df76a)
+
+## Menu with Touch   
+If there is no touch for 10 seconds, it will end.   
+![TouchMenu-2](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/b46be78f-8a92-4725-b209-ee95775e2e25)
+![TouchMenu-1](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/0c5f153f-3d83-4f3e-abde-124c7a275d65)
+
 ### Select with touch   
 If there is no touch for 10 seconds, it will end.   
 I borrowed the icon from [here](https://www.flaticon.com/packs/social-media-343).   

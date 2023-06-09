@@ -744,6 +744,18 @@ void lcdDrawFillRect(TFT_t * dev, uint16_t x1, uint16_t y1, uint16_t x2, uint16_
 
 }
 
+// x0:Center X coordinate
+// y0:Center Y coordinate
+// size:Square size
+// color:color
+void lcdDrawFillRect2(TFT_t * dev, uint16_t x0, uint16_t y0, uint16_t size, uint16_t color) {
+	uint16_t x1 = x0-size;
+	uint16_t y1 = y0-size;
+	uint16_t x2 = x0+size;
+	uint16_t y2 = y0+size;
+	lcdDrawFillRect(dev, x1, y1, x2, y2, color);
+}
+
 // Display OFF
 void lcdDisplayOff(TFT_t * dev) {
 	if (dev->_model == 0x9340 || dev->_model == 0x9341 || dev->_model == 0x7735 || dev->_model == 0x7796) {
@@ -867,6 +879,18 @@ void lcdDrawRect(TFT_t * dev, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2
 	lcdDrawLine(dev, x2, y2, x1, y2, color);
 	lcdDrawLine(dev, x1, y2, x1, y1, color);
 }
+
+// x0:Center X coordinate
+// y0:Center Y coordinate
+// size:Square size
+// color:color
+void lcdDrawRect2(TFT_t * dev, uint16_t x0, uint16_t y0, uint16_t size, uint16_t color) {
+	lcdDrawLine(dev, x0-size, y0-size, x0+size, y0-size, color);
+	lcdDrawLine(dev, x0+size, y0-size, x0+size, y0+size, color);
+	lcdDrawLine(dev, x0+size, y0+size, x0-size, y0+size, color);
+	lcdDrawLine(dev, x0-size, y0+size, x0-size, y0-size, color);
+}
+
 
 // Draw rectangle with angle
 // xc:Center X coordinate
@@ -1595,13 +1619,11 @@ int xptGetit(TFT_t * dev, int cmd){
 	return(pos);
 }
 
-void xptGetxy(TFT_t * dev, int *xp, int *yp){
-#if 0
-	*xp = xptGetit(dev, (XPT_START | XPT_XPOS) );
-	*yp = xptGetit(dev, (XPT_START | XPT_YPOS) );
-#endif
-#if 1
+bool touch_getxy(TFT_t *dev, int *xp, int *yp) {
+	int level = gpio_get_level(dev->_irq);
+	ESP_LOGD(__FUNCTION__, "gpio_get_level=%d", level);
+	if (level == 1) return false; // Not touched
 	*xp = xptGetit(dev, (XPT_START | XPT_XPOS | XPT_SER) );
 	*yp = xptGetit(dev, (XPT_START | XPT_YPOS | XPT_SER) );
-#endif
+	return true;
 }
