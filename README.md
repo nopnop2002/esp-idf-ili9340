@@ -418,8 +418,8 @@ If there is no touch for 10 seconds, it will end.
 ### Select with touch   
 If there is no touch for 10 seconds, it will end.   
 I borrowed the icon from [here](https://www.flaticon.com/packs/social-media-343).   
-![XPT2046-11](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/1236576e-ec13-40f9-8e0d-27fc46f4b12d)
-![XPT2046-12](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/245355d9-2e8a-4aa6-9bd8-4070d8dcc393)
+![TouchIcon-1](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/e0aa7955-adad-4b33-93aa-a283585e2cf1)
+![TouchIcon-2](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/63427e0e-026b-4b8d-a13e-30e9636e5ee3)
 
 ---
 
