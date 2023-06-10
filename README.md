@@ -332,7 +332,9 @@ Write calibration data to NVS.
 Read calibration data from NVS when starting the firmware and use it.   
 If you use the same TFT, you don't need to calibrate again.   
 To clear the calibration data recorded in NVS, execute the following command.   
-
+```
+idf.py erase_flash
+```
 
 ### HR2046 Touch Screen   
 There is a TFT equipped with HR2046.   
