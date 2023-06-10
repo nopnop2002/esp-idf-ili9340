@@ -252,6 +252,13 @@ menu "TFT Configuration"
 			If the difference from the previous position is within this range, it is considered valid.
 			The higher the value, the less accurate the position, but the less responsive it is.
 
+	config SAVE_CALIBRATION
+		depends on XPT2046_ENABLE_SAME_BUS || XPT2046_ENABLE_DIFF_BUS
+		bool "Save calibration data to NVS"
+		default false
+		help
+			Save calibration data to NVS.
+
 	config XPT_CHECK
 		depends on XPT2046_ENABLE_SAME_BUS || XPT2046_ENABLE_DIFF_BUS
 		bool "Enable XPT2046 Touch Check"

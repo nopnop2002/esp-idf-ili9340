@@ -9,6 +9,8 @@
 #include "esp_err.h"
 #include "esp_log.h"
 #include "esp_system.h"
+#include "nvs_flash.h"
+#include "nvs.h"
 #include "esp_vfs.h"
 #include "esp_spiffs.h"
 #include "esp_heap_caps.h"
@@ -121,7 +123,7 @@ TickType_t ArrowTest(TFT_t * dev, FontxFile *fx, uint16_t model, int width, int 
 	color = WHITE;
 	lcdDrawString(dev, fx, xpos, ypos, ascii, color);
 
-	lcdSetFontDirection(dev, 0);
+	lcdSetFontDirection(dev, DIRECTION0);
 	//lcdFillScreen(dev, WHITE);
 	color = RED;
 	lcdDrawFillArrow(dev, 10, 10, 0, 0, 5, color);
@@ -504,7 +506,7 @@ TickType_t ScrollTest(TFT_t * dev, FontxFile *fx, int width, int height) {
 	int ymax = (lines+1) * fontHeight;
 	ESP_LOGD(__FUNCTION__, "ymax=%d",ymax);
 
-	lcdSetFontDirection(dev, 0);
+	lcdSetFontDirection(dev, DIRECTION0);
 	lcdFillScreen(dev, BLACK);
 
 	strcpy((char *)ascii, "Vertical Smooth Scroll");
@@ -569,7 +571,7 @@ TickType_t ScrollTest(TFT_t * dev, FontxFile *fx, int width, int height) {
 	int ymax = (lines+1) * fontHeight;
 	ESP_LOGD(__FUNCTION__, "ymax=%d",ymax);
 
-	lcdSetFontDirection(dev, 0);
+	lcdSetFontDirection(dev, DIRECTION0);
 	lcdFillScreen(dev, BLACK);
 
 	// Reset scroll area
@@ -644,7 +646,7 @@ TickType_t ScrollTest(TFT_t * dev, FontxFile *fx, int width, int height) {
 		save[i].enable = false;
 	}
 
-	lcdSetFontDirection(dev, 0);
+	lcdSetFontDirection(dev, DIRECTION0);
 	lcdFillScreen(dev, BLACK);
 
 	strcpy((char *)ascii, "Vertical Scroll");
@@ -697,7 +699,6 @@ TickType_t BMPTest(TFT_t * dev, char * file, int width, int height) {
 	TickType_t startTick, endTick, diffTick;
 	startTick = xTaskGetTickCount();
 
-	lcdSetFontDirection(dev, 0);
 	lcdFillScreen(dev, BLACK);
 
 	// open BMP file
@@ -851,7 +852,6 @@ TickType_t JPEGTest(TFT_t * dev, char * file, int width, int height) {
 	TickType_t startTick, endTick, diffTick;
 	startTick = xTaskGetTickCount();
 
-	lcdSetFontDirection(dev, 0);
 	lcdFillScreen(dev, BLACK);
 
 	int _width = width;
@@ -926,7 +926,6 @@ TickType_t PNGTest(TFT_t * dev, char * file, int width, int height) {
 	TickType_t startTick, endTick, diffTick;
 	startTick = xTaskGetTickCount();
 
-	lcdSetFontDirection(dev, 0);
 	lcdFillScreen(dev, BLACK);
 
 	int _width = width;
@@ -1049,7 +1048,7 @@ TickType_t CodeTest(TFT_t * dev, FontxFile *fx, int width, int height, uint16_t 
 	uint8_t code;
 
 	color = CYAN;
-	lcdSetFontDirection(dev, 0);
+	lcdSetFontDirection(dev, DIRECTION0);
 	//code = 0xA0;
 	code = start;
 	for(int y=0;y<ymoji;y++) {
@@ -1111,8 +1110,85 @@ void TouchPosition(TFT_t * dev, FontxFile *fx, int width, int height, TickType_t
 	ESP_LOGW(__FUNCTION__, "End TouchPosition");
 }
 
+bool TouchGetCalibration(TFT_t * dev) {
+	// Open NVS
+	ESP_LOGI(__FUNCTION__, "Opening Non-Volatile Storage (NVS) handle... ");
+	nvs_handle_t my_handle;
+	esp_err_t err;
+	err = nvs_open("storage", NVS_READWRITE, &my_handle);
+	if (err != ESP_OK) {
+		ESP_LOGE(__FUNCTION__, "Error (%s) opening NVS handle!", esp_err_to_name(err));
+		return false;
+	}
+	ESP_LOGI(__FUNCTION__, "Opening Non-Volatile Storage (NVS) handle done");
+
+	// Read NVS
+	int16_t calibration;
+	err = nvs_get_i16(my_handle, "calibration", &calibration);
+	ESP_LOGI(__FUNCTION__, "nvs_get_i16(calibration)=%d", err);
+	if (err != ESP_OK) {
+		nvs_close(my_handle);
+		return false;
+	}
+		
+	err = nvs_get_i16(my_handle, "touch_min_xc", &dev->_min_xc);
+	if (err != ESP_OK) {
+		nvs_close(my_handle);
+		return false;
+	}
+	err = nvs_get_i16(my_handle, "touch_min_yc", &dev->_min_yc);
+	if (err != ESP_OK) {
+		nvs_close(my_handle);
+		return false;
+	}
+	err = nvs_get_i16(my_handle, "touch_max_xc", &dev->_max_xc);
+	if (err != ESP_OK) {
+		nvs_close(my_handle);
+		return false;
+	}
+	err = nvs_get_i16(my_handle, "touch_max_yc", &dev->_max_yc);
+	if (err != ESP_OK) {
+		nvs_close(my_handle);
+		return false;
+	}
+	err = nvs_get_i16(my_handle, "touch_min_xp", &dev->_min_xp);
+	if (err != ESP_OK) {
+		nvs_close(my_handle);
+		return false;
+	}
+	err = nvs_get_i16(my_handle, "touch_min_yp", &dev->_min_yp);
+	if (err != ESP_OK) {
+		nvs_close(my_handle);
+		return false;
+	}
+	err = nvs_get_i16(my_handle, "touch_max_xp", &dev->_max_xp);
+	if (err != ESP_OK) {
+		nvs_close(my_handle);
+		return false;
+	}
+	err = nvs_get_i16(my_handle, "touch_max_yp", &dev->_max_yp);
+	if (err != ESP_OK) {
+		nvs_close(my_handle);
+		return false;
+	}
+
+	// Close NVS
+	nvs_close(my_handle);
+
+	return true;
+}
+
 void TouchCalibration(TFT_t * dev, FontxFile *fx, int width, int height) {
 	if (dev->_calibration == false) return;
+
+	// Read Touch Calibration from NVS
+	bool ret = TouchGetCalibration(dev);
+	ESP_LOGI(__FUNCTION__, "TouchGetCalibration=%d", ret);
+	if (ret) {
+		ESP_LOGI(__FUNCTION__, "Restore Touch Calibration from NVS");
+		dev->_calibration = false;
+		return;
+	}
 
 	// get font width & height
 	uint8_t buffer[FontxGlyphBufSize];
@@ -1216,6 +1292,84 @@ void TouchCalibration(TFT_t * dev, FontxFile *fx, int width, int height) {
 		if (touch_getxy(dev, &_xp, &_yp) == false) break;
 	} // end while
 	dev->_calibration = false;
+
+#if CONFIG_SAVE_CALIBRATION
+	// Open NVS
+	ESP_LOGI(__FUNCTION__, "Opening Non-Volatile Storage (NVS) handle... ");
+	nvs_handle_t my_handle;
+	esp_err_t err = nvs_open("storage", NVS_READWRITE, &my_handle);
+	if (err != ESP_OK) {
+		ESP_LOGE(__FUNCTION__, "Error (%s) opening NVS handle!", esp_err_to_name(err));
+		return;
+	}
+	ESP_LOGI(__FUNCTION__, "Opening Non-Volatile Storage (NVS) handle done");
+
+	// Write Touch Calibration to NVS
+	err = nvs_set_i16(my_handle, "touch_min_xc", dev->_min_xc);
+	if (err != ESP_OK) {
+		ESP_LOGE(__FUNCTION__, "Error (%s) writing NVS handle!", esp_err_to_name(err));
+		nvs_close(my_handle);
+		return;
+	}
+	err = nvs_set_i16(my_handle, "touch_min_yc", dev->_min_yc);
+	if (err != ESP_OK) {
+		ESP_LOGE(__FUNCTION__, "Error (%s) writing NVS handle!", esp_err_to_name(err));
+		nvs_close(my_handle);
+		return;
+	}
+	err = nvs_set_i16(my_handle, "touch_max_xc", dev->_max_xc);
+	if (err != ESP_OK) {
+		ESP_LOGE(__FUNCTION__, "Error (%s) writing NVS handle!", esp_err_to_name(err));
+		nvs_close(my_handle);
+		return;
+	}
+	err = nvs_set_i16(my_handle, "touch_max_yc", dev->_max_yc);
+	if (err != ESP_OK) {
+		ESP_LOGE(__FUNCTION__, "Error (%s) writing NVS handle!", esp_err_to_name(err));
+		nvs_close(my_handle);
+		return;
+	}
+	err = nvs_set_i16(my_handle, "touch_min_xp", dev->_min_xp);
+	if (err != ESP_OK) {
+		ESP_LOGE(__FUNCTION__, "Error (%s) writing NVS handle!", esp_err_to_name(err));
+		nvs_close(my_handle);
+		return;
+	}
+	err = nvs_set_i16(my_handle, "touch_min_yp", dev->_min_yp);
+	if (err != ESP_OK) {
+		ESP_LOGE(__FUNCTION__, "Error (%s) writing NVS handle!", esp_err_to_name(err));
+		nvs_close(my_handle);
+		return;
+	}
+	err = nvs_set_i16(my_handle, "touch_max_xp", dev->_max_xp);
+	if (err != ESP_OK) {
+		ESP_LOGE(__FUNCTION__, "Error (%s) writing NVS handle!", esp_err_to_name(err));
+		nvs_close(my_handle);
+		return;
+	}
+	err = nvs_set_i16(my_handle, "touch_max_yp", dev->_max_yp);
+	if (err != ESP_OK) {
+		ESP_LOGE(__FUNCTION__, "Error (%s) writing NVS handle!", esp_err_to_name(err));
+		nvs_close(my_handle);
+		return;
+	}
+	err = nvs_set_i16(my_handle, "calibration", 1);
+	if (err != ESP_OK) {
+		ESP_LOGE(__FUNCTION__, "Error (%s) writing NVS handle!", esp_err_to_name(err));
+		nvs_close(my_handle);
+		return;
+	}
+	err = nvs_commit(my_handle);
+	if (err != ESP_OK) {
+		ESP_LOGE(__FUNCTION__, "Error (%s) commit NVS handle!", esp_err_to_name(err));
+	}
+
+
+	// Close NVS
+	nvs_close(my_handle);
+	ESP_LOGI(__FUNCTION__, "Write Touch Calibration done");
+#endif
+
 }
 
 // Convert from touch position to touch coordinates
@@ -1405,7 +1559,7 @@ typedef struct {
 } AREA_t;
 
 void ShowAllPngImage(TFT_t * dev, char * path, int max, FontxFile *fx, int width, int height, AREA_t *area) {
-	lcdSetFontDirection(dev, 0);
+	lcdSetFontDirection(dev, DIRECTION0);
 	lcdFillScreen(dev, WHITE);
 
 	char file[64];
@@ -2079,13 +2233,13 @@ void ILI9341(void *pvParameters)
 		uint16_t margin = 10;
 		lcdFillScreen(&dev, BLACK);
 		color = WHITE;
-		lcdSetFontDirection(&dev, 0);
+		lcdSetFontDirection(&dev, DIRECTION0);
 		uint16_t xpos = 0;
 		uint16_t ypos = 15;
 		int xd = 0;
 		int yd = 1;
 		if(CONFIG_WIDTH < CONFIG_HEIGHT) {
-			lcdSetFontDirection(&dev, 1);
+			lcdSetFontDirection(&dev, DIRECTION90);
 			xpos = (CONFIG_WIDTH-1)-16;
 			ypos = 0;
 			xd = 1;
@@ -2124,7 +2278,7 @@ void ILI9341(void *pvParameters)
 			strcpy((char *)ascii, "32Dot Mincyo Font");
 			lcdDrawString(&dev, fx32M, xpos, ypos, ascii, color);
 		}
-		lcdSetFontDirection(&dev, 0);
+		lcdSetFontDirection(&dev, DIRECTION0);
 		WAIT;
 
 	} // end while
@@ -2195,6 +2349,17 @@ esp_err_t mountSPIFFS(char * path, char * label, int max_files) {
 
 void app_main(void)
 {
+	// Initialize NVS
+	ESP_LOGI(TAG, "Initialize NVS");
+	esp_err_t err = nvs_flash_init();
+	if (err == ESP_ERR_NVS_NO_FREE_PAGES || err == ESP_ERR_NVS_NEW_VERSION_FOUND) {
+		// NVS partition was truncated and needs to be erased
+		// Retry nvs_flash_init
+		ESP_ERROR_CHECK(nvs_flash_erase());
+		err = nvs_flash_init();
+	}
+	ESP_ERROR_CHECK( err );
+
 	ESP_LOGI(TAG, "Initializing SPIFFS");
 	esp_err_t ret;
 	ret = mountSPIFFS("/spiffs", "storage0", 10);

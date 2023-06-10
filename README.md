@@ -325,6 +325,15 @@ The difference between the coordinates read last time and the coordinates read t
 Decreasing this value will make the position more accurate, but less responsive.   
 Increasing this value will make the position more inaccurate but more responsive.   
 
+![config-xpt2046-4](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/27bc35da-db6a-460d-ba8a-311d4bb72637)
+
+- Save calibration data to NVS   
+Write calibration data to NVS.   
+Read calibration data from NVS when starting the firmware and use it.   
+If you use the same TFT, you don't need to calibrate again.   
+To clear the calibration data recorded in NVS, execute the following command.   
+
+
 ### HR2046 Touch Screen   
 There is a TFT equipped with HR2046.   
 XPT2046 and HR2046 are very similar. But HR2046 does not work properly.   
