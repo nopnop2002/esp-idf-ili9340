@@ -334,16 +334,6 @@ The difference between the coordinates read last time and the coordinates read t
 Decreasing this value will make the position more accurate, but less responsive.   
 Increasing this value will make the position more inaccurate but more responsive.   
 
-![config-xpt2046-4](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/27bc35da-db6a-460d-ba8a-311d4bb72637)
-
-- Save calibration data to NVS   
-Write calibration data to NVS.   
-Read calibration data from NVS when starting the firmware and use it.   
-If you use the same TFT, you don't need to calibrate again.   
-To clear the calibration data recorded in NVS, execute the following command.   
-```
-idf.py erase_flash
-```
 
 ### HR2046 Touch Screen   
 There is a TFT equipped with HR2046.   
@@ -417,17 +407,17 @@ Keep touching the point.
 If there is no touch for 10 seconds, it will end.   
 ![TouchPen-1](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/83c25554-aa45-49cd-b8d7-6eda9303b31d)
 
-## Button with touch   
+### Button with touch   
 You can only enter up to 15 characters.   
 If there is no touch for 10 seconds, it will end.   
 ![TouchKeyboard](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/fdba50c7-e349-4fba-8b70-5d50a96aa708)
 
-## Move with touch   
+### Move with touch   
 If there is no touch for 10 seconds, it will end.   
 ![TouchMove-1](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/d6cd524d-b576-4109-bcf7-98e26f36f99c)
 ![TouchMove-2](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/7be77525-9f61-4deb-9025-f502ab6df76a)
 
-## Menu with Touch   
+### Menu with Touch   
 If there is no touch for 10 seconds, it will end.   
 ![TouchMenu-2](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/b46be78f-8a92-4725-b209-ee95775e2e25)
 ![TouchMenu-1](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/0c5f153f-3d83-4f3e-abde-124c7a275d65)
@@ -437,6 +427,18 @@ If there is no touch for 10 seconds, it will end.
 I borrowed the icon from [here](https://www.flaticon.com/packs/social-media-343).   
 ![TouchIcon-1](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/e0aa7955-adad-4b33-93aa-a283585e2cf1)
 ![TouchIcon-2](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/e909df95-1a02-4fa6-a973-b6baf24c9c20)
+
+### Save calibration data to NVS   
+
+Write calibration data to NVS.   
+Read calibration data from NVS when starting the firmware and use it.   
+If you use the same TFT, you don't need to calibrate again.   
+To clear the calibration data recorded in NVS, execute the following command.   
+```
+idf.py erase_flash
+```
+
+![config-xpt2046-4](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/27bc35da-db6a-460d-ba8a-311d4bb72637)
 
 ---
 
