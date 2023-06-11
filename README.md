@@ -394,15 +394,15 @@ See [here](https://github.com/nopnop2002/esp-idf-ili9340/issues/39) about physic
 ### Using ESP32-3248S035   
 This module also has an XPT2046.   
 ![ESP32-3248S035-2](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/56d7bc3b-ab03-4486-bd51-bc16d6138d1c)
+![ESP32-3248S035-3](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/bed91135-fd74-4789-949e-f9c8398b565f)
 
 XPT2046 uses the same SPI bus as TFT.   
 ![config-ESP32-3248S035-2](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/7388f072-8e4f-43c0-b8c4-545bf774f0db)
-![ESP32-3248S035-3](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/bed91135-fd74-4789-949e-f9c8398b565f)
-
 
 ### Using ESP32-2432S028R   
 This module also has an XPT2046.   
 ![ESP32-2432S028R-2](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/af351771-6c08-4949-b541-1c9d35e97c8e)
+![ESP32-2432S028R-3](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/4cdd0bed-a248-4a69-83aa-5c44e2f2e02d)
 
 XPT2046 uses a different SPI bus than TFT.   
 XPT2046's SCLK and MISO use separate GPIOs from the TFT.   
@@ -416,7 +416,6 @@ Keep touching the point.
 ### Draw with touch   
 If there is no touch for 10 seconds, it will end.   
 ![TouchPen-1](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/83c25554-aa45-49cd-b8d7-6eda9303b31d)
-![ESP32-2432S028R-3](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/4cdd0bed-a248-4a69-83aa-5c44e2f2e02d)
 
 ## Button with touch   
 You can only enter up to 15 characters.   
