@@ -10,7 +10,7 @@ This is because this version supports ESP32-C3.
 ```
 git clone https://github.com/nopnop2002/esp-idf-ili9340
 cd esp-idf-ili9340/
-idf.py set-target {esp32/esp32s2/esp32s3/esp32c3}
+idf.py set-target {esp32/esp32s2/esp32s3/esp32c2/esp32c3}
 idf.py menuconfig
 idf.py flash
 ```
@@ -351,22 +351,22 @@ XPT2046 and HR2046 are very similar. But HR2046 does not work properly.
 
 ### Wirering for XPT2046  
 
-|TFT||ESP32|ESP32-S2/S3|ESP32-C3||
+|TFT||ESP32|ESP32-S2/S3|ESP32-C2/C3||
 |:-:|:-:|:-:|:-:|:-:|:-:|
 |VCC|--|3.3V|3.3V|3V3||
 |GND|--|GND|GND|GND||
-|CS|--|GPIO14|GPIO34|GPIO9||
-|RES|--|GPIO33|GPIO41|GPIO1|(*1)|
-|D/C|--|GPIO27|GPIO40|GPIO10|(*1)|
-|MOSI|--|GPIO23|GPIO35|GPIO19|(*1) (*2)|
-|SCK|--|GPIO18|GPIO36|GPIO18|(*1) (*2)|
+|CS|--|GPIO14|GPIO34|GPIO2||
+|RES|--|GPIO33|GPIO41|GPIO4|(*1)|
+|D/C|--|GPIO27|GPIO40|GPIO3|(*1)|
+|MOSI|--|GPIO23|GPIO35|GPIO0|(*1) (*2)|
+|SCK|--|GPIO18|GPIO36|GPIO1|(*1) (*2)|
 |LED|--|3.3V|3.3V|3.3V|(*1) (*3)|
 |MISO|--|N/C|N/C|N/C||
-|T_CLK|--|GPIO18|GPIO36|GPIO18|(*1) (*2)|
-|T_CS|--|GPIO22|GPIO38|GPIO5|(*1) (*4)|
-|T_DIN|--|GPIO23|GPIO35|GPIO19|(*1) (*2)|
-|T_OUT|--|GPIO19|GPIO37|GPIO3|(*1) (*2)|
-|T_IRQ|--|GPIO21|GPIO39|GPIO4|(*1) (*4)|
+|T_CLK|--|GPIO18|GPIO36|GPIO1|(*1) (*2)|
+|T_CS|--|GPIO21|GPIO38|GPIO7|(*1) (*4)|
+|T_DIN|--|GPIO23|GPIO35|GPIO0|(*1) (*2)|
+|T_OUT|--|GPIO19|GPIO37|GPIO6|(*1) (*2)|
+|T_IRQ|--|GPIO22|GPIO39|GPIO8|(*1) (*4)|
 
 (*1) You can change it to any gpio using menuconfig. But some gpio's are input only.   
 

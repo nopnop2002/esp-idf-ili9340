@@ -5,6 +5,7 @@ menu "TFT Configuration"
 		default 39 if IDF_TARGET_ESP32
 		default 46 if IDF_TARGET_ESP32S2
 		default 48 if IDF_TARGET_ESP32S3
+		default 18 if IDF_TARGET_ESP32C2
 		default 19 if IDF_TARGET_ESP32C3
 
 	choice DRIVER
@@ -226,7 +227,7 @@ menu "TFT Configuration"
 		range 0 GPIO_RANGE_MAX
 		default 25 if IDF_TARGET_ESP32
 		default 40 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
-		default 8
+		default 9
 		help
 			GPIO number (IOxx) to XPT2046 CLK.
 			Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to IRQ.
@@ -237,7 +238,7 @@ menu "TFT Configuration"
 		range 0 GPIO_RANGE_MAX
 		default 26 if IDF_TARGET_ESP32
 		default 41 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
-		default 8
+		default 10
 		help
 			GPIO number (IOxx) to XPT2046 CLK.
 			Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to IRQ.
