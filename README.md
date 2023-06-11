@@ -17,16 +17,16 @@ idf.py flash
 
 
 __Note for ESP32S2__   
-Pull Up of the RESET pin may be required. I inserted a 10K ohm resistor between Vcc and RESET.   
 Since the ROM is small, it is not possible to display PNG and JPEG.   
 
-__Note for ESP32S3__   
-Pull Up of the RESET pin may be required. I inserted a 10K ohm resistor between Vcc and RESET.   
+__Note for ESP32C2__   
+Since the ROM is small, it is not possible to display PNG and JPEG.   
 
 __Note for ESP32C3__   
 For some reason, there are development boards that cannot use GPIO06, GPIO08, GPIO09, GPIO19 for SPI clock pins.   
 According to the ESP32C3 specifications, these pins can also be used as SPI clocks.   
 I used a raw ESP-C3-13 to verify that these pins could be used as SPI clocks.   
+
 
 # Configuration   
 You have to set this config value with menuconfig.   
@@ -64,6 +64,9 @@ __TFT MISO is not use.__
 - 1.77" ST7735 128x160   
 - 1.44" ST7735 128x128   
 - 0.96" ST7735 80x160   
+
+__For generic TFT___   
+Pull Up of the RESET pin may be required. I inserted a 10K ohm resistor between Vcc and RESET.   
 
 ### Generic Product   
 ![spi-tft](https://user-images.githubusercontent.com/6020549/59512687-3098de80-8ef4-11e9-9759-530ffe47d659.JPG)
