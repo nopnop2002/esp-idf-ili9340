@@ -69,6 +69,7 @@ __TFT MISO is not use.__
 ![spi-tft](https://user-images.githubusercontent.com/6020549/59512687-3098de80-8ef4-11e9-9759-530ffe47d659.JPG)
 
 ### Shenzhen Jingcal Intelligent Product   
+They can use touch screens.   
 ![Shenzhen_Jingcal_Intelligent](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/86b0370a-ac2b-4142-9903-9f9548dcdac8)
 
 ---
