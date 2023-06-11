@@ -406,8 +406,8 @@ Keep touching the point.
 
 ### Draw with touch   
 If there is no touch for 10 seconds, it will end.   
-![XPT2046-3](https://user-images.githubusercontent.com/6020549/145127161-c92ab0c9-a5d7-41f0-99c3-8a1981eb1597.JPG)
-![XPT2046-4](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/fa87dff0-2df3-4a4c-b104-1e71fa27833f)
+![TouchPen-1](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/83c25554-aa45-49cd-b8d7-6eda9303b31d)
+![ESP32-2432S028R-3](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/4cdd0bed-a248-4a69-83aa-5c44e2f2e02d)
 
 ## Button with touch   
 You can only enter up to 15 characters.   
