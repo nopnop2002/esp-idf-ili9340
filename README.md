@@ -334,7 +334,7 @@ There is a TFT equipped with XPT2046.
 
 XPT2046 shares the TFT and SPI bus.   
 Use the menu to enable XPT2046.   
-![config-xpt2046-1](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/28d8785f-e3e2-4b2e-a450-f036517c552b)
+![config-xpt2046-1](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/61323301-4b6a-4012-84f8-ee95dadb2db0)
 
 - Touch position accuacy   
 The coordinates read from XPT2046 are not stable.   
@@ -378,7 +378,7 @@ XPT2046 and HR2046 are very similar. But HR2046 does not work properly.
 
 ### Check if XPT2046 works properly   
 You can check if XPT2046 works properly.   
-![config-xpt2046-2](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/12e26a1b-b88f-4f08-8f05-7ff70020adc4)
+![config-xpt2046-2](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/4fe1f528-c443-4e93-a22f-e85f9f02ef84)
 
 If you touch it at this time, the touched coordinates will be displayed.   
 If there is no touch for 10 seconds, it will end.   
