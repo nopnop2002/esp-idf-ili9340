@@ -66,7 +66,7 @@ __TFT MISO is not use.__
 - 0.96" ST7735 80x160   
 
 __For generic TFT__   
-Pull Up of the RESET pin may be required. I inserted a 10K ohm resistor between Vcc and RESET.   
+Pull Up of the RESET pin may be required. I inserted a 100 ohm resistor between Vcc and RESET.   
 
 ### Generic Product   
 ![spi-tft](https://user-images.githubusercontent.com/6020549/59512687-3098de80-8ef4-11e9-9759-530ffe47d659.JPG)
