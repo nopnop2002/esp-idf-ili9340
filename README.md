@@ -53,7 +53,7 @@ __TFT MISO is not use.__
 - M5Stack   
 - Shenzhen Jingcal Intelligent 3.5" ST7796 480x320 (ESP32-3248S035)   
 - Shenzhen Jingcal Intelligent 2.8" ILI9341 320x240 (ESP32-2432S028R)   
-- 4.0" ST7796S 480x320   
+- 4.0" ST7796 480x320   
 - 3.2" ILI9341 320x240   
 - 2.8" ILI9341 320x240   
 - 2.4" ILI9341 320x240   
