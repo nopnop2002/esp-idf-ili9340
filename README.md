@@ -130,7 +130,7 @@ Left:2.8" Right:2.4"
 # 2.8" ILI9341 Built-In 320x240
 Vendor part number is ESP32-2432S028R.   
 
-![config-ESP32-2432S028R](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/2d6dfc02-747d-46fb-8881-65dffdadcf14)
+![config-ESP32-2432S028R-1](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/93586f90-1c9c-4797-8695-c12501d4a784)
 ![ESP32-2432S028R-1](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/e9e4b502-4063-49b2-b58a-d60aeccdd380)
 ![ESP32-2432S028R-2](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/d6d6cc27-463a-4ad5-a739-441d6ebdc037)
 
@@ -397,7 +397,7 @@ This module also has an XPT2046.
 
 XPT2046 uses a different SPI bus than TFT.   
 XPT2046's SCLK and MISO use separate GPIOs from the TFT.   
-![config-xpt2046-3](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/dc74f50b-68a6-4dff-885c-a04a76ad5b1f)
+![config-ESP32-2432S028R-2](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/65679e0c-c08f-4dca-bc2a-13f9f52dadd4)
 
 ### Calibration   
 Keep touching the point.   
