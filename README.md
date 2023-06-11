@@ -391,6 +391,15 @@ What you get here is the physical coordinates.
 See [here](https://github.com/nopnop2002/esp-idf-ili9340/issues/39) about physical coordinates.   
 ![TouchPosition-2](https://user-images.githubusercontent.com/6020549/147400385-20b035b4-653a-4605-9d36-6d325a1f68a3.jpg)
 
+### Using ESP32-3248S035   
+This module also has an XPT2046.   
+![ESP32-3248S035-2](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/56d7bc3b-ab03-4486-bd51-bc16d6138d1c)
+
+XPT2046 uses the same SPI bus as TFT.   
+![config-ESP32-3248S035-2](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/7388f072-8e4f-43c0-b8c4-545bf774f0db)
+![ESP32-3248S035-3](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/bed91135-fd74-4789-949e-f9c8398b565f)
+
+
 ### Using ESP32-2432S028R   
 This module also has an XPT2046.   
 ![ESP32-2432S028R-2](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/af351771-6c08-4949-b541-1c9d35e97c8e)
