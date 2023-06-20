@@ -399,6 +399,7 @@ This module also has an XPT2046.
 ![ESP32-3248S035-3](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/bed91135-fd74-4789-949e-f9c8398b565f)
 
 XPT2046 uses the same SPI bus as TFT.   
+XPT2046's SCLK and MOSI use the same GPIO as the TFT.   
 ![config-ESP32-3248S035-2](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/7388f072-8e4f-43c0-b8c4-545bf774f0db)
 
 ### Using ESP32-2432S028R   
@@ -407,7 +408,7 @@ This module also has an XPT2046.
 ![ESP32-2432S028R-3](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/4cdd0bed-a248-4a69-83aa-5c44e2f2e02d)
 
 XPT2046 uses a different SPI bus than TFT.   
-XPT2046's SCLK and MISO use separate GPIOs from the TFT.   
+XPT2046's SCLK and MOSI use separate GPIOs from the TFT.   
 ![config-ESP32-2432S028R-2](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/65679e0c-c08f-4dca-bc2a-13f9f52dadd4)
 
 ### Calibration   
