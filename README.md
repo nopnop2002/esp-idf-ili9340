@@ -15,7 +15,7 @@ ESP-IDF V5.1 is required when using ESP32C6.
 ```
 git clone https://github.com/nopnop2002/esp-idf-ili9340
 cd esp-idf-ili9340/
-idf.py set-target {esp32/esp32s2/esp32s3/esp32c2/esp32c3}
+idf.py set-target {esp32/esp32s2/esp32s3/esp32c2/esp32c3/esp32c6}
 idf.py menuconfig
 idf.py flash
 ```
