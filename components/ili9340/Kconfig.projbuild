@@ -156,7 +156,7 @@ menu "TFT Configuration"
 
 	choice XPT2046
 		prompt "XPT2046 Touch Contoller"
-		default "XPT2046_DISABLE"
+		default XPT2046_DISABLE
 		help
 			Select XPT2046 Touch Contoller.
 		config XPT2046_DISABLE
