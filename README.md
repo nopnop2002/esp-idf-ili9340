@@ -20,11 +20,7 @@ idf.py menuconfig
 idf.py flash
 ```
 
-
-__Note for ESP32S2__   
-Since the ROM is small, it is not possible to display PNG and JPEG.   
-
-__Note for ESP32C2__   
+__Note for ESP32S2/ESP32C2__   
 Since the ROM is small, it is not possible to display PNG and JPEG.   
 
 __Note for ESP32C3__   
