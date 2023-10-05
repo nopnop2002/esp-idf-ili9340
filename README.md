@@ -3,11 +3,7 @@ SPI TFT and XPT2046 touch screen controller driver for esp-idf.
 
 # Software requirements
 ESP-IDF V4.4/V5.x.   
-
-__Note for ESP32C2__   
 ESP-IDF V5.0 is required when using ESP32C2.   
-
-__Note for ESP32C6__   
 ESP-IDF V5.1 is required when using ESP32C6.   
 
 # Installation
