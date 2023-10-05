@@ -329,6 +329,18 @@ Font file that From 0x80 to 0xff, the characters image of Japanese are stored.
 Font file that From 0x80 to 0xff, the characters image of Latin are stored.   
 ![M5Statck-Font-3](https://user-images.githubusercontent.com/6020549/132110951-e7faaaa9-cdf2-429d-8eea-d20fe0748524.JPG)
 
+# Add your color   
+Change here.   
+```
+#define RED    rgb565(255,   0,   0) // 0xf800
+#define GREEN  rgb565(  0, 255,   0) // 0x07e0
+#define BLUE   rgb565(  0,   0, 255) // 0x001f
+#define BLACK  rgb565(  0,   0,   0) // 0x0000
+#define WHITE  rgb565(255, 255, 255) // 0xffff
+#define GRAY   rgb565(128, 128, 128) // 0x8410
+#define YELLOW rgb565(255, 255,   0) // 0xFFE0
+#define CYAN   rgb565(  0, 156, 209) // 0x04FA
+#define PURPLE rgb565(128,   0, 128) // 0x8010
 
 ---
 

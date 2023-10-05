@@ -1,6 +1,4 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <inttypes.h>
 #include <math.h>
 
@@ -13,7 +11,6 @@
 #include "nvs.h"
 #include "esp_vfs.h"
 #include "esp_spiffs.h"
-#include "esp_heap_caps.h"
 
 #include "ili9340.h"
 #include "fontx.h"
@@ -451,7 +448,7 @@ TickType_t FillRectTest(TFT_t * dev, int width, int height) {
 		red=rand()%255;
 		green=rand()%255;
 		blue=rand()%255;
-		color=rgb565_conv(red, green, blue);
+		color=rgb565(red, green, blue);
 		uint16_t xpos=rand()%width;
 		uint16_t ypos=rand()%height;
 		uint16_t size=rand()%(width/5);
@@ -830,7 +827,7 @@ TickType_t BMPTest(TFT_t * dev, char * file, int width, int height) {
 				uint8_t b = sdbuffer[buffidx++];
 				uint8_t g = sdbuffer[buffidx++];
 				uint8_t r = sdbuffer[buffidx++];
-				colors[index++] = rgb565_conv(r, g, b);
+				colors[index++] = rgb565(r, g, b);
 			} // end for col
 			ESP_LOGD(__FUNCTION__,"lcdDrawMultiPixels row=%d",row);
 			//lcdDrawMultiPixels(dev, _x, row+_y, _w, colors);
@@ -892,7 +889,7 @@ TickType_t JPEGTest(TFT_t * dev, char * file, int width, int height) {
 		for(int y = 0; y < jpegHeight; y++){
 			for(int x = 0;x < jpegWidth; x++){
 				pixel_jpeg pixel = pixels[y][x];
-				uint16_t color = rgb565_conv(pixel.red, pixel.green, pixel.blue);
+				uint16_t color = rgb565(pixel.red, pixel.green, pixel.blue);
 				lcdDrawPixel(dev, x+offsetX, y+offsetY, color);
 			}
 			vTaskDelay(1);
@@ -902,7 +899,7 @@ TickType_t JPEGTest(TFT_t * dev, char * file, int width, int height) {
 		for(int y = 0; y < jpegHeight; y++){
 			for(int x = 0;x < jpegWidth; x++){
 				//pixel_jpeg pixel = pixels[y][x];
-				//colors[x] = rgb565_conv(pixel.red, pixel.green, pixel.blue);
+				//colors[x] = rgb565(pixel.red, pixel.green, pixel.blue);
 				colors[x] = pixels[y][x];
 			}
 			lcdDrawMultiPixels(dev, offsetX, y+offsetY, jpegWidth, colors);
@@ -1004,7 +1001,7 @@ TickType_t PNGTest(TFT_t * dev, char * file, int width, int height) {
 	for(int y = 0; y < pngHeight; y++){
 		for(int x = 0;x < pngWidth; x++){
 			pixel_png pixel = pngle->pixels[y][x];
-			uint16_t color = rgb565_conv(pixel.red, pixel.green, pixel.blue);
+			uint16_t color = rgb565(pixel.red, pixel.green, pixel.blue);
 			lcdDrawPixel(dev, x+offsetX, y+offsetY, color);
 		}
 	}
@@ -1013,7 +1010,7 @@ TickType_t PNGTest(TFT_t * dev, char * file, int width, int height) {
 	for(int y = 0; y < pngHeight; y++){
 		for(int x = 0;x < pngWidth; x++){
 			//pixel_png pixel = pngle->pixels[y][x];
-			//colors[x] = rgb565_conv(pixel.red, pixel.green, pixel.blue);
+			//colors[x] = rgb565(pixel.red, pixel.green, pixel.blue);
 			colors[x] = pngle->pixels[y][x];
 		}
 		lcdDrawMultiPixels(dev, offsetX, y+offsetY, pngWidth, colors);
@@ -1535,7 +1532,7 @@ void ShowPngImage(TFT_t * dev, char * file, int width, int height, int xpos, int
 	for(int y = 0; y < pngHeight; y++){
 		for(int x = 0;x < pngWidth; x++){
 			//pixel_png pixel = pngle->pixels[y][x];
-			//colors[x] = rgb565_conv(pixel.red, pixel.green, pixel.blue);
+			//colors[x] = rgb565(pixel.red, pixel.green, pixel.blue);
 			colors[x] = pngle->pixels[y][x];
 		}
 		lcdDrawMultiPixels(dev, _xpos, y+_ypos, pngWidth, colors);
@@ -2258,7 +2255,7 @@ void ILI9341(void *pvParameters)
 		if (CONFIG_WIDTH >= 240) {
 			strcpy((char *)ascii, "32Dot Gothic Font");
 			lcdDrawString(&dev, fx32G, xpos, ypos, ascii, color);
-			xpos = xpos - (32 * xd) - (margin * xd);;
+			xpos = xpos - (32 * xd) - (margin * xd);
 			ypos = ypos + (32 * yd) + (margin * yd);
 		}
 
@@ -2267,13 +2264,13 @@ void ILI9341(void *pvParameters)
 		strcpy((char *)ascii, "16Dot Mincyo Font");
 		lcdDrawString(&dev, fx16M, xpos, ypos, ascii, color);
 
-		xpos = xpos - (24 * xd) - (margin * xd);;
+		xpos = xpos - (24 * xd) - (margin * xd);
 		ypos = ypos + (16 * yd) + (margin * yd);
 		strcpy((char *)ascii, "24Dot Mincyo Font");
 		lcdDrawString(&dev, fx24M, xpos, ypos, ascii, color);
 
 		if (CONFIG_WIDTH >= 240) {
-			xpos = xpos - (32 * xd) - (margin * xd);;
+			xpos = xpos - (32 * xd) - (margin * xd);
 			ypos = ypos + (24 * yd) + (margin * yd);
 			strcpy((char *)ascii, "32Dot Mincyo Font");
 			lcdDrawString(&dev, fx32M, xpos, ypos, ascii, color);
@@ -2283,10 +2280,8 @@ void ILI9341(void *pvParameters)
 
 	} // end while
 
-	// never reach
-	while (1) {
-		vTaskDelay(2000 / portTICK_PERIOD_MS);
-	}
+	// never reach here
+	vTaskDelete(NULL);
 }
 
 static void listSPIFFS(char * path) {
