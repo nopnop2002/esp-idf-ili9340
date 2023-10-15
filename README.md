@@ -41,7 +41,7 @@ However, you can use [this](https://components.espressif.com/components/espressi
 JPEG files can be displayed.   
 
 __Note for ESP32-C2__   
-ESP32-C2 has a small SRAM, so JPEG and PNG may not be displayed.   
+ESP32-C2 has less SRAM, so JPEG and PNG may not be displayed on higher resolution TFTs.   
 
 __Note for ESP32-C6__   
 ESP-IDF V5.1 is required when using ESP32-C6.   
