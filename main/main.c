@@ -857,8 +857,8 @@ TickType_t JPEGTest(TFT_t * dev, char * file, int width, int height) {
 	if (height > 320) _height = 320;
 
 	pixel_jpeg **pixels;
-	uint16_t imageWidth;
-	uint16_t imageHeight;
+	int imageWidth;
+	int imageHeight;
 	esp_err_t err = decode_jpeg(&pixels, file, _width, _height, &imageWidth, &imageHeight);
 	if (err == ESP_OK) {
 		ESP_LOGI(__FUNCTION__, "imageWidth=%d imageHeight=%d", imageWidth, imageHeight);
@@ -942,6 +942,10 @@ TickType_t PNGTest(TFT_t * dev, char * file, int width, int height) {
 	int len;
 
 	pngle_t *pngle = pngle_new(_width, _height);
+	if (pngle == NULL) {
+		fclose(fp);
+		return 0;
+	}
 
 	pngle_set_init_callback(pngle, png_init);
 	pngle_set_draw_callback(pngle, png_draw);
@@ -1761,7 +1765,7 @@ void TouchKeyTest(TFT_t * dev, FontxFile *fx, int width, int height, TickType_t 
 
 				// Distance is in range
 				if (_radius < area[index].radius) {
-					ESP_LOGI(__FUNCTION__, "area.text=[%s]", area[0].text);
+					ESP_LOGI(__FUNCTION__, "area[%d].text=[%s]", index, area[index].text);
 					isMatch = true;
 					if (strlen(input) < 15) {
 						// Erase shadow and button
@@ -2208,17 +2212,13 @@ void ILI9341(void *pvParameters)
 		BMPTest(&dev, file, CONFIG_WIDTH, CONFIG_HEIGHT);
 		WAIT;
 
-#ifdef ENABLE_JPG
 		strcpy(file, "/images/esp32.jpeg");
 		JPEGTest(&dev, file, CONFIG_WIDTH, CONFIG_HEIGHT);
 		WAIT;
-#endif
 
-#ifdef ENABLE_PNG
 		strcpy(file, "/images/esp_logo.png");
 		PNGTest(&dev, file, CONFIG_WIDTH, CONFIG_HEIGHT);
 		WAIT;
-#endif
 
 		ScrollTest(&dev, fx16G, CONFIG_WIDTH, CONFIG_HEIGHT);
 		WAIT;
