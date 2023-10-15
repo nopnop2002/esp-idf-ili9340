@@ -42,6 +42,10 @@ JPEG files can be displayed.
 
 __Note for ESP32-C2__   
 ESP32-C2 has less SRAM, so JPEG and PNG may not be displayed on higher resolution TFTs.   
+```
+E (256560) decode_jpeg: Error allocating memory for line 251
+E (260630) pngle_new: Error allocating memory for line 160
+```
 
 __Note for ESP32-C6__   
 ESP-IDF V5.1 is required when using ESP32-C6.   
