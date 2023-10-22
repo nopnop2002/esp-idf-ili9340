@@ -491,6 +491,19 @@ idf.py erase_flash
 
 ---
 
+# SPI BUS selection   
+![config-spi-bus](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/bdfd8436-31c7-435f-b21d-3d4b8e5350d3)
+
+The ESP32 series has three SPI BUSs.   
+SPI1_HOST is used for communication with Flash memory.   
+You can use SPI2_HOST and SPI3_HOST freely.   
+When you use SDSPI(SD Card via SPI), SDSPI uses SPI2_HOST BUS.   
+When using this module at the same time as SDSPI or other SPI device using SPI2_HOST, it needs to be changed to SPI3_HOST.   
+When you don't use SDSPI, both SPI2_HOST and SPI3_HOST will work.   
+Previously it was called HSPI_HOST / VSPI_HOST, but now it is called SPI2_HOST / SPI3_HOST.   
+
+---
+
 # Using SPI TFT Adapter   
 
 I purchased this adapter on AliExpress.   
@@ -524,18 +537,6 @@ As a result, the GPIO will be:
 ![config-14pin-adapter-2](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/5b7664e2-c1c1-4cfa-9979-59856ea37d42)
 ![14pin-adapter-4](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/9a098ae6-aa09-4ee5-9568-18f06260e4a9)
 
----
-
-# SPI BUS selection   
-![config-spi-bus](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/bdfd8436-31c7-435f-b21d-3d4b8e5350d3)
-
-The ESP32 series has three SPI BUSs.   
-SPI1_HOST is used for communication with Flash memory.   
-You can use SPI2_HOST and SPI3_HOST freely.   
-When you use SDSPI(SD Card via SPI), SDSPI uses SPI2_HOST BUS.   
-When using this module at the same time as SDSPI or other SPI device using SPI2_HOST, it needs to be changed to SPI3_HOST.   
-When you don't use SDSPI, both SPI2_HOST and SPI3_HOST will work.   
-Previously it was called HSPI_HOST / VSPI_HOST, but now it is called SPI2_HOST / SPI3_HOST.   
 
 ---
 
