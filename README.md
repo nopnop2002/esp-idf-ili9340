@@ -502,7 +502,7 @@ However, this adapter's T_IRQ is not connected anywhere.
 To use the touch panel, you need to add a jumper.   
 ![14pin-adapter-3](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/fba70ca5-1ab1-4f0c-8962-1b4efb195b35)
 
-This results in the following GPIO connections:   
+As a result, the GPIO will be:   
 |TFT||ESP32|
 |:-:|:-:|:-:|
 |VCC|--|3.3V|
