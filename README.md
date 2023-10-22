@@ -491,6 +491,41 @@ idf.py erase_flash
 
 ---
 
+# Using SPI TFT Adapter   
+
+I purchased this adapter on AliExpress.   
+It comes with an ESP32 and costs $4.   
+![14pin-adapter-1](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/f73208ee-2c41-4541-bffd-e731e14cbff3)
+![14pin-adapter-2](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/a989ec43-41f4-4929-9352-6d148f1d6e60)
+
+However, this adapter's T_IRQ is not connected anywhere.   
+To use the touch panel, you need to add a jumper.   
+![14pin-adapter-3](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/fba70ca5-1ab1-4f0c-8962-1b4efb195b35)
+
+This results in the following GPIO connections:   
+|TFT||ESP32|
+|:-:|:-:|:-:|
+|VCC|--|3.3V|
+|GND|--|GND|
+|CS|--|GPIO15|
+|RES|--|GPIO04|
+|D/C|--|GPIO02|
+|MOSI|--|GPIO23|
+|SCK|--|GPIO18|
+|LED|--|3.3V|
+|MISO|--|N/C|
+|T_CLK|--|GPIO18|
+|T_CS|--|GPIO05|
+|T_DIN|--|GPIO23|
+|T_OUT|--|GPIO19|
+|T_IRQ|--|GPIO21|
+
+![config-14pin-adapter-1](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/b9d4d2a1-5e58-439f-b2ef-69a85e1810ae)
+![config-14pin-adapter-2](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/5b7664e2-c1c1-4cfa-9979-59856ea37d42)
+![14pin-adapter-4](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/9a098ae6-aa09-4ee5-9568-18f06260e4a9)
+
+---
+
 # SPI BUS selection   
 ![config-spi-bus](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/bdfd8436-31c7-435f-b21d-3d4b8e5350d3)
 
