@@ -533,8 +533,12 @@ As a result, the GPIO will be:
 |T_OUT|--|GPIO19|
 |T_IRQ|--|GPIO21|
 
+When not using the touch panel.   
 ![config-14pin-adapter-1](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/b9d4d2a1-5e58-439f-b2ef-69a85e1810ae)
+
+When using the touch panel.   
 ![config-14pin-adapter-2](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/5b7664e2-c1c1-4cfa-9979-59856ea37d42)
+
 ![14pin-adapter-4](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/9a098ae6-aa09-4ee5-9568-18f06260e4a9)
 
 
