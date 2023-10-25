@@ -377,8 +377,11 @@ Use the menu to enable XPT2046.
 ![config-xpt2046-1](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/61323301-4b6a-4012-84f8-ee95dadb2db0)
 
 - Touch position accuacy   
-The coordinates read from XPT2046 are not stable.   
-The difference between the coordinates read last time and the coordinates read this time is determined, and if it is within this range, it is regarded as a valid coordinate.   
+The coordinates read from XPT2046 are physical coordinates.   
+Physical coordinates are converted to logical coordinates.   
+Then draw using logical coordinates.   
+In TouchPenTest, when you touch the screen, a circle is drawn at the touched position, but if you touch the same position as the previous time, it is not drawn.   
+This value is the threshold that determines whether the touch location is the same as the previous touch location.   
 Decreasing this value will make the position more accurate, but less responsive.   
 Increasing this value will make the position more inaccurate but more responsive.   
 
