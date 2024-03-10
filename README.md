@@ -551,7 +551,7 @@ When using the touch panel.
 A TFT shield like this can also be used with ESP-IDF.   
 ![TFT-Shield](https://user-images.githubusercontent.com/6020549/104253960-10a71380-54b9-11eb-8789-a12c2c769ab4.JPG)
 
-Can be attached directly to ESP32.   
+It can be attached directly to this ESP32.   
 ![tzt-d1-esp32s3](https://github.com/nopnop2002/esp-idf-parallel-tft/assets/6020549/ba6772f1-c8b7-4e7d-9d0a-0fb8fb8cbea5)
 
 https://github.com/nopnop2002/esp-idf-parallel-tft
