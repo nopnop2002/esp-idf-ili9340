@@ -519,22 +519,24 @@ To use the touch panel, you need to add a jumper.
 ![14pin-adapter-3](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/fba70ca5-1ab1-4f0c-8962-1b4efb195b35)
 
 As a result, the GPIO will be:   
-|TFT||ESP32|
-|:-:|:-:|:-:|
-|VCC|--|3.3V|
-|GND|--|GND|
-|CS|--|GPIO15|
-|RES|--|GPIO04|
-|D/C|--|GPIO02|
-|MOSI|--|GPIO23|
-|SCK|--|GPIO18|
-|LED|--|3.3V|
-|MISO|--|N/C|
-|T_CLK|--|GPIO18|
-|T_CS|--|GPIO05|
-|T_DIN|--|GPIO23|
-|T_OUT|--|GPIO19|
-|T_IRQ|--|GPIO21|
+|TFT||ESP32||
+|:-:|:-:|:-:|:-:|
+|VCC|--|3.3V||
+|GND|--|GND||
+|CS|--|GPIO15||
+|RES|--|GPIO04||
+|D/C|--|GPIO02||
+|MOSI|--|GPIO23||
+|SCK|--|GPIO18||
+|LED|--|3.3V|*1|
+|MISO|--|N/C||
+|T_CLK|--|GPIO18||
+|T_CS|--|GPIO05||
+|T_DIN|--|GPIO23||
+|T_OUT|--|GPIO19||
+|T_IRQ|--|GPIO21||
+
+(*1) BL_EN is directly connected to 3.3V, so it cannot control BackLight.   
 
 When not using the touch panel.   
 ![config-14pin-adapter-1](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/b9d4d2a1-5e58-439f-b2ef-69a85e1810ae)
