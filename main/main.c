@@ -1029,6 +1029,83 @@ TickType_t PNGTest(TFT_t * dev, char * file, int width, int height) {
 	return diffTick;
 }
 
+void ShowPngImage(TFT_t * dev, char * file, int width, int height, int xpos, int ypos) {
+	// open PNG file
+	FILE* fp = fopen(file, "rb");
+	if (fp == NULL) {
+		ESP_LOGW(__FUNCTION__, "File not found [%s]", file);
+		return;
+	}
+
+	char buf[1024];
+	size_t remain = 0;
+	int len;
+
+	int _width = width;
+	if (width > 240) _width = 240;
+	int _height = height;
+	if (height > 320) _height = 320;
+	pngle_t *pngle = pngle_new(_width, _height);
+
+	pngle_set_init_callback(pngle, png_init);
+	pngle_set_draw_callback(pngle, png_draw);
+	pngle_set_done_callback(pngle, png_finish);
+
+	double display_gamma = 2.2;
+	pngle_set_display_gamma(pngle, display_gamma);
+
+
+	while (!feof(fp)) {
+		if (remain >= sizeof(buf)) {
+			ESP_LOGE(__FUNCTION__, "Buffer exceeded");
+			while(1) vTaskDelay(1);
+		}
+
+		len = fread(buf + remain, 1, sizeof(buf) - remain, fp);
+		if (len <= 0) {
+			//printf("EOF\n");
+			break;
+		}
+
+		int fed = pngle_feed(pngle, buf, remain + len);
+		if (fed < 0) {
+			ESP_LOGE(__FUNCTION__, "ERROR; %s", pngle_error(pngle));
+			while(1) vTaskDelay(1);
+		}
+
+		remain = remain + len - fed;
+		if (remain > 0) memmove(buf, buf + fed, remain);
+	}
+
+	fclose(fp);
+
+	uint16_t pngWidth = pngle_get_width(pngle);
+	uint16_t pngHeight = pngle_get_height(pngle);
+	ESP_LOGD(__FUNCTION__, "pngWidth=%d pngHeight=%d", pngWidth, pngHeight);
+	int _xpos = xpos - (pngHeight/2);
+	int _ypos = ypos - (pngWidth/2);
+	ESP_LOGD(__FUNCTION__, "xpos=%d ypos=%d _xpos=%d _ypos=%d", xpos, ypos, _xpos, _ypos);
+	uint16_t *colors = (uint16_t*)malloc(sizeof(uint16_t) * pngWidth);
+	if (colors == NULL) {
+		ESP_LOGE(__FUNCTION__, "malloc fail");
+		pngle_destroy(pngle, _width, _height);
+		return;
+	}
+
+	for(int y = 0; y < pngHeight; y++){
+		for(int x = 0;x < pngWidth; x++){
+			//pixel_png pixel = pngle->pixels[y][x];
+			//colors[x] = rgb565(pixel.red, pixel.green, pixel.blue);
+			colors[x] = pngle->pixels[y][x];
+		}
+		lcdDrawMultiPixels(dev, _xpos, y+_ypos, pngWidth, colors);
+		vTaskDelay(1);
+	}
+	free(colors);
+	pngle_destroy(pngle, _width, _height);
+	return;
+}
+
 TickType_t CodeTest(TFT_t * dev, FontxFile *fx, int width, int height, uint16_t start, uint16_t end) {
 	TickType_t startTick, endTick, diffTick;
 	startTick = xTaskGetTickCount();
@@ -1469,84 +1546,6 @@ void TouchPenTest(TFT_t * dev, FontxFile *fx, int width, int height, TickType_t 
 		} // end if
 	} // end while
 }
-
-void ShowPngImage(TFT_t * dev, char * file, int width, int height, int xpos, int ypos) {
-	// open PNG file
-	FILE* fp = fopen(file, "rb");
-	if (fp == NULL) {
-		ESP_LOGW(__FUNCTION__, "File not found [%s]", file);
-		return;
-	}
-
-	char buf[1024];
-	size_t remain = 0;
-	int len;
-
-	int _width = width;
-	if (width > 240) _width = 240;
-	int _height = height;
-	if (height > 320) _height = 320;
-	pngle_t *pngle = pngle_new(_width, _height);
-
-	pngle_set_init_callback(pngle, png_init);
-	pngle_set_draw_callback(pngle, png_draw);
-	pngle_set_done_callback(pngle, png_finish);
-
-	double display_gamma = 2.2;
-	pngle_set_display_gamma(pngle, display_gamma);
-
-
-	while (!feof(fp)) {
-		if (remain >= sizeof(buf)) {
-			ESP_LOGE(__FUNCTION__, "Buffer exceeded");
-			while(1) vTaskDelay(1);
-		}
-
-		len = fread(buf + remain, 1, sizeof(buf) - remain, fp);
-		if (len <= 0) {
-			//printf("EOF\n");
-			break;
-		}
-
-		int fed = pngle_feed(pngle, buf, remain + len);
-		if (fed < 0) {
-			ESP_LOGE(__FUNCTION__, "ERROR; %s", pngle_error(pngle));
-			while(1) vTaskDelay(1);
-		}
-
-		remain = remain + len - fed;
-		if (remain > 0) memmove(buf, buf + fed, remain);
-	}
-
-	fclose(fp);
-
-	uint16_t pngWidth = pngle_get_width(pngle);
-	uint16_t pngHeight = pngle_get_height(pngle);
-	ESP_LOGD(__FUNCTION__, "pngWidth=%d pngHeight=%d", pngWidth, pngHeight);
-	int _xpos = xpos - (pngHeight/2);
-	int _ypos = ypos - (pngWidth/2);
-	ESP_LOGD(__FUNCTION__, "xpos=%d ypos=%d _xpos=%d _ypos=%d", xpos, ypos, _xpos, _ypos);
-	uint16_t *colors = (uint16_t*)malloc(sizeof(uint16_t) * pngWidth);
-	if (colors == NULL) {
-		ESP_LOGE(__FUNCTION__, "malloc fail");
-		pngle_destroy(pngle, _width, _height);
-		return;
-	}
-
-	for(int y = 0; y < pngHeight; y++){
-		for(int x = 0;x < pngWidth; x++){
-			//pixel_png pixel = pngle->pixels[y][x];
-			//colors[x] = rgb565(pixel.red, pixel.green, pixel.blue);
-			colors[x] = pngle->pixels[y][x];
-		}
-		lcdDrawMultiPixels(dev, _xpos, y+_ypos, pngWidth, colors);
-		vTaskDelay(1);
-	}
-	free(colors);
-	pngle_destroy(pngle, _width, _height);
-	return;
-}
-
 
 typedef struct {
 	int x_center;
@@ -2114,6 +2113,15 @@ void ILI9341(void *pvParameters)
 #if 0
 	// for test
 	while(1) {
+		char file[64];
+		lcdFillScreen(&dev, WHITE);
+		strcpy(file, "/icons/twitter.png");
+		ShowPngImage(&dev, file, CONFIG_WIDTH, CONFIG_HEIGHT, CONFIG_WIDTH/2, CONFIG_HEIGHT/2);
+		WAIT;
+		strcpy(file, "/icons/facebook.png");
+		ShowPngImage(&dev, file, CONFIG_WIDTH, CONFIG_HEIGHT, CONFIG_WIDTH/2, CONFIG_HEIGHT/2);
+		WAIT;
+
 #if CONFIG_XPT2046_ENABLE_SAME_BUS || CONFIG_XPT2046_ENABLE_DIFF_BUS
 		TouchCalibration(&dev, fx24G, CONFIG_WIDTH, CONFIG_HEIGHT);
 		TouchPenTest(&dev, fx24G, CONFIG_WIDTH, CONFIG_HEIGHT, 1000);
@@ -2129,6 +2137,7 @@ void ILI9341(void *pvParameters)
 #endif
 
 	while(1) {
+		char file[32];
 
 #if CONFIG_XPT2046_ENABLE_SAME_BUS || CONFIG_XPT2046_ENABLE_DIFF_BUS
 		TouchCalibration(&dev, fx24G, CONFIG_WIDTH, CONFIG_HEIGHT);
@@ -2203,7 +2212,6 @@ void ILI9341(void *pvParameters)
 		CodeTest(&dev, fx32L, CONFIG_WIDTH, CONFIG_HEIGHT, 0x80, 0xff);
 		WAIT;
 
-		char file[32];
 		if (CONFIG_WIDTH >= CONFIG_HEIGHT) {
 			strcpy(file, "/images/esp32.bmp");
 		} else {
@@ -2218,6 +2226,14 @@ void ILI9341(void *pvParameters)
 
 		strcpy(file, "/images/esp_logo.png");
 		PNGTest(&dev, file, CONFIG_WIDTH, CONFIG_HEIGHT);
+		WAIT;
+
+		lcdFillScreen(&dev, WHITE);
+		strcpy(file, "/icons/twitter.png");
+		ShowPngImage(&dev, file, CONFIG_WIDTH, CONFIG_HEIGHT, CONFIG_WIDTH/2, CONFIG_HEIGHT/2);
+		WAIT;
+		strcpy(file, "/icons/facebook.png");
+		ShowPngImage(&dev, file, CONFIG_WIDTH, CONFIG_HEIGHT, CONFIG_WIDTH/2, CONFIG_HEIGHT/2);
 		WAIT;
 
 		ScrollTest(&dev, fx16G, CONFIG_WIDTH, CONFIG_HEIGHT);
