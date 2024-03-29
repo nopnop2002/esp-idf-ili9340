@@ -128,6 +128,9 @@ JPEG file(Cannot be displayed on ESP32S2)
 PNG file   
 ![M5Stack-PNG](https://user-images.githubusercontent.com/6020549/78613610-40c8e280-78a7-11ea-95b0-a89ce14dc196.JPG)
 
+PNG icon
+![M5Stack-ICON](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/293bc69b-3d15-4160-b103-9ebcc606ea73)
+
 ---
 
 # 4.0" ST7796S 480x320
