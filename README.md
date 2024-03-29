@@ -129,7 +129,7 @@ PNG file
 ![M5Stack-PNG](https://user-images.githubusercontent.com/6020549/78613610-40c8e280-78a7-11ea-95b0-a89ce14dc196.JPG)
 
 PNG icon
-![M5Stack-ICON](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/293bc69b-3d15-4160-b103-9ebcc606ea73)
+![M5Stack-ICON](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/120af5a4-9b31-476a-a9db-258c2d0072e7)
 
 ---
 
