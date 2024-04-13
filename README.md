@@ -497,6 +497,28 @@ idf.py erase_flash
 
 ---
 
+# SPI Clock speed   
+According to the datasheet, the minimum SPI clock cycles for each driver are as follows:   
+
+|Driver|minimum SPI clock cycle|maximum SPI clock frequency|
+|:-:|:-:|:-:|
+|ILI9225|100ns|10MHz|
+|ILI9340|66ns|15MHz|
+|ILI9341|100ns|10MHz|
+|ST7735|66ns|15MHz|
+|ST7796|66ns|15MHz|
+
+The SPI clock frequency used by this project is 10MHz.   
+Higher SPI clock frequencies can be specified using ```spi_clock_speed()```.   
+When using higher SPI clock frequencies, you need to be careful about the length of the wire cable.   
+```
+    int speed = 15000000; // 15MHz
+    spi_clock_speed(speed);
+    spi_master_init(&dev, CONFIG_MOSI_GPIO, CONFIG_SCLK_GPIO, CONFIG_TFT_CS_GPIO, CONFIG_DC_GPIO,
+        CONFIG_RESET_GPIO, CONFIG_BL_GPIO, XPT_MISO_GPIO, XPT_CS_GPIO, XPT_IRQ_GPIO, XPT_SCLK_GPIO, XPT_MOSI_GPIO);
+    lcdInit(&dev, model, CONFIG_WIDTH, CONFIG_HEIGHT, CONFIG_OFFSETX, CONFIG_OFFSETY);
+```
+
 # SPI BUS selection   
 ![config-spi-bus](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/bdfd8436-31c7-435f-b21d-3d4b8e5350d3)
 

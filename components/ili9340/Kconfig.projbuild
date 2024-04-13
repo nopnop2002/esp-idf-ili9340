@@ -108,7 +108,7 @@ menu "TFT Configuration"
 		int "DC GPIO number"
 		range 0 GPIO_RANGE_MAX
 		default 27 if IDF_TARGET_ESP32
-		default 40 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
+		default 37 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
 		default  3 # C3 and others
 		help
 			GPIO number (IOxx) to SPI DC.
@@ -120,7 +120,7 @@ menu "TFT Configuration"
 		int "RESET GPIO number"
 		range -1 GPIO_RANGE_MAX
 		default 33 if IDF_TARGET_ESP32
-		default 41 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
+		default 38 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
 		default  4 # C3 and others
 		help
 			GPIO number (IOxx) to RESET.
@@ -194,7 +194,7 @@ menu "TFT Configuration"
 		int "XPT2046 MISO GPIO number"
 		range 0 GPIO_RANGE_MAX
 		default 19 if IDF_TARGET_ESP32
-		default 37 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
+		default  1 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
 		default  6 # C3 and others
 		help
 			GPIO number (IOxx) to XPT2046 MISO.
@@ -205,7 +205,7 @@ menu "TFT Configuration"
 		int "XPT2046 CS GPIO number"
 		range 0 GPIO_RANGE_MAX
 		default 21 if IDF_TARGET_ESP32
-		default 38 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
+		default  2 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
 		default  7 # C3 and others
 		help
 			GPIO number (IOxx) to XPT2046 CS.
@@ -216,7 +216,7 @@ menu "TFT Configuration"
 		int "XPT2046 IRQ GPIO number"
 		range 0 GPIO_RANGE_MAX
 		default 22 if IDF_TARGET_ESP32
-		default 39 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
+		default  3 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
 		default  8 # C3 and others
 		help
 			GPIO number (IOxx) to XPT2046 IRQ.
@@ -227,7 +227,7 @@ menu "TFT Configuration"
 		int "XPT2046 SCLK GPIO number"
 		range 0 GPIO_RANGE_MAX
 		default 25 if IDF_TARGET_ESP32
-		default 40 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
+		default  4 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
 		default  9 # C3 and others
 		help
 			GPIO number (IOxx) to XPT2046 CLK.
@@ -238,7 +238,7 @@ menu "TFT Configuration"
 		int "XPT2046 MOSI GPIO number"
 		range 0 GPIO_RANGE_MAX
 		default 26 if IDF_TARGET_ESP32
-		default 41 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
+		default  5 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
 		default 10 # C3 and others
 		help
 			GPIO number (IOxx) to XPT2046 CLK.

@@ -24,16 +24,19 @@
 #define XPT_ID SPI3_HOST // When not to use menuconfig
 #endif
 
+#define SPI_DEFAULT_FREQUENCY SPI_MASTER_FREQ_10M; // 10MHz
 
 //static const int TFT_MOSI = 23;
 //static const int TFT_SCLK = 18;
 
 static const int SPI_Command_Mode = 0;
 static const int SPI_Data_Mode = 1;
-//static const int TFT_Frequency = SPI_MASTER_FREQ_20M;
-////static const int TFT_Frequency = SPI_MASTER_FREQ_26M;
-static const int TFT_Frequency = SPI_MASTER_FREQ_40M;
-////static const int TFT_Frequency = SPI_MASTER_FREQ_80M;
+//static const int SPI_Frequency = SPI_MASTER_FREQ_10M;
+//static const int SPI_Frequency = SPI_MASTER_FREQ_20M;
+//static const int SPI_Frequency = SPI_MASTER_FREQ_26M;
+//static const int SPI_Frequency = SPI_MASTER_FREQ_40M;
+
+int clock_speed_hz = SPI_DEFAULT_FREQUENCY;
 
 #if CONFIG_XPT2046_ENABLE_SAME_BUS || CONFIG_XPT2046_ENABLE_DIFF_BUS
 static const int XPT_Frequency = 1*1000*1000;
@@ -44,6 +47,11 @@ static const int XPT_Frequency = 1*1000*1000;
 //#define XPT_CS	4
 //#define XPT_IRQ 5
 #endif
+
+void spi_clock_speed(int speed) {
+    ESP_LOGI(TAG, "SPI clock speed=%d MHz", speed/1000000);
+    clock_speed_hz = speed;
+}
 
 void spi_master_init(TFT_t * dev, int16_t TFT_MOSI, int16_t TFT_SCLK, int16_t TFT_CS, int16_t GPIO_DC, int16_t GPIO_RESET, int16_t GPIO_BL,
 	int16_t XPT_MISO, int16_t XPT_CS, int16_t XPT_IRQ, int16_t XPT_SCLK, int16_t XPT_MOSI)
@@ -102,7 +110,8 @@ void spi_master_init(TFT_t * dev, int16_t TFT_MOSI, int16_t TFT_SCLK, int16_t TF
 	assert(ret==ESP_OK);
 
 	spi_device_interface_config_t tft_devcfg={
-		.clock_speed_hz = TFT_Frequency,
+		//.clock_speed_hz = SPI_Frequency,
+		.clock_speed_hz = clock_speed_hz,
 		.spics_io_num = TFT_CS,
 		.queue_size = 7,
 		.flags = SPI_DEVICE_NO_DUMMY,
