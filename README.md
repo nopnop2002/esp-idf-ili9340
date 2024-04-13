@@ -499,7 +499,7 @@ idf.py erase_flash
 
 # SPI Clock speed   
 According to the datasheet, the minimum SPI clock cycles for each driver are as follows:   
-
+Maximum SPI clock frequency is the reciprocal of this.   
 |Driver|minimum SPI clock cycle|maximum SPI clock frequency|
 |:-:|:-:|:-:|
 |ILI9225|100ns|10MHz|
