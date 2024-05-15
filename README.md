@@ -99,7 +99,7 @@ Pull Up of the RESET pin may be required. I inserted a 100 ohm resistor between 
 They can use touch screens.   
 ![Shenzhen_Jingcal_Intelligent](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/eda884bb-9fac-40ea-8396-d77bb0de074b)
 
-__ESP32-2432S032/ESP32-4827S043/ESP32-8048S043 doesn't work because it's an RGB panel, not SPI.___   
+__ESP32-2432S032/ESP32-4827S043/ESP32-8048S043 doesn't work because it's an RGB panel, not SPI.__   
 
 ---
 
