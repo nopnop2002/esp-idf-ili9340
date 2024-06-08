@@ -1,0 +1,43 @@
+name: esp-idf-ci-action
+
+on:
+  pull_request:
+    paths:
+      - "main/**"
+      - "components/**"
+
+  push:
+    paths:
+      - "main/**"
+      - "components/**"
+
+  workflow_dispatch:
+  repository_dispatch:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        idf_ver:
+          - release-v5.0
+          - release-v5.1
+          - release-v5.2
+          - release-v5.3
+        idf_target:
+          - esp32
+          - esp32s2
+          - esp32c3
+          - esp32s3
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v4
+      with:
+        submodules: 'recursive'
+    - name: Build Application with ESP-IDF
+      uses: espressif/esp-idf-ci-action@v1
+      with:
+        esp_idf_version: ${{ matrix.idf_ver }}
+        target: ${{ matrix.idf_target }}
+        path: '.'
