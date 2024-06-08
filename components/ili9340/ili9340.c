@@ -192,7 +192,8 @@ bool spi_master_write_byte(spi_device_handle_t SPIHandle, const uint8_t* Data, s
 		SPITransaction.tx_buffer = Data;
 #if 1
 		ret = spi_device_transmit( SPIHandle, &SPITransaction );
-#else
+#endif
+#if 0
 		ret = spi_device_polling_transmit( SPIHandle, &SPITransaction );
 #endif
 		assert(ret==ESP_OK); 
