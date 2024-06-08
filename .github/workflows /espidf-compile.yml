@@ -3,6 +3,7 @@ name: esp-idf-ci-action
 on:
   pull_request:
     paths:
+      - "main/**"
       - "components/**"
 
   push:
