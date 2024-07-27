@@ -295,7 +295,7 @@ Please refer [this](http://elm-chan.org/docs/dosv/fontx_e.html) page about FONTX
 This can be done on Windows 10.   
 Developer page is [here](http://elm-chan.org/fsw_e.html).   
 
-![FontxEditor](https://user-images.githubusercontent.com/6020549/78731275-3b889800-797a-11ea-81ba-096dbf07c4b8.png)
+![fontx-editor-1](https://github.com/user-attachments/assets/76a8c96f-74c3-4583-a4f1-5664f0e81f3a)
 
 This library uses the following as default fonts:   
 - font/ILGH16XB.FNT // 8x16Dot Gothic
@@ -322,19 +322,20 @@ Monospaced bitmap fonts can also be downloaded [here](https://github.com/Tecate/
 step3)   
 import the BDF font file into your fontxedit.exe.   
 this tool can convert from BDF to FONTX.   
-![FONTX-EDITTOR-1](https://user-images.githubusercontent.com/6020549/112736427-d7e5e900-8f95-11eb-80d5-11dd9df42903.jpg)
+![fontx-editor-2](https://github.com/user-attachments/assets/3353bf23-01f0-455d-8c9c-b56d55b4dc9c)
 
 step4)   
 adjust font size.   
-![FONTX-EDITTOR-2](https://user-images.githubusercontent.com/6020549/112736434-e6cc9b80-8f95-11eb-8b8e-b523746c1c96.jpg)
+![fontx-editor-3](https://github.com/user-attachments/assets/0a99fb0b-1725-472e-8310-ca57362ae6d1)
 
 step5)   
 check font pattern.   
-![FONTX-EDITTOR-13](https://user-images.githubusercontent.com/6020549/112746492-11e0da80-8fea-11eb-94f1-8d299b2dc756.jpg)
+when you have made any changes, press the apply button.   
+![fontx-editor-4](https://github.com/user-attachments/assets/44b8ed95-0c3e-4507-87fa-b94c3c2349de)
 
 step6)   
 save as .fnt file from your fontedit.exe.   
-![FONTX-EDITTOR-14](https://user-images.githubusercontent.com/6020549/112746501-2329e700-8fea-11eb-9a3a-4481c1a14ddc.jpg)
+![fontx-editor-5](https://github.com/user-attachments/assets/db5b62a8-3a61-49aa-8505-b906067f1111)
 
 step7)   
 upload your font file to $HOME/esp-idf-ili9340/font directory.   
