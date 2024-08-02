@@ -371,7 +371,6 @@ Specify half of Height for Width.
 Specify your favorite font name in the FontX2 name field using up to 8 characters.   
 ![WFONTX64-2](https://github.com/user-attachments/assets/c87a9ec9-8e28-4d34-8475-60b15a47fb22)
 
-
 step4)   
 Specify the file name to save.   
 ![WFONTX64-3](https://github.com/user-attachments/assets/9715d4bf-e460-41a6-9a4b-38c0f10020f7)
