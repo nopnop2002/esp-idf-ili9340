@@ -363,25 +363,41 @@ Developer page is [here](https://github.com/nemuisan/WFONTX64).
 
 step2)   
 Select ttf font.   
-![WFINTX64-1](https://github.com/user-attachments/assets/0fc874b5-4ffa-4cba-b22f-9430b406ba04)
+![WFONTX64-1](https://github.com/user-attachments/assets/2193a3c4-021c-48e6-8486-2ce500bdac36)
 
 step3)   
 Enter Height, Width, FontX2 name.   
 Specify half of Height for Width.   
 Specify your favorite font name in the FontX2 name field using up to 8 characters.   
-![WFINTX64-2](https://github.com/user-attachments/assets/6cdc69af-891e-4f43-8c65-8db0a12e10d7)
+![WFONTX64-2](https://github.com/user-attachments/assets/c87a9ec9-8e28-4d34-8475-60b15a47fb22)
+
 
 step4)   
 Specify the file name to save.   
-![WFINTX64-3](https://github.com/user-attachments/assets/3588bca1-e03f-42ca-bbe0-d8f9627b20c9)
+![WFONTX64-3](https://github.com/user-attachments/assets/9715d4bf-e460-41a6-9a4b-38c0f10020f7)
 
 step5)   
 Specify the font style as required.   
-![WFINTX64-4](https://github.com/user-attachments/assets/9246bd4f-615c-4676-a451-a8c2a39b83e5)
+![WFONTX64-4](https://github.com/user-attachments/assets/0ff3072d-6a78-48ae-b855-60c692f8d771)
 
 step6)   
 Press the RUN button to convert TTF fonts to FONTX format.   
-![WFINTX64-4](https://github.com/user-attachments/assets/68530333-6375-4796-b0ca-38b3bd1ffc98)
+![WFONTX64-5](https://github.com/user-attachments/assets/d9797e3d-1fd6-4504-b161-c1280f1242c0)
+
+step7)   
+add font to use   
+```
+    FontxFile fx16G[2];
+    FontxFile fx24G[2];
+    FontxFile fx32G[2];
+    //InitFontx(fx16G,"/spiffs/ILGH16XB.FNT",""); // 8x16Dot Gothic
+    //InitFontx(fx24G,"/spiffs/ILGH24XB.FNT",""); // 12x24Dot Gothic
+    //InitFontx(fx32G,"/spiffs/ILGH32XB.FNT",""); // 16x32Dot Gothic
+    InitFontx(fx16G,"/spiffs/Gigi16.FNT",""); // 8x16Dot Gigi
+    InitFontx(fx24G,"/spiffs/Gigi24.FNT",""); // 12x24Dot Gigi
+    InitFontx(fx32G,"/spiffs/Gigi32.FNT",""); // 16x32Dot Gigi
+
+```
 
 ![ttf_font](https://github.com/user-attachments/assets/9f01959b-b083-4a67-806f-86909630ad32)
 
