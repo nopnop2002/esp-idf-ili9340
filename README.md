@@ -281,11 +281,6 @@ This can reduce the image to any size.
 ---
 
 # Font File   
-You can add your original fonts.   
-The format of the font file is the FONTX format.   
-Your font file is put in font directory.   
-Your font file is uploaded to SPIFFS partition using meke flash.   
-
 This project uses the following as default fonts:   
 - font/ILGH16XB.FNT // 8x16Dot Gothic
 - font/ILGH24XB.FNT // 12x24Dot Gothic
@@ -297,6 +292,11 @@ This project uses the following as default fonts:
 From 0x00 to 0x7f, the characters image of Alphanumeric are stored.   
 From 0x80 to 0xff, the characters image of Japanese are stored.   
 Changing this file will change the font.
+
+You can add your original fonts.   
+The format of the font file is the FONTX format.   
+Your font file is put in font directory.   
+Your font file is uploaded to SPIFFS partition using meke flash.   
 
 Please refer [this](http://elm-chan.org/docs/dosv/fontx_e.html) page about FONTX format.   
 
