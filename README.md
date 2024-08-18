@@ -463,7 +463,7 @@ XPT2046 and HR2046 are very similar. But HR2046 does not work properly.
 |T_CLK|--|GPIO18|GPIO36|GPIO1|(*1) (*2)|
 |T_CS|--|GPIO21|GPIO38|GPIO7|(*1) (*4)|
 |T_DIN|--|GPIO23|GPIO35|GPIO0|(*1) (*2)|
-|T_OUT|--|GPIO19|GPIO37|GPIO6|(*1) (*2)|
+|T_OUT|--|GPIO19|GPIO37|GPIO6|(*1) (*4)|
 |T_IRQ|--|GPIO22|GPIO39|GPIO8|(*1) (*4)|
 
 (*1) You can change it to any gpio using menuconfig. But some gpio's are input only.   
