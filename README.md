@@ -356,7 +356,8 @@ Font file that From 0x80 to 0xff, the characters image of Latin are stored.
 ![M5Statck-Font-3](https://user-images.githubusercontent.com/6020549/132110951-e7faaaa9-cdf2-429d-8eea-d20fe0748524.JPG)
 
 u8g2 library contains many BDF fonts.   
-![emoticons21](https://github.com/user-attachments/assets/296b0f30-3ff6-4fe0-a478-1d4ad92faa3d)
+![bdf-font-1](https://github.com/user-attachments/assets/0c5470df-ab99-4b73-b3ac-624b6e6a5230)
+![bdf-font-2](https://github.com/user-attachments/assets/41dd693d-cb3d-4928-b213-49bf7cad4f6a)
 
 # Convert from TTF font to FONTX font  
 step1)   
