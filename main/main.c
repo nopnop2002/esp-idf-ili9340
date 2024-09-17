@@ -1136,8 +1136,10 @@ TickType_t CodeTest(TFT_t * dev, FontxFile *fx, int width, int height, uint16_t 
 			xpos = lcdDrawCode(dev, fx, xpos, ypos, code, color);
 			if (code == 0xFF) break;
 			code++;
-			if(code > end) break;
+			if (code > end) break;
 		}
+		if (code == 0xFF) break;
+		if (code > end) break;
 	}
 
 	endTick = xTaskGetTickCount();
@@ -2035,10 +2037,11 @@ void ILI9341(void *pvParameters)
 	FontxFile fx16G[2];
 	FontxFile fx24G[2];
 	FontxFile fx32G[2];
-	FontxFile fx32L[2];
 	InitFontx(fx16G,"/spiffs/ILGH16XB.FNT",""); // 8x16Dot Gothic
 	InitFontx(fx24G,"/spiffs/ILGH24XB.FNT",""); // 12x24Dot Gothic
 	InitFontx(fx32G,"/spiffs/ILGH32XB.FNT",""); // 16x32Dot Gothic
+
+	FontxFile fx32L[2];
 	InitFontx(fx32L,"/spiffs/LATIN32B.FNT",""); // 16x32Dot Latinc
 
 	FontxFile fx16M[2];
@@ -2150,6 +2153,13 @@ void ILI9341(void *pvParameters)
 		TouchIconTest(&dev, fx24G, CONFIG_WIDTH, CONFIG_HEIGHT, 1000);
 #endif
 
+#endif
+
+#if 0
+		while(1) {
+			ArrowTest(&dev, fx16G, model, CONFIG_WIDTH, CONFIG_HEIGHT);
+			WAIT;
+		}
 #endif
 
 		FillTest(&dev, CONFIG_WIDTH, CONFIG_HEIGHT);
