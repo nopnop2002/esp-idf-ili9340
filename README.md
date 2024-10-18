@@ -311,7 +311,7 @@ Developer page is [here](http://elm-chan.org/fsw_e.html).
 
 # Convert from BDF font to FONTX font   
 step1)   
-download fontxedit.exe from [here](http://elm-chan.org/fsw/fontxedit.zip).   
+download Font File Editor.   
 
 step2)   
 download BDF font file from Internet.   
