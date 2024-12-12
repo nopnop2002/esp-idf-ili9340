@@ -30,6 +30,10 @@ E (256560) decode_jpeg: Error allocating memory for line 251
 E (260630) pngle_new: Error allocating memory for line 160
 ```
 
+__Note for ESP32-S2__   
+ESP32-S2 has less SRAM, but some ESP32S2 have PSRAM.   
+If your SoC has PSRAM, you can avoid running out of memory by enabling PSRAM.   
+![config-psram](https://github.com/user-attachments/assets/a71b320d-f5fb-4cd5-9466-f191b8704d40)
 
 
 # Configuration   
