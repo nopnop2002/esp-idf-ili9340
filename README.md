@@ -5,6 +5,9 @@ SPI TFT and XPT2046 touch screen controller driver for esp-idf.
 ESP-IDF V5.0 or later.   
 ESP-IDF V4.4 release branch reached EOL in July 2024.   
 
+__Note for ESP32-C6__   
+ESP-IDF V5.1 is required when using ESP32-C6.   
+
 # Installation
 
 ```
@@ -27,8 +30,6 @@ E (256560) decode_jpeg: Error allocating memory for line 251
 E (260630) pngle_new: Error allocating memory for line 160
 ```
 
-__Note for ESP32-C6__   
-ESP-IDF V5.1 is required when using ESP32-C6.   
 
 
 # Configuration   
