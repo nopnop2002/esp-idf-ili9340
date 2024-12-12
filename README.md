@@ -2,30 +2,10 @@
 SPI TFT and XPT2046 touch screen controller driver for esp-idf.
 
 # Software requirements
-ESP-IDF V4.4/V5.x.   
-ESP-IDF V5.0 is required when using ESP32C2.   
-ESP-IDF V5.1 is required when using ESP32C6.   
+ESP-IDF V5.0 or later.   
+ESP-IDF V4.4 release branch reached EOL in July 2024.   
 
-# Installation for ESP-IDF V4.4
-
-```
-git clone -b v4.4 https://github.com/nopnop2002/esp-idf-ili9340
-cd esp-idf-ili9340/
-idf.py set-target {esp32/esp32s2/esp32s3/esp32c3}
-idf.py menuconfig
-idf.py flash
-```
-
-__Note for ESP32-S2__   
-The tjpgd library is not included in the ESP32-S2 ROM because the ROM of the ESP32-S2 is small.   
-Therefore, JPEG files cannot be displayed.   
-
-__Note for ESP32-C3__   
-For some reason, there are development boards that cannot use GPIO06, GPIO08, GPIO09, GPIO19 for SPI clock pins.   
-According to the ESP32-C3 specifications, these pins can also be used as SPI clocks.   
-I used a raw ESP-C3-13 to verify that these pins could be used as SPI clocks.   
-
-# Installation for ESP-IDF V5.x
+# Installation
 
 ```
 git clone https://github.com/nopnop2002/esp-idf-ili9340
