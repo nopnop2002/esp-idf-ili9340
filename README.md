@@ -59,15 +59,14 @@ __TFT MISO is not use.__
 
 # Tested TFT   
 - M5Stack   
-- Shenzhen Jingcal Intelligent 3.5" ST7796 480x320 (ESP32-3248S035)   
-- Shenzhen Jingcal Intelligent 2.8" ILI9341 320x240 (ESP32-2432S028R)   
-- 4.0" ST7796 480x320   
-- 3.2" ILI9341 320x240   
-- 2.8" ILI9341 320x240   
-- 2.4" ILI9341 320x240   
-- 2.2" ILI9340 320x240   
+- Shenzhen Jingcal Intelligent 3.5" ST7796 320x480 (ESP32-3248S035)   
+- Shenzhen Jingcal Intelligent 2.8" ILI9341 240x320 (ESP32-2432S028R)   
+- 4.0" ST7796 320x480   
+- 3.2" ILI9341 240x320   
+- 2.8" ILI9341 240x320   
+- 2.4" ILI9341 240x320   
+- 2.2" ILI9340 240x320   
 - 2.0" ILI9225 176x220   
-- 2.0" ILI9225G 176x220   
 - 1.8" ST7735 128x160   
 - 1.77" ST7735 128x160   
 - 1.44" ST7735 128x128   
@@ -118,7 +117,7 @@ PNG icon
 
 ---
 
-# 4.0" ST7796S 480x320
+# 4.0" ST7796S 320x480
 
 ![config-st7796](https://user-images.githubusercontent.com/6020549/101022680-0e49c380-35b5-11eb-914f-f522b33bb49a.jpg)
 
@@ -127,7 +126,7 @@ Left:4.0" Right:2.4"
 
 ---
 
-# Shenzhen Jingcal Intelligent 3.5" ST7796 480x320
+# Shenzhen Jingcal Intelligent 3.5" ST7796 320x480
 Vendor part number is ESP32-3248S035.   
 
 ![config-ESP32-3248S035](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/68749d5a-9047-4725-bc06-281f37e44539)
@@ -136,9 +135,9 @@ Vendor part number is ESP32-3248S035.
 
 ---
 
-# 3.2" ILI9341 320x240
-# 2.8" ILI9341 320x240
-# 2.4" ILI9341 320x240
+# 3.2" ILI9341 240x320
+# 2.8" ILI9341 240x320
+# 2.4" ILI9341 240x320
 
 ![config-ili9341](https://user-images.githubusercontent.com/6020549/101022718-1b66b280-35b5-11eb-8103-7bbb1f0a7a30.jpg)
 
@@ -150,7 +149,7 @@ Left:2.8" Right:2.4"
 
 ---
 
-# Shenzhen Jingcal Intelligent 2.8" ILI9341 320x240
+# Shenzhen Jingcal Intelligent 2.8" ILI9341 240x320
 Vendor part number is ESP32-2432S028R.   
 
 ![config-ESP32-2432S028R-1](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/317e365c-3c1a-4c6f-9c14-f07feacbd4d8)
@@ -160,7 +159,7 @@ Vendor part number is ESP32-2432S028R.
 
 ---
 
-# 2.2" ILI9340 320x240
+# 2.2" ILI9340 240x320
 
 ![config-ili9340](https://user-images.githubusercontent.com/6020549/101022746-2588b100-35b5-11eb-8eaa-1f86cc4c9f93.jpg)
 
@@ -175,15 +174,6 @@ Left:2.2" Right:2.4"
 
 Left:2.0" Right:2.4"
 ![2_0_ili9225](https://user-images.githubusercontent.com/6020549/85910092-004e8480-b858-11ea-98f9-2ba9efe5880a.JPG)
-
----
-
-# 2.0" ILI9225G 176x220
-
-![config-ili9225g](https://user-images.githubusercontent.com/6020549/101022833-42bd7f80-35b5-11eb-95d9-2e821d4757e6.jpg)
-
-Left:2.0" Right:2.4"
-![2_0_ili9225g](https://user-images.githubusercontent.com/6020549/85910094-03e20b80-b858-11ea-9e60-6efa28b0d644.JPG)
 
 ---
 
