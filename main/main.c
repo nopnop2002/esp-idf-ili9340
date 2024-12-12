@@ -943,6 +943,7 @@ TickType_t PNGTest(TFT_t * dev, char * file, int width, int height) {
 
 	pngle_t *pngle = pngle_new(_width, _height);
 	if (pngle == NULL) {
+		ESP_LOGE(__FUNCTION__, "pngle_new fail");
 		fclose(fp);
 		return 0;
 	}
@@ -1046,6 +1047,11 @@ void ShowPngImage(TFT_t * dev, char * file, int width, int height, int xpos, int
 	int _height = height;
 	if (height > 320) _height = 320;
 	pngle_t *pngle = pngle_new(_width, _height);
+	if (pngle == NULL) {
+		ESP_LOGE(__FUNCTION__, "pngle_new fail");
+		fclose(fp);
+		return;
+	}
 
 	pngle_set_init_callback(pngle, png_init);
 	pngle_set_draw_callback(pngle, png_draw);
@@ -1053,7 +1059,6 @@ void ShowPngImage(TFT_t * dev, char * file, int width, int height, int xpos, int
 
 	double display_gamma = 2.2;
 	pngle_set_display_gamma(pngle, display_gamma);
-
 
 	while (!feof(fp)) {
 		if (remain >= sizeof(buf)) {

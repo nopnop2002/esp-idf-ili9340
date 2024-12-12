@@ -27,14 +27,9 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <math.h>
-#include "freertos/FreeRTOS.h"
 
 #include "esp_log.h"
-#if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 0, 0)
 #include "miniz.h"
-#else
-#include "rom/miniz.h"
-#endif
 #include "pngle.h"
 
 #define PNGLE_ERROR(s) (pngle->error = (s), pngle->state = PNGLE_STATE_ERROR, -1)
@@ -58,9 +53,9 @@ static inline uint8_t  read_uint8(const uint8_t *p)
 static inline uint32_t read_uint32(const uint8_t *p)
 {
 	return (p[0] << 24)
-		 | (p[1] << 16)
-		 | (p[2] <<  8)
-		 | (p[3] <<  0)
+	     | (p[1] << 16)
+	     | (p[2] <<  8)
+	     | (p[3] <<  0)
 	;
 }
 
@@ -412,7 +407,7 @@ static int pngle_on_data(pngle_t *pngle, const uint8_t *p, int len)
 		}
 
 		size_t cidx =  pngle->scanline_ringbuf_cidx;
-		size_t bidx = (pngle->scanline_ringbuf_cidx + bytes_per_pixel) % pngle->scanline_ringbuf_size;
+		size_t bidx = (pngle->scanline_ringbuf_cidx                                + bytes_per_pixel) % pngle->scanline_ringbuf_size;
 		size_t aidx = (pngle->scanline_ringbuf_cidx + pngle->scanline_ringbuf_size - bytes_per_pixel) % pngle->scanline_ringbuf_size;
 		// debug_printf("[pngle] cidx = %zd, bidx = %zd, aidx = %zd\n", cidx, bidx, aidx);
 
@@ -457,59 +452,59 @@ static int pngle_handle_chunk(pngle_t *pngle, const uint8_t *buf, size_t len)
 		consume = 13;
 		if (len < consume) return 0;
 
-		debug_printf("[pngle] Parse IHDR\n");
+		debug_printf("[pngle]   Parse IHDR\n");
 
-		pngle->hdr.width = read_uint32(buf + 0);
-		pngle->hdr.height = read_uint32(buf + 4);
-		pngle->hdr.depth = read_uint8 (buf + 8);
-		pngle->hdr.color_type = read_uint8 (buf + 9);
+		pngle->hdr.width       = read_uint32(buf +  0);
+		pngle->hdr.height      = read_uint32(buf +  4);
+		pngle->hdr.depth       = read_uint8 (buf +  8);
+		pngle->hdr.color_type  = read_uint8 (buf +  9);
 		pngle->hdr.compression = read_uint8 (buf + 10);
-		pngle->hdr.filter = read_uint8 (buf + 11);
-		pngle->hdr.interlace = read_uint8 (buf + 12);
+		pngle->hdr.filter      = read_uint8 (buf + 11);
+		pngle->hdr.interlace   = read_uint8 (buf + 12);
 
 
-		debug_printf("[pngle] width  : %d\n", pngle->hdr.width);
-		debug_printf("[pngle] height : %d\n", pngle->hdr.height);
-		debug_printf("[pngle] depth	 : %d\n", pngle->hdr.depth);
-		debug_printf("[pngle] color_type : %d\n", pngle->hdr.color_type);
-		debug_printf("[pngle] compression: %d\n", pngle->hdr.compression);
-		debug_printf("[pngle] filter : %d\n", pngle->hdr.filter);
-		debug_printf("[pngle] interlace : %d\n", pngle->hdr.interlace);
+		debug_printf("[pngle]     width      : %d\n", pngle->hdr.width      );
+		debug_printf("[pngle]     height     : %d\n", pngle->hdr.height     );
+		debug_printf("[pngle]     depth      : %d\n", pngle->hdr.depth      );
+		debug_printf("[pngle]     color_type : %d\n", pngle->hdr.color_type );
+		debug_printf("[pngle]     compression: %d\n", pngle->hdr.compression);
+		debug_printf("[pngle]     filter     : %d\n", pngle->hdr.filter     );
+		debug_printf("[pngle]     interlace  : %d\n", pngle->hdr.interlace  );
 
 		/*
-			Color	 Allowed	Interpretation							  channels
-			Type	Bit Depths
+            Color    Allowed    Interpretation                            channels
+            Type    Bit Depths
 
-			0		1,2,4,8,16	Each pixel is a grayscale sample.		  1 channels (Brightness)
+            0       1,2,4,8,16  Each pixel is a grayscale sample.         1 channels (Brightness)
 
-			2		8,16		Each pixel is an R,G,B triple.			  3 channels (R, G, B)
+            2       8,16        Each pixel is an R,G,B triple.            3 channels (R, G, B)
 
-			3		1,2,4,8		Each pixel is a palette index;			  1 channels (palette info)
-								a PLTE chunk must appear.
+            3       1,2,4,8     Each pixel is a palette index;            1 channels (palette info)
+                                a PLTE chunk must appear.
 
-			4		8,16		Each pixel is a grayscale sample,		  2 channels (Brightness, Alpha)
-								followed by an alpha sample.
+            4       8,16        Each pixel is a grayscale sample,         2 channels (Brightness, Alpha)
+                                followed by an alpha sample.
 
-			6		8,16		Each pixel is an R,G,B triple,			  4 channels (R, G, B, Alpha)
-								followed by an alpha sample.
+            6       8,16        Each pixel is an R,G,B triple,            4 channels (R, G, B, Alpha)
+                                followed by an alpha sample.
 		*/
-		//	111
-		//	  ^-- indexed color (palette)
-		//	 ^--- Color
-		//	^---- Alpha channel
+		//  111
+		//    ^-- indexed color (palette)
+		//   ^--- Color
+		//  ^---- Alpha channel
 
 		switch (pngle->hdr.color_type) {
 		case 0: pngle->channels = 1; if (pngle->hdr.depth != 1 && pngle->hdr.depth != 2 && pngle->hdr.depth != 4 && pngle->hdr.depth != 8 && pngle->hdr.depth != 16) return PNGLE_ERROR("Invalid bit depth"); break; // grayscale
-		case 2: pngle->channels = 3; if (pngle->hdr.depth != 8 && pngle->hdr.depth != 16) return PNGLE_ERROR("Invalid bit depth"); break; // truecolor
-		case 3: pngle->channels = 1; if (pngle->hdr.depth != 1 && pngle->hdr.depth != 2 && pngle->hdr.depth != 4 && pngle->hdr.depth != 8) return PNGLE_ERROR("Invalid bit depth"); break; // indexed color
-		case 4: pngle->channels = 2; if (pngle->hdr.depth != 8 && pngle->hdr.depth != 16) return PNGLE_ERROR("Invalid bit depth"); break; // grayscale + alpha
-		case 6: pngle->channels = 4; if (pngle->hdr.depth != 8 && pngle->hdr.depth != 16) return PNGLE_ERROR("Invalid bit depth"); break; // truecolor + alpha
+		case 2: pngle->channels = 3; if (                                                                           pngle->hdr.depth != 8 && pngle->hdr.depth != 16) return PNGLE_ERROR("Invalid bit depth"); break; // truecolor
+		case 3: pngle->channels = 1; if (pngle->hdr.depth != 1 && pngle->hdr.depth != 2 && pngle->hdr.depth != 4 && pngle->hdr.depth != 8                          ) return PNGLE_ERROR("Invalid bit depth"); break; // indexed color
+		case 4: pngle->channels = 2; if (                                                                           pngle->hdr.depth != 8 && pngle->hdr.depth != 16) return PNGLE_ERROR("Invalid bit depth"); break; // grayscale + alpha
+		case 6: pngle->channels = 4; if (                                                                           pngle->hdr.depth != 8 && pngle->hdr.depth != 16) return PNGLE_ERROR("Invalid bit depth"); break; // truecolor + alpha
 		default:
 			return PNGLE_ERROR("Incorrect IHDR info");
 		}
 
 		if (pngle->hdr.compression != 0) return PNGLE_ERROR("Unsupported compression type in IHDR");
-		if (pngle->hdr.filter != 0) return PNGLE_ERROR("Unsupported filter type in IHDR");
+		if (pngle->hdr.filter      != 0) return PNGLE_ERROR("Unsupported filter type in IHDR");
 
 		// interlace
 		if (set_interlace_pass(pngle, pngle->hdr.interlace ? 1 : 0) < 0) return -1;
@@ -523,18 +518,18 @@ static int pngle_handle_chunk(pngle_t *pngle, const uint8_t *buf, size_t len)
 		// parse & decode IDAT chunk
 		if (len < 1) return 0;
 
-		debug_printf("[pngle] Reading IDAT (len %zd / chunk remain %u)\n", len, pngle->chunk_remain);
+		debug_printf("[pngle]   Reading IDAT (len %zd / chunk remain %u)\n", len, pngle->chunk_remain);
 
 		size_t in_bytes  = len;
 		size_t out_bytes = pngle->avail_out;
 
-		//debug_printf("[pngle] in_bytes %zd, out_bytes %zd, next_out %p\n", in_bytes, out_bytes, pngle->next_out);
+		//debug_printf("[pngle]     in_bytes %zd, out_bytes %zd, next_out %p\n", in_bytes, out_bytes, pngle->next_out);
 
 		// XXX: tinfl_decompress always requires (next_out - lz_buf + avail_out) == TINFL_LZ_DICT_SIZE
 		tinfl_status status = tinfl_decompress(&pngle->inflator, (const mz_uint8 *)buf, &in_bytes, pngle->lz_buf, (mz_uint8 *)pngle->next_out, &out_bytes, TINFL_FLAG_HAS_MORE_INPUT | TINFL_FLAG_PARSE_ZLIB_HEADER);
 
-		//debug_printf("[pngle] tinfl_decompress\n");
-		//debug_printf("[pngle] => in_bytes %zd, out_bytes %zd, next_out %p, status %d\n", in_bytes, out_bytes, pngle->next_out, status);
+		//debug_printf("[pngle]       tinfl_decompress\n");
+		//debug_printf("[pngle]       => in_bytes %zd, out_bytes %zd, next_out %p, status %d\n", in_bytes, out_bytes, pngle->next_out, status);
 
 		if (status < TINFL_STATUS_DONE) {
 			// Decompression failed.
@@ -542,10 +537,10 @@ static int pngle_handle_chunk(pngle_t *pngle, const uint8_t *buf, size_t len)
 			return PNGLE_ERROR("Failed to decompress the IDAT stream");
 		}
 
-		pngle->next_out  += out_bytes;
-		pngle->avail_out -= out_bytes;
+		pngle->next_out   += out_bytes;
+		pngle->avail_out  -= out_bytes;
 
-		// debug_printf("[pngle] => avail_out %zd, next_out %p\n", pngle->avail_out, pngle->next_out);
+		// debug_printf("[pngle]         => avail_out %zd, next_out %p\n", pngle->avail_out, pngle->next_out);
 
 		if (status == TINFL_STATUS_DONE || pngle->avail_out == 0) {
 			// Output buffer is full, or decompression is done, so write buffer to output file.
@@ -587,7 +582,7 @@ static int pngle_handle_chunk(pngle_t *pngle, const uint8_t *buf, size_t len)
 
 	case PNGLE_CHUNK_tRNS:
 		switch (pngle->hdr.color_type) {
-		case 3: consume = 1; break;
+		case 3: consume =     1; break;
 		case 0: consume = 2 * 1; break;
 		case 2: consume = 2 * 3; break;
 		default:
