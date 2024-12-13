@@ -585,13 +585,31 @@ If your main purpose is to display text, it's well worth using FrameBuffer.
 If your main purpose is to display images, there is no value in using FrameBuffer.   
 Enabling FrameBuffer does not make image display faster.   
 This is because image analysis takes time.   
-___ESP32-C2 has too small memory to use this function.___   
-___Note that using FrameBuffer consumes memory.___   
-Memory allocate errors may occur with TFTs with large resolutions.   
 
+This option requires large RAM space.   
 If your SoC has PSRAM, you can avoid running out of memory by enabling PSRAM.   
 ![config-psram](https://github.com/user-attachments/assets/a71b320d-f5fb-4cd5-9466-f191b8704d40)
 
+Benchmarking using ESP32-S2@240 & 2.4 inch TFT   
+
+||Disable Frame Buffer|Enable Frame Buffer|
+|:-:|:-:|:-:|
+|FillTest|1390|1450|
+|ColorBarTest|150|160|
+|ArrowTest|330|160|
+|LineTest|2670|180|
+|CircleTest|2390|190|
+|RoundRectTest|2430|180|
+|DirectionTest|500|160|
+|HorizontalTest|1110|170|
+|VerticalTest|1100|180|
+|FillRectTest|300|180|
+|ColorTest|370|170|
+|CodeTest|1760|180|
+|BMPTest|3000|2810|
+|JPEGTest|2760|2760|
+|PNGTest|2940|2960|
+|IconTest|740|870|
 
 ---
 
