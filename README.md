@@ -576,6 +576,24 @@ When using this module at the same time as SDSPI or other SPI device using SPI2_
 When you don't use SDSPI, both SPI2_HOST and SPI3_HOST will work.   
 Previously it was called HSPI_HOST / VSPI_HOST, but now it is called SPI2_HOST / SPI3_HOST.   
 
+# Using Frame Buffer   
+![config_framebuffer](https://github.com/user-attachments/assets/21c3b031-0796-4227-b48e-47bb7537e3b8)
+
+When FrameBuffer is enabled, all output will be stored in the internal FrameBuffer and reflected to the device with ```lcdDrawFinish```.   
+If you don't use FrameBuffer, ```lcdDrawFinish``` does nothing.   
+If your main purpose is to display text, it's well worth using FrameBuffer.   
+If your main purpose is to display images, there is no value in using FrameBuffer.   
+Enabling FrameBuffer does not make image display faster.   
+This is because image analysis takes time.   
+___ESP32-C2 has too small memory to use this function.___   
+___Note that using FrameBuffer consumes memory.___   
+Memory allocate errors may occur with TFTs with large resolutions.   
+
+ESP32-S2 has less SRAM, but some ESP32-S2 have PSRAM.   
+If your SoC has PSRAM, you can avoid running out of memory by enabling PSRAM.   
+![config-psram](https://github.com/user-attachments/assets/a71b320d-f5fb-4cd5-9466-f191b8704d40)
+
+
 ---
 
 # Using SPI TFT Adapter   
