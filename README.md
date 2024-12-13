@@ -64,7 +64,9 @@ __TFT MISO is not use.__
 - 4.0" ST7796 320x480   
 - 3.2" ILI9341 240x320   
 - 2.8" ILI9341 240x320   
+- 2.8" ST7789  240x320   
 - 2.4" ILI9341 240x320   
+- 2.4" ST7789  240x320   
 - 2.2" ILI9340 240x320   
 - 2.0" ILI9225 176x220   
 - 1.8" ST7735 128x160   
@@ -146,6 +148,16 @@ Left:3.2" Right:2.4"
 
 Left:2.8" Right:2.4"
 ![screen_2-8_240x320](https://user-images.githubusercontent.com/6020549/59007633-3f332600-8862-11e9-8d8f-bbfb303456f4.JPG)
+
+---
+
+# 2.8" ST7789 240x320
+# 2.4" ST7789 240x320
+
+![config_st7789_2-4_240x320](https://github.com/user-attachments/assets/0ce336db-8a51-4b76-b268-0dda76559f9a)
+
+Left:2.4" Right:2.8"
+![screen_st7789_240x320](https://github.com/user-attachments/assets/ccb5335d-2800-4300-a91e-182e07772c3d)
 
 ---
 
