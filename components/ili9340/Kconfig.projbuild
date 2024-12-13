@@ -18,10 +18,6 @@ menu "TFT Configuration"
 			bool "ILI9225"
 			help
 				Display Driver is ILI9225.
-		config ILI9225G
-			bool "ILI9225G"
-			help
-				Display Driver is ILI9225G.
 		config ILI9340
 			bool "ILI9340"
 			help
@@ -34,6 +30,10 @@ menu "TFT Configuration"
 			bool "ST7735"
 			help
 				Display Driver is ST7735.
+		config ST7789
+			bool "ST7789"
+			help
+				Display Driver is ST7789.
 		config ST7796
 			bool "ST7796"
 			help
@@ -153,6 +153,13 @@ menu "TFT Configuration"
 		default false
 		help
 			Change BGR color filter to RGB color filter.
+
+	config FRAME_BUFFER
+		bool "Enable Frame Buffer"
+		depends on !IDF_TARGET_ESP32C2
+		default false
+		help
+			Enable Frame Buffer.
 
 	choice XPT2046
 		prompt "XPT2046 Touch Contoller"

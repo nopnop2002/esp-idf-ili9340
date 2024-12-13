@@ -41,11 +41,13 @@ TickType_t FillTest(TFT_t * dev, int width, int height) {
 	startTick = xTaskGetTickCount();
 
 	lcdFillScreen(dev, RED);
+	lcdDrawFinish(dev);
 	vTaskDelay(50);
 	lcdFillScreen(dev, GREEN);
+	lcdDrawFinish(dev);
 	vTaskDelay(50);
 	lcdFillScreen(dev, BLUE);
-	vTaskDelay(50);
+	lcdDrawFinish(dev);
 
 	endTick = xTaskGetTickCount();
 	diffTick = endTick - startTick;
@@ -66,6 +68,7 @@ TickType_t ColorBarTest(TFT_t * dev, int width, int height) {
 		lcdDrawFillRect(dev, 0, y1-1, width-1, y2-1, GREEN);
 		vTaskDelay(1);
 		lcdDrawFillRect(dev, 0, y2-1, width-1, height-1, BLUE);
+		lcdDrawFinish(dev);
 	} else {
 		uint16_t x1,x2;
 		x1 = width/3;
@@ -75,6 +78,7 @@ TickType_t ColorBarTest(TFT_t * dev, int width, int height) {
 		lcdDrawFillRect(dev, x1-1, 0, x2-1, height-1, GREEN);
 		vTaskDelay(1);
 		lcdDrawFillRect(dev, x2-1, 0, width-1, height-1, BLUE);
+		lcdDrawFinish(dev);
 	}
 
 	endTick = xTaskGetTickCount();
@@ -103,11 +107,11 @@ TickType_t ArrowTest(TFT_t * dev, FontxFile *fx, uint16_t model, int width, int 
 	lcdFillScreen(dev, BLACK);
 
 	if (model == 0x9225) strcpy((char *)ascii, "ILI9225");
-	if (model == 0x9226) strcpy((char *)ascii, "ILI9225G");
 	if (model == 0x9340) strcpy((char *)ascii, "ILI9340");
 	if (model == 0x9341) strcpy((char *)ascii, "ILI9341");
 	if (model == 0x7735) strcpy((char *)ascii, "ST7735");
-	if (model == 0x7796) strcpy((char *)ascii, "ST7796S");
+	if (model == 0x7789) strcpy((char *)ascii, "ST7789");
+	if (model == 0x7796) strcpy((char *)ascii, "ST7796");
 	if (width < height) {
 		xpos = ((width - fontHeight) / 2) - 1;
 		ypos = (height - (strlen((char *)ascii) * fontWidth)) / 2;
@@ -149,6 +153,7 @@ TickType_t ArrowTest(TFT_t * dev, FontxFile *fx, uint16_t model, int width, int 
 	stlen = strlen((char *)ascii);
 	xpos = (width-1) - (fontWidth*stlen);
 	lcdDrawString(dev, fx, xpos, ypos, ascii, color);
+	lcdDrawFinish(dev);
 
 	endTick = xTaskGetTickCount();
 	diffTick = endTick - startTick;
@@ -190,6 +195,7 @@ TickType_t DirectionTest(TFT_t * dev, FontxFile *fx, int width, int height) {
 	strcpy((char *)ascii, "Direction=3");
 	lcdSetFontDirection(dev, 3);
 	lcdDrawString(dev, fx, (fontHeight-1), height-1, ascii, color);
+	lcdDrawFinish(dev);
 
 	endTick = xTaskGetTickCount();
 	diffTick = endTick - startTick;
@@ -239,6 +245,7 @@ TickType_t HorizontalTest(TFT_t * dev, FontxFile *fx, int width, int height) {
 	lcdDrawString(dev, fx, width-1, height-(fontHeight*3)-1, ascii, color);
 	lcdSetFontUnderLine(dev, BLUE);
 	lcdDrawString(dev, fx, width-1, height-(fontHeight*4)-1, ascii, color);
+	lcdDrawFinish(dev);
 	lcdUnsetFontFill(dev);
 	lcdUnsetFontUnderLine(dev);
 
@@ -290,6 +297,7 @@ TickType_t VerticalTest(TFT_t * dev, FontxFile *fx, int width, int height) {
 	lcdDrawString(dev, fx, (fontHeight*3)-1, height-1, ascii, color);
 	lcdSetFontUnderLine(dev, BLUE);
 	lcdDrawString(dev, fx, (fontHeight*4)-1, height-1, ascii, color);
+	lcdDrawFinish(dev);
 	lcdUnsetFontFill(dev);
 	lcdUnsetFontUnderLine(dev);
 
@@ -315,6 +323,7 @@ TickType_t LineTest(TFT_t * dev, int width, int height) {
 	for(int xpos=0;xpos<width;xpos=xpos+10) {
 		lcdDrawLine(dev, xpos, 0, xpos, height, color);
 	}
+	lcdDrawFinish(dev);
 
 	endTick = xTaskGetTickCount();
 	diffTick = endTick - startTick;
@@ -335,6 +344,7 @@ TickType_t CircleTest(TFT_t * dev, int width, int height) {
 	for(int i=5;i<height;i=i+5) {
 		lcdDrawCircle(dev, xpos, ypos, i, color);
 	}
+	lcdDrawFinish(dev);
 
 	endTick = xTaskGetTickCount();
 	diffTick = endTick - startTick;
@@ -426,6 +436,7 @@ TickType_t RoundRectTest(TFT_t * dev, int width, int height) {
 		//ESP_LOGI(__FUNCTION__, "i=%d, width-i-1=%d",i, width-i-1);
 		lcdDrawRoundRect(dev, i, i, (width-i-1), (height-i-1), 10, color);
 	}
+	lcdDrawFinish(dev);
 
 	endTick = xTaskGetTickCount();
 	diffTick = endTick - startTick;
@@ -454,6 +465,7 @@ TickType_t FillRectTest(TFT_t * dev, int width, int height) {
 		uint16_t size=rand()%(width/5);
 		lcdDrawFillRect(dev, xpos, ypos, xpos+size, ypos+size, color);
 	}
+	lcdDrawFinish(dev);
 
 	endTick = xTaskGetTickCount();
 	diffTick = endTick - startTick;
@@ -476,6 +488,7 @@ TickType_t ColorTest(TFT_t * dev, int width, int height) {
 		color = color >> 1;
 		ypos = ypos + delta;
 	}
+	lcdDrawFinish(dev);
 
 	endTick = xTaskGetTickCount();
 	diffTick = endTick - startTick;
@@ -483,7 +496,7 @@ TickType_t ColorTest(TFT_t * dev, int width, int height) {
 	return diffTick;
 }
 
-#if CONFIG_ILI9340 || CONFIG_ILI9341 || CONFIG_ST7796
+#if CONFIG_ILI9340 || CONFIG_ILI9341 || CONFIG_ST7789 || CONFIG_ST7796
 TickType_t ScrollTest(TFT_t * dev, FontxFile *fx, int width, int height) {
 	TickType_t startTick, endTick, diffTick;
 	startTick = xTaskGetTickCount();
@@ -836,6 +849,7 @@ TickType_t BMPTest(TFT_t * dev, char * file, int width, int height) {
 		} // end for row
 		free(colors);
 	} // end if 
+	lcdDrawFinish(dev);
 	free(result);
 	fclose(fp);
 
@@ -906,6 +920,7 @@ TickType_t JPEGTest(TFT_t * dev, char * file, int width, int height) {
 			vTaskDelay(1);
 		}
 
+		lcdDrawFinish(dev);
 		free(colors);
 		release_image(&pixels, _width, _height);
 		ESP_LOGD(__FUNCTION__, "Finish");
@@ -1021,6 +1036,7 @@ TickType_t PNGTest(TFT_t * dev, char * file, int width, int height) {
 		lcdDrawMultiPixels(dev, offsetX, y+offsetY, pngWidth, colors);
 		vTaskDelay(1);
 	}
+	lcdDrawFinish(dev);
 	free(colors);
 	pngle_destroy(pngle, _width, _height);
 
@@ -1030,12 +1046,15 @@ TickType_t PNGTest(TFT_t * dev, char * file, int width, int height) {
 	return diffTick;
 }
 
-void ShowPngImage(TFT_t * dev, char * file, int width, int height, int xpos, int ypos) {
+TickType_t IconTest(TFT_t * dev, char * file, int width, int height, int xpos, int ypos) {
+	TickType_t startTick, endTick, diffTick;
+	startTick = xTaskGetTickCount();
+
 	// open PNG file
 	FILE* fp = fopen(file, "rb");
 	if (fp == NULL) {
 		ESP_LOGW(__FUNCTION__, "File not found [%s]", file);
-		return;
+		return 0;
 	}
 
 	char buf[1024];
@@ -1050,7 +1069,7 @@ void ShowPngImage(TFT_t * dev, char * file, int width, int height, int xpos, int
 	if (pngle == NULL) {
 		ESP_LOGE(__FUNCTION__, "pngle_new fail");
 		fclose(fp);
-		return;
+		return 0;
 	}
 
 	pngle_set_init_callback(pngle, png_init);
@@ -1094,7 +1113,7 @@ void ShowPngImage(TFT_t * dev, char * file, int width, int height, int xpos, int
 	if (colors == NULL) {
 		ESP_LOGE(__FUNCTION__, "malloc fail");
 		pngle_destroy(pngle, _width, _height);
-		return;
+		return 0;
 	}
 
 	for(int y = 0; y < pngHeight; y++){
@@ -1106,9 +1125,14 @@ void ShowPngImage(TFT_t * dev, char * file, int width, int height, int xpos, int
 		lcdDrawMultiPixels(dev, _xpos, y+_ypos, pngWidth, colors);
 		vTaskDelay(1);
 	}
+	lcdDrawFinish(dev);
 	free(colors);
 	pngle_destroy(pngle, _width, _height);
-	return;
+
+	endTick = xTaskGetTickCount();
+	diffTick = endTick - startTick;
+	ESP_LOGI(__FUNCTION__, "elapsed time[ms]:%"PRIu32,diffTick*portTICK_PERIOD_MS);
+	return diffTick;
 }
 
 TickType_t CodeTest(TFT_t * dev, FontxFile *fx, int width, int height, uint16_t start, uint16_t end) {
@@ -1146,6 +1170,7 @@ TickType_t CodeTest(TFT_t * dev, FontxFile *fx, int width, int height, uint16_t 
 		if (code == 0xFF) break;
 		if (code > end) break;
 	}
+	lcdDrawFinish(dev);
 
 	endTick = xTaskGetTickCount();
 	diffTick = endTick - startTick;
@@ -1172,6 +1197,7 @@ void TouchPosition(TFT_t * dev, FontxFile *fx, int width, int height, TickType_t
 	int xpos = (width + (strlen((char *)ascii) * fontWidth)) / 2;
 	lcdSetFontDirection(dev, DIRECTION180);
 	lcdDrawString(dev, fx, xpos, ypos, ascii, WHITE);
+	lcdDrawFinish(dev);
 
 	// Clear XPT2046
 	int _xp;
@@ -1582,7 +1608,7 @@ void ShowAllPngImage(TFT_t * dev, char * path, int max, FontxFile *fx, int width
 		ESP_LOGI(__FUNCTION__,"d_name=%s d_ino=%d d_type=%x", pe->d_name, pe->d_ino, pe->d_type);
 		strcpy(file, "/icons/");
 		strcat(file, pe->d_name);
-		ShowPngImage(dev, file, width, height, x_center, y_center);
+		IconTest(dev, file, width, height, x_center, y_center);
 
 		area[fileNum].x_center = x_center;
 		area[fileNum].y_center = y_center;
@@ -2036,7 +2062,7 @@ void TouchMenuTest(TFT_t * dev, FontxFile *fx, int width, int height, TickType_t
 }
 #endif // CONFIG_XPT2046_ENABLE_SAME_BUS || CONFIG_XPT2046_ENABLE_DIFF_BUS
 
-void ILI9341(void *pvParameters)
+void TFT(void *pvParameters)
 {
 	// set font file
 	FontxFile fx16G[2];
@@ -2085,9 +2111,6 @@ void ILI9341(void *pvParameters)
 #if CONFIG_ILI9225
 	uint16_t model = 0x9225;
 #endif
-#if CONFIG_ILI9225G
-	uint16_t model = 0x9226;
-#endif
 #if CONFIG_ILI9340
 	uint16_t model = 0x9340;
 #endif
@@ -2096,6 +2119,9 @@ void ILI9341(void *pvParameters)
 #endif
 #if CONFIG_ST7735
 	uint16_t model = 0x7735;
+#endif
+#if CONFIG_ST7789
+	uint16_t model = 0x7789;
 #endif
 #if CONFIG_ST7796
 	uint16_t model = 0x7796;
@@ -2121,24 +2147,6 @@ void ILI9341(void *pvParameters)
 #if 0
 	// for test
 	while(1) {
-		char file[64];
-		lcdFillScreen(&dev, WHITE);
-		strcpy(file, "/icons/twitter.png");
-		ShowPngImage(&dev, file, CONFIG_WIDTH, CONFIG_HEIGHT, CONFIG_WIDTH/2, CONFIG_HEIGHT/2);
-		WAIT;
-		strcpy(file, "/icons/facebook.png");
-		ShowPngImage(&dev, file, CONFIG_WIDTH, CONFIG_HEIGHT, CONFIG_WIDTH/2, CONFIG_HEIGHT/2);
-		WAIT;
-
-#if CONFIG_XPT2046_ENABLE_SAME_BUS || CONFIG_XPT2046_ENABLE_DIFF_BUS
-		TouchCalibration(&dev, fx24G, CONFIG_WIDTH, CONFIG_HEIGHT);
-		TouchPenTest(&dev, fx24G, CONFIG_WIDTH, CONFIG_HEIGHT, 1000);
-		TouchKeyTest(&dev, fx32G, CONFIG_WIDTH, CONFIG_HEIGHT, 1000);
-		TouchMenuTest(&dev, fx24G, CONFIG_WIDTH, CONFIG_HEIGHT, 1000);
-		TouchMoveTest(&dev, fx24G, CONFIG_WIDTH, CONFIG_HEIGHT, 1000);
-		TouchIconTest(&dev, fx24G, CONFIG_WIDTH, CONFIG_HEIGHT, 1000);
-#endif
-
 		ArrowTest(&dev, fx16G, model, CONFIG_WIDTH, CONFIG_HEIGHT);
 		WAIT;
 	}
@@ -2148,24 +2156,16 @@ void ILI9341(void *pvParameters)
 		char file[32];
 
 #if CONFIG_XPT2046_ENABLE_SAME_BUS || CONFIG_XPT2046_ENABLE_DIFF_BUS
+		lcdDisableFrameBuffer(&dev);
 		TouchCalibration(&dev, fx24G, CONFIG_WIDTH, CONFIG_HEIGHT);
 		TouchPenTest(&dev, fx24G, CONFIG_WIDTH, CONFIG_HEIGHT, 1000);
 		TouchKeyTest(&dev, fx32G, CONFIG_WIDTH, CONFIG_HEIGHT, 1000);
 		TouchMenuTest(&dev, fx24G, CONFIG_WIDTH, CONFIG_HEIGHT, 1000);
 		TouchMoveTest(&dev, fx24G, CONFIG_WIDTH, CONFIG_HEIGHT, 1000);
-
-#ifdef ENABLE_PNG
 		TouchIconTest(&dev, fx24G, CONFIG_WIDTH, CONFIG_HEIGHT, 1000);
+		lcdResumeFrameBuffer(&dev);
 #endif
 
-#endif
-
-#if 0
-		while(1) {
-			ArrowTest(&dev, fx16G, model, CONFIG_WIDTH, CONFIG_HEIGHT);
-			WAIT;
-		}
-#endif
 
 		FillTest(&dev, CONFIG_WIDTH, CONFIG_HEIGHT);
 		WAIT;
@@ -2185,11 +2185,13 @@ void ILI9341(void *pvParameters)
 		RoundRectTest(&dev, CONFIG_WIDTH, CONFIG_HEIGHT);
 		WAIT;
 
-		RectAngleTest(&dev, CONFIG_WIDTH, CONFIG_HEIGHT);
-		WAIT;
+		if (dev._use_frame_buffer == false) {
+			RectAngleTest(&dev, CONFIG_WIDTH, CONFIG_HEIGHT);
+			WAIT;
 
-		TriangleTest(&dev, CONFIG_WIDTH, CONFIG_HEIGHT);
-		WAIT;
+			TriangleTest(&dev, CONFIG_WIDTH, CONFIG_HEIGHT);
+			WAIT;
+		}
 
 		if (CONFIG_WIDTH >= 240) {
 			DirectionTest(&dev, fx24G, CONFIG_WIDTH, CONFIG_HEIGHT);
@@ -2245,15 +2247,18 @@ void ILI9341(void *pvParameters)
 
 		lcdFillScreen(&dev, WHITE);
 		strcpy(file, "/icons/twitter.png");
-		ShowPngImage(&dev, file, CONFIG_WIDTH, CONFIG_HEIGHT, CONFIG_WIDTH/2, CONFIG_HEIGHT/2);
-		WAIT;
-		strcpy(file, "/icons/facebook.png");
-		ShowPngImage(&dev, file, CONFIG_WIDTH, CONFIG_HEIGHT, CONFIG_WIDTH/2, CONFIG_HEIGHT/2);
+		IconTest(&dev, file, CONFIG_WIDTH, CONFIG_HEIGHT, CONFIG_WIDTH/2, CONFIG_HEIGHT/2);
 		WAIT;
 
-		ScrollTest(&dev, fx16G, CONFIG_WIDTH, CONFIG_HEIGHT);
+		strcpy(file, "/icons/facebook.png");
+		IconTest(&dev, file, CONFIG_WIDTH, CONFIG_HEIGHT, CONFIG_WIDTH/2, CONFIG_HEIGHT/2);
 		WAIT;
-		ScrollReset(&dev, CONFIG_WIDTH, CONFIG_HEIGHT);
+
+		if (dev._use_frame_buffer == false) {
+			ScrollTest(&dev, fx16G, CONFIG_WIDTH, CONFIG_HEIGHT);
+			WAIT;
+			ScrollReset(&dev, CONFIG_WIDTH, CONFIG_HEIGHT);
+		}
 
 		// Multi Font Test
 		uint16_t color;
@@ -2306,6 +2311,7 @@ void ILI9341(void *pvParameters)
 			strcpy((char *)ascii, "32Dot Mincyo Font");
 			lcdDrawString(&dev, fx32M, xpos, ypos, ascii, color);
 		}
+		lcdDrawFinish(&dev);
 		lcdSetFontDirection(&dev, DIRECTION0);
 		WAIT;
 
@@ -2402,5 +2408,5 @@ void app_main(void)
 	if (ret != ESP_OK) return;
 	listSPIFFS("/images/");
 
-	xTaskCreate(ILI9341, "ILI9341", 1024*6, NULL, 2, NULL);
+	xTaskCreate(TFT, "TFT", 1024*6, NULL, 2, NULL);
 }

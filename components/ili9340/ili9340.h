@@ -34,6 +34,9 @@ typedef struct {
 	int16_t _irq;
 	spi_device_handle_t _TFT_Handle;
 	spi_device_handle_t _XPT_Handle;
+	bool _use_frame_buffer;
+	bool _use_frame_buffer_evacuate;
+	uint16_t *_frame_buffer;
 	bool _calibration;
 	int16_t _min_xp; // Minimum xp calibration
 	int16_t _min_yp; // Minimum yp calibration
@@ -61,6 +64,8 @@ void delayMS(int ms);
 void lcdWriteRegisterWord(TFT_t * dev, uint16_t addr, uint16_t data);
 void lcdWriteRegisterByte(TFT_t * dev, uint8_t addr, uint16_t data);
 void lcdInit(TFT_t * dev, uint16_t model, int width, int height, int offsetx, int offsety);
+void lcdDisableFrameBuffer(TFT_t * dev);
+void lcdResumeFrameBuffer(TFT_t * dev);
 void lcdDrawPixel(TFT_t * dev, uint16_t x, uint16_t y, uint16_t color);
 void lcdDrawMultiPixels(TFT_t * dev, uint16_t x, uint16_t y, uint16_t size, uint16_t * colors);
 void lcdDrawFillRect(TFT_t * dev, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color);
@@ -98,6 +103,7 @@ void lcdBacklightOn(TFT_t * dev);
 void lcdSetScrollArea(TFT_t * dev, uint16_t tfa, uint16_t vsa, uint16_t bfa);
 void lcdResetScrollArea(TFT_t * dev, uint16_t vsa);
 void lcdScroll(TFT_t * dev, uint16_t vsp);
+void lcdDrawFinish(TFT_t *dev);
 int xptGetit(TFT_t * dev, int cmd);
 bool touch_getxy(TFT_t *dev, int *xp, int *yp);
 #endif /* MAIN_ILI9340_H_ */
