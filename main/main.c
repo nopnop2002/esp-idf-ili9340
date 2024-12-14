@@ -2068,19 +2068,19 @@ void TFT(void *pvParameters)
 	FontxFile fx16G[2];
 	FontxFile fx24G[2];
 	FontxFile fx32G[2];
-	InitFontx(fx16G,"/spiffs/ILGH16XB.FNT",""); // 8x16Dot Gothic
-	InitFontx(fx24G,"/spiffs/ILGH24XB.FNT",""); // 12x24Dot Gothic
-	InitFontx(fx32G,"/spiffs/ILGH32XB.FNT",""); // 16x32Dot Gothic
+	InitFontx(fx16G,"/fonts/ILGH16XB.FNT",""); // 8x16Dot Gothic
+	InitFontx(fx24G,"/fonts/ILGH24XB.FNT",""); // 12x24Dot Gothic
+	InitFontx(fx32G,"/fonts/ILGH32XB.FNT",""); // 16x32Dot Gothic
 
 	FontxFile fx32L[2];
-	InitFontx(fx32L,"/spiffs/LATIN32B.FNT",""); // 16x32Dot Latinc
+	InitFontx(fx32L,"/fonts/LATIN32B.FNT",""); // 16x32Dot Latinc
 
 	FontxFile fx16M[2];
 	FontxFile fx24M[2];
 	FontxFile fx32M[2];
-	InitFontx(fx16M,"/spiffs/ILMH16XB.FNT",""); // 8x16Dot Mincyo
-	InitFontx(fx24M,"/spiffs/ILMH24XB.FNT",""); // 12x24Dot Mincyo
-	InitFontx(fx32M,"/spiffs/ILMH32XB.FNT",""); // 16x32Dot Mincyo
+	InitFontx(fx16M,"/fonts/ILMH16XB.FNT",""); // 8x16Dot Mincyo
+	InitFontx(fx24M,"/fonts/ILMH24XB.FNT",""); // 12x24Dot Mincyo
+	InitFontx(fx32M,"/fonts/ILMH32XB.FNT",""); // 16x32Dot Mincyo
 	
 	TFT_t dev;
 #if CONFIG_XPT2046_ENABLE_SAME_BUS
@@ -2394,17 +2394,17 @@ void app_main(void)
 
 	ESP_LOGI(TAG, "Initializing SPIFFS");
 	esp_err_t ret;
-	ret = mountSPIFFS("/spiffs", "storage0", 10);
+	ret = mountSPIFFS("/fonts", "storage0", 10);
 	if (ret != ESP_OK) return;
-	listSPIFFS("/spiffs/");
+	listSPIFFS("/fonts/");
 
 	// Image file borrowed from here
 	// https://www.flaticon.com/packs/social-media-343
-	ret = mountSPIFFS("/icons", "storage1", 10);
+	ret = mountSPIFFS("/icons", "storage1", 1);
 	if (ret != ESP_OK) return;
 	listSPIFFS("/icons/");
 
-	ret = mountSPIFFS("/images", "storage2", 14);
+	ret = mountSPIFFS("/images", "storage2", 1);
 	if (ret != ESP_OK) return;
 	listSPIFFS("/images/");
 
