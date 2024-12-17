@@ -2340,8 +2340,8 @@ esp_err_t mountSPIFFS(char * path, char * label, int max_files) {
 		.format_if_mount_failed =true
 	};
 
-	// Use settings defined above toinitialize and mount SPIFFS filesystem.
-	// Note: esp_vfs_spiffs_register is anall-in-one convenience function.
+	// Use settings defined above to initialize and mount SPIFFS filesystem.
+	// Note: esp_vfs_spiffs_register is an all-in-one convenience function.
 	esp_err_t ret = esp_vfs_spiffs_register(&conf);
 
 	if (ret != ESP_OK) {
@@ -2381,31 +2381,19 @@ esp_err_t mountSPIFFS(char * path, char * label, int max_files) {
 
 void app_main(void)
 {
-	// Initialize NVS
-	ESP_LOGI(TAG, "Initialize NVS");
-	esp_err_t err = nvs_flash_init();
-	if (err == ESP_ERR_NVS_NO_FREE_PAGES || err == ESP_ERR_NVS_NEW_VERSION_FOUND) {
-		// NVS partition was truncated and needs to be erased
-		// Retry nvs_flash_init
-		ESP_ERROR_CHECK(nvs_flash_erase());
-		err = nvs_flash_init();
-	}
-	ESP_ERROR_CHECK( err );
-
 	ESP_LOGI(TAG, "Initializing SPIFFS");
-	esp_err_t ret;
-	ret = mountSPIFFS("/fonts", "storage0", 10);
-	if (ret != ESP_OK) return;
+	// Maximum files that could be open at the same time is 10.
+	ESP_ERROR_CHECK(mountSPIFFS("/fonts", "storage0", 10));
 	listSPIFFS("/fonts/");
 
 	// Image file borrowed from here
 	// https://www.flaticon.com/packs/social-media-343
-	ret = mountSPIFFS("/icons", "storage1", 1);
-	if (ret != ESP_OK) return;
+	// Maximum files that could be open at the same time is 1.
+	ESP_ERROR_CHECK(mountSPIFFS("/icons", "storage1", 1));
 	listSPIFFS("/icons/");
 
-	ret = mountSPIFFS("/images", "storage2", 1);
-	if (ret != ESP_OK) return;
+	// Maximum files that could be open at the same time is 1.
+	ESP_ERROR_CHECK(mountSPIFFS("/images", "storage2", 1));
 	listSPIFFS("/images/");
 
 	xTaskCreate(TFT, "TFT", 1024*6, NULL, 2, NULL);
