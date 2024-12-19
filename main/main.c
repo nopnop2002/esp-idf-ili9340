@@ -1667,6 +1667,9 @@ void TouchIconTest(TFT_t * dev, FontxFile *fx, int width, int height, TickType_t
 
 				// Distance is in range
 				if (_radius < 30.0) {
+					// Clear Screen
+					lcdFillScreen(dev, BLACK);
+					lcdDrawFinish(dev);
 					// Show large image
 					ESP_LOGI(__FUNCTION__, "area.text=[%s]", area[0].text);
 					char file[64];
@@ -2162,8 +2165,8 @@ void TFT(void *pvParameters)
 		TouchKeyTest(&dev, fx32G, CONFIG_WIDTH, CONFIG_HEIGHT, 1000);
 		TouchMenuTest(&dev, fx24G, CONFIG_WIDTH, CONFIG_HEIGHT, 1000);
 		TouchMoveTest(&dev, fx24G, CONFIG_WIDTH, CONFIG_HEIGHT, 1000);
-		TouchIconTest(&dev, fx24G, CONFIG_WIDTH, CONFIG_HEIGHT, 1000);
 		lcdResumeFrameBuffer(&dev);
+		TouchIconTest(&dev, fx24G, CONFIG_WIDTH, CONFIG_HEIGHT, 1000);
 #endif
 
 
