@@ -1637,6 +1637,7 @@ void ShowAllPngImage(TFT_t * dev, char * path, int max, FontxFile *fx, int width
 	int ypos = (height - strlen((char *)ascii) * fontWidth) / 2;
 	lcdSetFontDirection(dev, DIRECTION90);
 	lcdDrawString(dev, fx, xpos, ypos, ascii, BLACK);
+	lcdDrawFinish(dev);
 
 	return;
 }
