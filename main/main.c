@@ -1316,7 +1316,6 @@ void TouchCalibration(TFT_t * dev, FontxFile *fx, int width, int height) {
 	lcdFillScreen(dev, BLACK);
 	dev->_min_xc = 15;
 	dev->_min_yc = 15;
-	//lcdDrawFillCircle(dev, 10, 10, 10, CYAN);
 	lcdDrawFillCircle(dev, dev->_min_xc, dev->_min_yc, 10, CYAN);
 	strcpy((char *)ascii, "Calibration");
 	ypos = ((height - fontHeight) / 2) - 1;
@@ -1330,10 +1329,6 @@ void TouchCalibration(TFT_t * dev, FontxFile *fx, int width, int height) {
 		_xpos = _xpos - fontWidth - 5;
 	}
 
-	int16_t xp = INT16_MIN;
-	int16_t yp = INT16_MAX;
-	int counter = 0;
-
 	// Clear XPT2046
 	int _xp;
 	int _yp;
@@ -1341,11 +1336,15 @@ void TouchCalibration(TFT_t * dev, FontxFile *fx, int width, int height) {
 		if (touch_getxy(dev, &_xp, &_yp) == false) break;
 	} // end while
 
+	int32_t _xsum = 0;
+	int32_t _ysum = 0;
+	int counter = 0;
+
 	while(1) {
 		if (touch_getxy(dev, &_xp, &_yp) == false) continue;
-		ESP_LOGI(__FUNCTION__, "counter=%d _xp=%d _yp=%d xp=%d yp=%d", counter, _xp, _yp, xp, yp);
-		if (_xp > xp) xp = _xp;
-		if (_yp < yp) yp = _yp;
+		ESP_LOGI(__FUNCTION__, "counter=%d _xp=%d _yp=%d", counter, _xp, _yp);
+		_xsum += _xp;
+		_ysum += _yp;
 		counter++;
 		if (counter == 100) break;
 		if ((counter % 10) == 0) {
@@ -1353,9 +1352,8 @@ void TouchCalibration(TFT_t * dev, FontxFile *fx, int width, int height) {
 			xpos = xpos - fontWidth - 5;
 		}
 	} // end while
-	ESP_LOGI(__FUNCTION__, "_min_xp=%d _min_yp=%d", xp, yp);
-	dev->_min_xp = xp;
-	dev->_min_yp = yp;
+	dev->_min_xp = _xsum / 100;
+	dev->_min_yp = _ysum / 100;
 
 	// Clear XPT2046
 	lcdFillScreen(dev, BLACK);
@@ -1366,7 +1364,6 @@ void TouchCalibration(TFT_t * dev, FontxFile *fx, int width, int height) {
 	lcdFillScreen(dev, BLACK);
 	dev->_max_xc = width-10;
 	dev->_max_yc = height-10;
-	//lcdDrawFillCircle(dev, width-10, height-10, 10, CYAN);
 	lcdDrawFillCircle(dev, dev->_max_xc, dev->_max_yc, 10, CYAN);
 	ypos = ((height - fontHeight) / 2) - 1;
 	xpos = (width + (strlen((char *)ascii) * fontWidth)) / 2;
@@ -1378,14 +1375,15 @@ void TouchCalibration(TFT_t * dev, FontxFile *fx, int width, int height) {
 		_xpos = _xpos - fontWidth - 5;
 	}
 
-	xp = INT16_MAX;
-	yp = INT16_MIN;
+	_xsum = 0;
+	_ysum = 0;
 	counter = 0;
+
 	while(1) {
 		if (touch_getxy(dev, &_xp, &_yp) == false) continue;
-		ESP_LOGI(__FUNCTION__, "counter=%d _xp=%d _yp=%d xp=%d yp=%d", counter, _xp, _yp, xp, yp);
-		if (_xp < xp) xp = _xp;
-		if (_yp > yp) yp = _yp;
+		ESP_LOGI(__FUNCTION__, "counter=%d _xp=%d _yp=%d", counter, _xp, _yp);
+		_xsum += _xp;
+		_ysum += _yp;
 		counter++;
 		if (counter == 100) break;
 		if ((counter % 10) == 0) {
@@ -1393,9 +1391,9 @@ void TouchCalibration(TFT_t * dev, FontxFile *fx, int width, int height) {
 			xpos = xpos - fontWidth - 5;
 		}
 	} // end while
-	ESP_LOGI(__FUNCTION__, "max_xp=%d max_yp=%d", xp, yp);
-	dev->_max_xp = xp;
-	dev->_max_yp = yp;
+	dev->_max_xp = _xsum / 100;
+	dev->_max_yp = _ysum / 100;
+	ESP_LOGI(__FUNCTION__, "_min_xp=%d _max_xp=%d _min_yp=%d _max_yp=%d", dev->_min_xp, dev->_max_xp, dev->_min_yp, dev->_max_yp);
 
 	// Clear XPT2046
 	lcdFillScreen(dev, BLACK);
@@ -1489,11 +1487,13 @@ void TouchCalibration(TFT_t * dev, FontxFile *fx, int width, int height) {
 // xpos:touch coordinates x
 // ypos:touch coordinates y
 esp_err_t ConvertCoordinate(TFT_t * dev, int xp, int yp, int *xpos, int *ypos) {
+	ESP_LOGD(__FUNCTION__, "_min_xp=%d _min_yp=%d _max_xp=%d _max_yp=%d", dev->_min_xp, dev->_min_yp, dev->_max_xp, dev->_max_yp);
+	ESP_LOGD(__FUNCTION__, "_min_xc=%d _min_yc=%d _max_xc=%d _max_yc=%d", dev->_min_xc, dev->_min_yc, dev->_max_xc, dev->_max_yc);
 	float _xd = dev->_max_xp - dev->_min_xp;
 	float _yd = dev->_max_yp - dev->_min_yp;
 	float _xs = dev->_max_xc - dev->_min_xc;
 	float _ys = dev->_max_yc - dev->_min_yc;
-	ESP_LOGD(__FUNCTION__, "_xs=%f _ys=%f", _xs, _ys);
+	ESP_LOGD(__FUNCTION__, "_xd=%f _yd=%f _xs=%f _ys=%f", _xd, _yd, _xs, _ys);
 
 	// Determine if within range
 	if (dev->_max_xp > dev->_min_xp) {
@@ -1508,11 +1508,20 @@ esp_err_t ConvertCoordinate(TFT_t * dev, int xp, int yp, int *xpos, int *ypos) {
 	}
 
 	// Convert from position to coordinate
-	//_xpos = ( (float)(_xp - dev->_min_xp) / _xd * _xs ) + 10;
-	//_ypos = ( (float)(_yp - dev->_min_yp) / _yd * _ys ) + 10;
-	*xpos = ( (float)(xp - dev->_min_xp) / _xd * _xs ) + dev->_min_xc;
-	*ypos = ( (float)(yp - dev->_min_yp) / _yd * _ys ) + dev->_min_yc;
-	ESP_LOGD(__FUNCTION__, "*xpos=%d *ypos=%d", *xpos, *ypos);
+	if (dev->_min_xp > dev->_max_xp && dev->_min_yp < dev->_max_yp) {
+		//*xpos = ( (float)(_xp - dev->_min_xp) / _xd * _xs ) + 10;
+		//*ypos = ( (float)(_yp - dev->_min_yp) / _yd * _ys ) + 10;
+		*xpos = ( (float)(xp - dev->_min_xp) / _xd * _xs ) + dev->_min_xc;
+		*ypos = ( (float)(yp - dev->_min_yp) / _yd * _ys ) + dev->_min_yc;
+	} else if (dev->_min_xp <  dev->_max_xp && dev->_min_yp < dev->_max_yp) {
+		*xpos = ( (float)(yp - dev->_min_yp) / _yd * _xs ) + dev->_min_yc;
+		*ypos = ( (float)(xp - dev->_min_xp) / _yd * _ys ) + dev->_min_xc;
+	} else {
+		ESP_LOGE(__FUNCTION__, "Unexpected coordinate system");
+		ESP_LOGE(__FUNCTION__, "_min_xp=%d _min_yp=%d _max_xp=%d _max_yp=%d", dev->_min_xp, dev->_min_yp, dev->_max_xp, dev->_max_yp);
+		return ESP_FAIL;
+	}
+	ESP_LOGD(__FUNCTION__, "xp=%d yp=%d *xpos=%d *ypos=%d", xp, yp, *xpos, *ypos);
 	return ESP_OK;
 }
 
@@ -1561,13 +1570,15 @@ void TouchPenTest(TFT_t * dev, FontxFile *fx, int width, int height, TickType_t 
 			esp_err_t ret = ConvertCoordinate(dev, _xp, _yp, &_xpos, &_ypos);
 			if (ret != ESP_OK) continue;
 			lastTouched = xTaskGetTickCount();
-			ESP_LOGI(__FUNCTION__, "_xpos=%d _xpos_prev=%d", _xpos, _xpos_prev);
-			ESP_LOGI(__FUNCTION__, "_ypos=%d _ypos_prev=%d", _ypos, _ypos_prev);
+			ESP_LOGD(__FUNCTION__, "_xpos=%d _xpos_prev=%d", _xpos, _xpos_prev);
+			ESP_LOGD(__FUNCTION__, "_ypos=%d _ypos_prev=%d", _ypos, _ypos_prev);
 			// Ignore if the new coordinates are close to the previous coordinates
 			if ( (_xpos > _xpos_prev-CONFIG_XPT_ACCURACY && _xpos < _xpos_prev+CONFIG_XPT_ACCURACY) && 
 				 (_ypos > _ypos_prev-CONFIG_XPT_ACCURACY && _ypos < _ypos_prev+CONFIG_XPT_ACCURACY) ) {
 				ESP_LOGI(__FUNCTION__, "_xpos=%d _ypos=%d", _xpos, _ypos);
 				lcdDrawFillCircle(dev, _xpos-1, _ypos-1, 3, CYAN);
+			} else {
+				ESP_LOGD(__FUNCTION__, "The same place as the previous one was touched");
 			}
 
 			_xpos_prev = _xpos;
