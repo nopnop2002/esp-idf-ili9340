@@ -1178,6 +1178,57 @@ TickType_t CodeTest(TFT_t * dev, FontxFile *fx, int width, int height, uint16_t 
 	return diffTick;
 }
 
+TickType_t TextBoxTest(TFT_t * dev, FontxFile *fx, int width, int height) {
+	TickType_t startTick, endTick, diffTick;
+	startTick = xTaskGetTickCount();
+
+	// get font width & height
+	uint8_t buffer[FontxGlyphBufSize];
+	uint8_t fontWidth;
+	uint8_t fontHeight;
+	GetFontx(fx, 0, buffer, &fontWidth, &fontHeight);
+	ESP_LOGI(__FUNCTION__,"fontWidth=%d fontHeight=%d",fontWidth,fontHeight);
+
+	uint16_t bg_color = BLACK;
+	lcdFillScreen(dev, bg_color);
+
+	uint16_t fg_color = WHITE;
+	char AtoZ[27];
+	strcpy(AtoZ, "ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+	uint8_t ascii[20];
+	memset(ascii, 0x00, sizeof(ascii));
+
+	int delay = 200;
+	for(int index=0;index<21;index++) {
+		lcdSetFontDirection(dev, 0);
+		lcdDrawString(dev, fx, 0, fontHeight-1, ascii, bg_color);
+		lcdSetFontDirection(dev, 1);
+		lcdDrawString(dev, fx, width-fontHeight, 0, ascii, bg_color);
+		lcdSetFontDirection(dev, 2);
+		lcdDrawString(dev, fx, width, height-fontHeight-1, ascii, bg_color);
+		lcdSetFontDirection(dev, 3);
+		lcdDrawString(dev, fx, fontHeight-1, height, ascii, bg_color);
+
+		strncpy((char *)ascii, &AtoZ[index], 6);
+		lcdSetFontDirection(dev, 0);
+		lcdDrawString(dev, fx, 0, fontHeight-1, ascii, fg_color);
+		lcdSetFontDirection(dev, 1);
+		lcdDrawString(dev, fx, width-fontHeight, 0, ascii, fg_color);
+		lcdSetFontDirection(dev, 2);
+		lcdDrawString(dev, fx, width, height-fontHeight-1, ascii, fg_color);
+		lcdSetFontDirection(dev, 3);
+		lcdDrawString(dev, fx, fontHeight-1, height, ascii, fg_color);
+		lcdDrawFinish(dev);
+		vTaskDelay(delay);
+		delay = 30;
+	}
+
+	endTick = xTaskGetTickCount();
+	diffTick = endTick - startTick;
+	ESP_LOGI(__FUNCTION__, "elapsed time[ms]:%"PRIu32,diffTick*portTICK_PERIOD_MS);
+	return diffTick;
+}
+
 #if CONFIG_XPT2046_ENABLE_SAME_BUS || CONFIG_XPT2046_ENABLE_DIFF_BUS
 void TouchPosition(TFT_t * dev, FontxFile *fx, int width, int height, TickType_t timeout) {
 	ESP_LOGW(__FUNCTION__, "Start TouchPosition");
@@ -2162,7 +2213,11 @@ void TFT(void *pvParameters)
 #if 0
 	// for test
 	while(1) {
-		ArrowTest(&dev, fx16G, model, CONFIG_WIDTH, CONFIG_HEIGHT);
+		FillTest(&dev, CONFIG_WIDTH, CONFIG_HEIGHT);
+		WAIT;
+		TextBoxTest(&dev, fx24G, CONFIG_WIDTH, CONFIG_HEIGHT);
+		WAIT;
+		TextBoxTest(&dev, fx32G, CONFIG_WIDTH, CONFIG_HEIGHT);
 		WAIT;
 	}
 #endif
@@ -2273,6 +2328,15 @@ void TFT(void *pvParameters)
 			ScrollTest(&dev, fx16G, CONFIG_WIDTH, CONFIG_HEIGHT);
 			WAIT;
 			ScrollReset(&dev, CONFIG_WIDTH, CONFIG_HEIGHT);
+		}
+
+		if (dev._use_frame_buffer == true) {
+			if (CONFIG_WIDTH >= 240) {
+				TextBoxTest(&dev, fx32G, CONFIG_WIDTH, CONFIG_HEIGHT);
+			} else {
+				TextBoxTest(&dev, fx24G, CONFIG_WIDTH, CONFIG_HEIGHT);
+			}
+			WAIT;
 		}
 
 		// Multi Font Test
