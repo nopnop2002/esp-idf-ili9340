@@ -520,8 +520,8 @@ If there is no touch for 10 seconds, it will end.
 
 ### Menu with Touch   
 If there is no touch for 10 seconds, it will end.   
-![TouchMenu-2](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/b46be78f-8a92-4725-b209-ee95775e2e25)
-![TouchMenu-1](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/0c5f153f-3d83-4f3e-abde-124c7a275d65)
+![TouchMenu-1](https://github.com/user-attachments/assets/bf57ac5a-65a1-4081-b172-01e7771cef06)
+![TouchMenu-2](https://github.com/user-attachments/assets/69ed7f60-cf73-4c7e-ac24-a1122ec71a0d)
 
 ### Select with touch   
 If there is no touch for 10 seconds, it will end.   
