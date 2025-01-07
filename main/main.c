@@ -1272,7 +1272,114 @@ void TouchPosition(TFT_t * dev, FontxFile *fx, int width, int height, TickType_t
 	ESP_LOGW(__FUNCTION__, "End TouchPosition");
 }
 
-bool TouchGetCalibration(TFT_t * dev) {
+bool TouchSaveCalibration(TFT_t * dev) {
+	// Open NVS
+	ESP_LOGI(__FUNCTION__, "Opening Non-Volatile Storage (NVS) handle... ");
+	nvs_handle_t my_handle;
+	esp_err_t err = nvs_open("storage", NVS_READWRITE, &my_handle);
+	if (err != ESP_OK) {
+		ESP_LOGE(__FUNCTION__, "Error (%s) opening NVS handle!", esp_err_to_name(err));
+		return false;
+	}
+	ESP_LOGI(__FUNCTION__, "Opening Non-Volatile Storage (NVS) handle done");
+
+	// Write Touch Calibration to NVS
+	err = nvs_set_i16(my_handle, "touch_min_xc", dev->_min_xc);
+	if (err != ESP_OK) {
+		ESP_LOGE(__FUNCTION__, "Error (%s) writing NVS handle!", esp_err_to_name(err));
+		nvs_close(my_handle);
+		return false;
+	}
+	err = nvs_set_i16(my_handle, "touch_min_yc", dev->_min_yc);
+	if (err != ESP_OK) {
+		ESP_LOGE(__FUNCTION__, "Error (%s) writing NVS handle!", esp_err_to_name(err));
+		nvs_close(my_handle);
+		return false;
+	}
+	err = nvs_set_i16(my_handle, "touch_max_xc", dev->_max_xc);
+	if (err != ESP_OK) {
+		ESP_LOGE(__FUNCTION__, "Error (%s) writing NVS handle!", esp_err_to_name(err));
+		nvs_close(my_handle);
+		return false;
+	}
+	err = nvs_set_i16(my_handle, "touch_max_yc", dev->_max_yc);
+	if (err != ESP_OK) {
+		ESP_LOGE(__FUNCTION__, "Error (%s) writing NVS handle!", esp_err_to_name(err));
+		nvs_close(my_handle);
+		return false;
+	}
+
+	err = nvs_set_i16(my_handle, "touch_min_xp", dev->_min_xp);
+	if (err != ESP_OK) {
+		ESP_LOGE(__FUNCTION__, "Error (%s) writing NVS handle!", esp_err_to_name(err));
+		nvs_close(my_handle);
+		return false;
+	}
+	err = nvs_set_i16(my_handle, "touch_min_yp", dev->_min_yp);
+	if (err != ESP_OK) {
+		ESP_LOGE(__FUNCTION__, "Error (%s) writing NVS handle!", esp_err_to_name(err));
+		nvs_close(my_handle);
+		return false;
+	}
+	err = nvs_set_i16(my_handle, "touch_max_xp", dev->_max_xp);
+	if (err != ESP_OK) {
+		ESP_LOGE(__FUNCTION__, "Error (%s) writing NVS handle!", esp_err_to_name(err));
+		nvs_close(my_handle);
+		return false;
+	}
+	err = nvs_set_i16(my_handle, "touch_max_yp", dev->_max_yp);
+	if (err != ESP_OK) {
+		ESP_LOGE(__FUNCTION__, "Error (%s) writing NVS handle!", esp_err_to_name(err));
+		nvs_close(my_handle);
+		return false;
+	}
+
+	err = nvs_set_i16(my_handle, "touch_check1_xp", dev->_check1_xp);
+	if (err != ESP_OK) {
+		ESP_LOGE(__FUNCTION__, "Error (%s) writing NVS handle!", esp_err_to_name(err));
+		nvs_close(my_handle);
+		return false;
+	}
+	err = nvs_set_i16(my_handle, "touch_check1_yp", dev->_check1_yp);
+	if (err != ESP_OK) {
+		ESP_LOGE(__FUNCTION__, "Error (%s) writing NVS handle!", esp_err_to_name(err));
+		nvs_close(my_handle);
+		return false;
+	}
+	err = nvs_set_i16(my_handle, "touch_check2_xp", dev->_check2_xp);
+	if (err != ESP_OK) {
+		ESP_LOGE(__FUNCTION__, "Error (%s) writing NVS handle!", esp_err_to_name(err));
+		nvs_close(my_handle);
+		return false;
+	}
+	err = nvs_set_i16(my_handle, "touch_check2_yp", dev->_check2_yp);
+	if (err != ESP_OK) {
+		ESP_LOGE(__FUNCTION__, "Error (%s) writing NVS handle!", esp_err_to_name(err));
+		nvs_close(my_handle);
+		return false;
+	}
+
+	err = nvs_set_i16(my_handle, "calibration", 1);
+	if (err != ESP_OK) {
+		ESP_LOGE(__FUNCTION__, "Error (%s) writing NVS handle!", esp_err_to_name(err));
+		nvs_close(my_handle);
+		return false;
+	}
+
+	err = nvs_commit(my_handle);
+	if (err != ESP_OK) {
+		ESP_LOGE(__FUNCTION__, "Error (%s) commit NVS handle!", esp_err_to_name(err));
+		nvs_close(my_handle);
+		return false;
+	}
+
+	// Close NVS
+	nvs_close(my_handle);
+	ESP_LOGI(__FUNCTION__, "Save Touch Calibration done");
+	return true;
+}
+
+bool TouchLoadCalibration(TFT_t * dev) {
 	// Open NVS
 	ESP_LOGI(__FUNCTION__, "Opening Non-Volatile Storage (NVS) handle... ");
 	nvs_handle_t my_handle;
@@ -1287,12 +1394,10 @@ bool TouchGetCalibration(TFT_t * dev) {
 	// Read NVS
 	int16_t calibration;
 	err = nvs_get_i16(my_handle, "calibration", &calibration);
-	ESP_LOGI(__FUNCTION__, "nvs_get_i16(calibration)=%d", err);
 	if (err != ESP_OK) {
 		nvs_close(my_handle);
 		return false;
 	}
-		
 	err = nvs_get_i16(my_handle, "touch_min_xc", &dev->_min_xc);
 	if (err != ESP_OK) {
 		nvs_close(my_handle);
@@ -1313,6 +1418,7 @@ bool TouchGetCalibration(TFT_t * dev) {
 		nvs_close(my_handle);
 		return false;
 	}
+
 	err = nvs_get_i16(my_handle, "touch_min_xp", &dev->_min_xp);
 	if (err != ESP_OK) {
 		nvs_close(my_handle);
@@ -1334,44 +1440,42 @@ bool TouchGetCalibration(TFT_t * dev) {
 		return false;
 	}
 
+	err = nvs_get_i16(my_handle, "touch_check1_xp", &dev->_check1_xp);
+	if (err != ESP_OK) {
+		nvs_close(my_handle);
+		return false;
+	}
+	err = nvs_get_i16(my_handle, "touch_check1_yp", &dev->_check1_yp);
+	if (err != ESP_OK) {
+		nvs_close(my_handle);
+		return false;
+	}
+	err = nvs_get_i16(my_handle, "touch_check2_xp", &dev->_check2_xp);
+	if (err != ESP_OK) {
+		nvs_close(my_handle);
+		return false;
+	}
+	err = nvs_get_i16(my_handle, "touch_check2_yp", &dev->_check2_yp);
+	if (err != ESP_OK) {
+		nvs_close(my_handle);
+		return false;
+	}
+
 	// Close NVS
 	nvs_close(my_handle);
-
+	ESP_LOGI(__FUNCTION__, "Load Touch Calibration done");
 	return true;
 }
 
-void TouchCalibration(TFT_t * dev, FontxFile *fx, int width, int height) {
-	if (dev->_calibration == false) return;
-
-	// Read Touch Calibration from NVS
-	bool ret = TouchGetCalibration(dev);
-	ESP_LOGI(__FUNCTION__, "TouchGetCalibration=%d", ret);
-	if (ret) {
-		ESP_LOGI(__FUNCTION__, "Restore Touch Calibration from NVS");
-		dev->_calibration = false;
-		return;
-	}
-
-	// get font width & height
-	uint8_t buffer[FontxGlyphBufSize];
-	uint8_t fontWidth;
-	uint8_t fontHeight;
-	GetFontx(fx, 0, buffer, &fontWidth, &fontHeight);
-	ESP_LOGD(__FUNCTION__,"fontWidth=%d fontHeight=%d",fontWidth,fontHeight);
-
-	uint8_t ascii[24];
-	int xpos = 0;
-	int ypos = 0;
-
-	// Calibration
+void TouchDoCalibration(TFT_t * dev, FontxFile *fx, int width, int height, int fontWidth, int fontHeight, int xmark, int ymark, int *xdata, int *ydata) {
+	// Show touch point
 	lcdFillScreen(dev, BLACK);
-	dev->_min_xc = 15;
-	dev->_min_yc = 15;
-	lcdDrawFillCircle(dev, dev->_min_xc, dev->_min_yc, 10, CYAN);
-	strcpy((char *)ascii, "Calibration");
-	ypos = ((height - fontHeight) / 2) - 1;
-	xpos = (width + (strlen((char *)ascii) * fontWidth)) / 2;
 	lcdSetFontDirection(dev, DIRECTION180);
+	lcdDrawFillCircle(dev, xmark, ymark, 10, CYAN);
+	uint8_t ascii[24];
+	strcpy((char *)ascii, "Calibration");
+	int ypos = ((height - fontHeight) / 2) - 1;
+	int xpos = (width + (strlen((char *)ascii) * fontWidth)) / 2;
 	lcdDrawString(dev, fx, xpos, ypos, ascii, WHITE);
 	ypos = ypos - fontHeight;
 	int _xpos = xpos;
@@ -1387,6 +1491,7 @@ void TouchCalibration(TFT_t * dev, FontxFile *fx, int width, int height) {
 		if (touch_getxy(dev, &_xp, &_yp) == false) break;
 	} // end while
 
+	// Get touch data
 	int32_t _xsum = 0;
 	int32_t _ysum = 0;
 	int counter = 0;
@@ -1403,131 +1508,72 @@ void TouchCalibration(TFT_t * dev, FontxFile *fx, int width, int height) {
 			xpos = xpos - fontWidth - 5;
 		}
 	} // end while
-	dev->_min_xp = _xsum / 100;
-	dev->_min_yp = _ysum / 100;
+	*xdata = _xsum / 100;
+	*ydata = _ysum / 100;
+	ESP_LOGI(__FUNCTION__, "*xdata=%d *ydata=%d", *xdata, *ydata);
 
 	// Clear XPT2046
-	lcdFillScreen(dev, BLACK);
 	while(1) {
 		if (touch_getxy(dev, &_xp, &_yp) == false) break;
 	} // end while
+}
 
-	lcdFillScreen(dev, BLACK);
-	dev->_max_xc = width-10;
-	dev->_max_yc = height-10;
-	lcdDrawFillCircle(dev, dev->_max_xc, dev->_max_yc, 10, CYAN);
-	ypos = ((height - fontHeight) / 2) - 1;
-	xpos = (width + (strlen((char *)ascii) * fontWidth)) / 2;
-	lcdDrawString(dev, fx, xpos, ypos, ascii, WHITE);
-	ypos = ypos - fontHeight;
-	_xpos = xpos;
-	for(int i=0;i<10;i++) {
-		lcdDrawFillCircle(dev, _xpos, ypos, fontWidth/2, RED);
-		_xpos = _xpos - fontWidth - 5;
+void TouchCalibration(TFT_t * dev, FontxFile *fx, int width, int height) {
+	if (dev->_calibration == false) return;
+
+	// Read Touch Calibration from NVS
+	bool ret = TouchLoadCalibration(dev);
+	ESP_LOGI(__FUNCTION__, "TouchLoadCalibration=%d", ret);
+	if (ret) {
+		ESP_LOGI(__FUNCTION__, "Load Touch Calibration from NVS");
+		dev->_calibration = false;
+		return;
 	}
 
-	_xsum = 0;
-	_ysum = 0;
-	counter = 0;
+	// get font width & height
+	uint8_t buffer[FontxGlyphBufSize];
+	uint8_t fontWidth;
+	uint8_t fontHeight;
+	GetFontx(fx, 0, buffer, &fontWidth, &fontHeight);
+	ESP_LOGD(__FUNCTION__,"fontWidth=%d fontHeight=%d",fontWidth,fontHeight);
 
-	while(1) {
-		if (touch_getxy(dev, &_xp, &_yp) == false) continue;
-		ESP_LOGI(__FUNCTION__, "counter=%d _xp=%d _yp=%d", counter, _xp, _yp);
-		_xsum += _xp;
-		_ysum += _yp;
-		counter++;
-		if (counter == 100) break;
-		if ((counter % 10) == 0) {
-			lcdDrawFillCircle(dev, xpos, ypos, fontWidth/2, GREEN);
-			xpos = xpos - fontWidth - 5;
-		}
-	} // end while
-	dev->_max_xp = _xsum / 100;
-	dev->_max_yp = _ysum / 100;
+	dev->_min_xc = 15;
+	dev->_min_yc = 15;
+	dev->_max_xc = width-10;
+	dev->_max_yc = height-10;
+
+	// Calibration 1
+	int xdata;
+	int ydata;
+	TouchDoCalibration(dev, fx, width, height, fontWidth, fontHeight, dev->_min_xc, dev->_min_yc, &xdata, &ydata);
+	dev->_min_xp = xdata;
+	dev->_min_yp = ydata;
+	ESP_LOGI(__FUNCTION__, "_min_xp=%d _min_yp=%d", dev->_min_xp, dev->_min_yp);
+
+	// Calibration 2
+	TouchDoCalibration(dev, fx, width, height, fontWidth, fontHeight, dev->_max_xc, dev->_min_yc, &xdata, &ydata);
+	dev->_check1_xp = xdata;
+	dev->_check1_yp = ydata;
+	ESP_LOGI(__FUNCTION__, "_min_xp=%d _min_yp=%d", dev->_min_xp, dev->_min_yp);
+	ESP_LOGI(__FUNCTION__, "_check1_xp=%d _check1_yp=%d", dev->_check1_xp, dev->_check1_yp);
+
+	// Calibration 3
+	TouchDoCalibration(dev, fx, width, height, fontWidth, fontHeight, dev->_min_xc, dev->_max_yc, &xdata, &ydata);
+	dev->_check2_xp = xdata;
+	dev->_check2_yp = ydata;
+	ESP_LOGI(__FUNCTION__, "_min_xp=%d _min_yp=%d", dev->_min_xp, dev->_min_yp);
+	ESP_LOGI(__FUNCTION__, "_check2_xp=%d _check2_yp=%d", dev->_check2_xp, dev->_check2_yp);
+
+	// Calibration 4
+	TouchDoCalibration(dev, fx, width, height, fontWidth, fontHeight, dev->_max_xc, dev->_max_yc, &xdata, &ydata);
+	dev->_max_xp = xdata;
+	dev->_max_yp = ydata ;
 	ESP_LOGI(__FUNCTION__, "_min_xp=%d _max_xp=%d _min_yp=%d _max_yp=%d", dev->_min_xp, dev->_max_xp, dev->_min_yp, dev->_max_yp);
 
-	// Clear XPT2046
-	lcdFillScreen(dev, BLACK);
-	while(1) {
-		if (touch_getxy(dev, &_xp, &_yp) == false) break;
-	} // end while
 	dev->_calibration = false;
 
 #if CONFIG_SAVE_CALIBRATION
-	// Open NVS
-	ESP_LOGI(__FUNCTION__, "Opening Non-Volatile Storage (NVS) handle... ");
-	nvs_handle_t my_handle;
-	esp_err_t err = nvs_open("storage", NVS_READWRITE, &my_handle);
-	if (err != ESP_OK) {
-		ESP_LOGE(__FUNCTION__, "Error (%s) opening NVS handle!", esp_err_to_name(err));
-		return;
-	}
-	ESP_LOGI(__FUNCTION__, "Opening Non-Volatile Storage (NVS) handle done");
-
-	// Write Touch Calibration to NVS
-	err = nvs_set_i16(my_handle, "touch_min_xc", dev->_min_xc);
-	if (err != ESP_OK) {
-		ESP_LOGE(__FUNCTION__, "Error (%s) writing NVS handle!", esp_err_to_name(err));
-		nvs_close(my_handle);
-		return;
-	}
-	err = nvs_set_i16(my_handle, "touch_min_yc", dev->_min_yc);
-	if (err != ESP_OK) {
-		ESP_LOGE(__FUNCTION__, "Error (%s) writing NVS handle!", esp_err_to_name(err));
-		nvs_close(my_handle);
-		return;
-	}
-	err = nvs_set_i16(my_handle, "touch_max_xc", dev->_max_xc);
-	if (err != ESP_OK) {
-		ESP_LOGE(__FUNCTION__, "Error (%s) writing NVS handle!", esp_err_to_name(err));
-		nvs_close(my_handle);
-		return;
-	}
-	err = nvs_set_i16(my_handle, "touch_max_yc", dev->_max_yc);
-	if (err != ESP_OK) {
-		ESP_LOGE(__FUNCTION__, "Error (%s) writing NVS handle!", esp_err_to_name(err));
-		nvs_close(my_handle);
-		return;
-	}
-	err = nvs_set_i16(my_handle, "touch_min_xp", dev->_min_xp);
-	if (err != ESP_OK) {
-		ESP_LOGE(__FUNCTION__, "Error (%s) writing NVS handle!", esp_err_to_name(err));
-		nvs_close(my_handle);
-		return;
-	}
-	err = nvs_set_i16(my_handle, "touch_min_yp", dev->_min_yp);
-	if (err != ESP_OK) {
-		ESP_LOGE(__FUNCTION__, "Error (%s) writing NVS handle!", esp_err_to_name(err));
-		nvs_close(my_handle);
-		return;
-	}
-	err = nvs_set_i16(my_handle, "touch_max_xp", dev->_max_xp);
-	if (err != ESP_OK) {
-		ESP_LOGE(__FUNCTION__, "Error (%s) writing NVS handle!", esp_err_to_name(err));
-		nvs_close(my_handle);
-		return;
-	}
-	err = nvs_set_i16(my_handle, "touch_max_yp", dev->_max_yp);
-	if (err != ESP_OK) {
-		ESP_LOGE(__FUNCTION__, "Error (%s) writing NVS handle!", esp_err_to_name(err));
-		nvs_close(my_handle);
-		return;
-	}
-	err = nvs_set_i16(my_handle, "calibration", 1);
-	if (err != ESP_OK) {
-		ESP_LOGE(__FUNCTION__, "Error (%s) writing NVS handle!", esp_err_to_name(err));
-		nvs_close(my_handle);
-		return;
-	}
-	err = nvs_commit(my_handle);
-	if (err != ESP_OK) {
-		ESP_LOGE(__FUNCTION__, "Error (%s) commit NVS handle!", esp_err_to_name(err));
-	}
-
-
-	// Close NVS
-	nvs_close(my_handle);
-	ESP_LOGI(__FUNCTION__, "Write Touch Calibration done");
+	TouchSaveCalibration(dev);
 #endif
 
 }
@@ -1538,8 +1584,12 @@ void TouchCalibration(TFT_t * dev, FontxFile *fx, int width, int height) {
 // xpos:touch coordinates x
 // ypos:touch coordinates y
 esp_err_t ConvertCoordinate(TFT_t * dev, int xp, int yp, int *xpos, int *ypos) {
-	ESP_LOGD(__FUNCTION__, "_min_xp=%d _min_yp=%d _max_xp=%d _max_yp=%d", dev->_min_xp, dev->_min_yp, dev->_max_xp, dev->_max_yp);
+	ESP_LOGD(__FUNCTION__, "_min_xp=%d _min_yp=%d", dev->_min_xp, dev->_min_yp);
+	ESP_LOGD(__FUNCTION__, "_max_xp=%d _max_yp=%d", dev->_max_xp, dev->_max_yp);
+	ESP_LOGD(__FUNCTION__, "_check1_xp=%d _check1_yp=%d", dev->_check1_xp, dev->_check1_yp);
+	ESP_LOGD(__FUNCTION__, "_check2_xp=%d _check2_yp=%d", dev->_check2_xp, dev->_check2_yp);
 	ESP_LOGD(__FUNCTION__, "_min_xc=%d _min_yc=%d _max_xc=%d _max_yc=%d", dev->_min_xc, dev->_min_yc, dev->_max_xc, dev->_max_yc);
+
 	float _xd = dev->_max_xp - dev->_min_xp;
 	float _yd = dev->_max_yp - dev->_min_yp;
 	float _xs = dev->_max_xc - dev->_min_xc;
@@ -1559,17 +1609,20 @@ esp_err_t ConvertCoordinate(TFT_t * dev, int xp, int yp, int *xpos, int *ypos) {
 	}
 
 	// Convert from position to coordinate
-	if (dev->_min_xp > dev->_max_xp && dev->_min_yp < dev->_max_yp) {
-		//*xpos = ( (float)(_xp - dev->_min_xp) / _xd * _xs ) + 10;
-		//*ypos = ( (float)(_yp - dev->_min_yp) / _yd * _ys ) + 10;
+	int _dx1 = abs(dev->_check1_xp - dev->_min_xp);
+	int _dx2 = abs(dev->_check2_xp - dev->_min_xp);
+	int _dy1 = abs(dev->_check1_yp - dev->_min_yp);
+	int _dy2 = abs(dev->_check2_yp - dev->_min_yp);
+	ESP_LOGD(__FUNCTION__, "_dx1=%d _dx2=%d _dy1=%d _dy2=%d", _dx1, _dx2, _dy1, _dy2);
+	if (_dx1 > _dx2 && _dy1 < _dy2) {
 		*xpos = ( (float)(xp - dev->_min_xp) / _xd * _xs ) + dev->_min_xc;
 		*ypos = ( (float)(yp - dev->_min_yp) / _yd * _ys ) + dev->_min_yc;
-	} else if (dev->_min_xp <  dev->_max_xp && dev->_min_yp < dev->_max_yp) {
+	} else if (_dx1 < _dx2 && _dy1 > _dy2) {
 		*xpos = ( (float)(yp - dev->_min_yp) / _yd * _xs ) + dev->_min_yc;
 		*ypos = ( (float)(xp - dev->_min_xp) / _yd * _ys ) + dev->_min_xc;
 	} else {
 		ESP_LOGE(__FUNCTION__, "Unexpected coordinate system");
-		ESP_LOGE(__FUNCTION__, "_min_xp=%d _min_yp=%d _max_xp=%d _max_yp=%d", dev->_min_xp, dev->_min_yp, dev->_max_xp, dev->_max_yp);
+		ESP_LOGE(__FUNCTION__, "_dx1=%d _dx2=%d _dy1=%d _dy2=%d", _dx1, _dx2, _dy1, _dy2);
 		return ESP_FAIL;
 	}
 	ESP_LOGD(__FUNCTION__, "xp=%d yp=%d *xpos=%d *ypos=%d", xp, yp, *xpos, *ypos);

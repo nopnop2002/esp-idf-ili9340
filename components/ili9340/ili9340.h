@@ -42,6 +42,10 @@ typedef struct {
 	int16_t _min_yp; // Minimum yp calibration
 	int16_t _max_xp; // Maximum xp calibration
 	int16_t _max_yp; // Maximum yp calibration
+	int16_t _check1_xp; // increasing direction
+	int16_t _check1_yp; // increasing direction
+	int16_t _check2_xp; // increasing direction
+	int16_t _check2_yp; // increasing direction
 	int16_t _min_xc; // Minimum x coordinate
 	int16_t _min_yc; // Minimum y coordinate
 	int16_t _max_xc; // Maximum x coordinate
