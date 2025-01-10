@@ -1598,14 +1598,14 @@ esp_err_t ConvertCoordinate(TFT_t * dev, int xp, int yp, int *xpos, int *ypos) {
 
 	// Determine if within range
 	if (dev->_max_xp > dev->_min_xp) {
-		if (xp < dev->_min_xp && xp > dev->_max_xp) return ESP_FAIL;
+		if (xp < dev->_min_xp || xp > dev->_max_xp) return ESP_FAIL;
 	} else {
-		if (xp < dev->_max_xp && xp > dev->_min_xp) return ESP_FAIL;
+		if (xp < dev->_max_xp || xp > dev->_min_xp) return ESP_FAIL;
 	}
 	if (dev->_max_yp > dev->_min_yp) {
-		if (yp < dev->_min_yp && yp > dev->_max_yp) return ESP_FAIL;
+		if (yp < dev->_min_yp || yp > dev->_max_yp) return ESP_FAIL;
 	} else {
-		if (yp < dev->_max_yp && yp > dev->_min_yp) return ESP_FAIL;
+		if (yp < dev->_max_yp || yp > dev->_min_yp) return ESP_FAIL;
 	}
 
 	// Convert from position to coordinate
