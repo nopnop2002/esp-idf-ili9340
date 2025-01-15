@@ -545,6 +545,16 @@ void lcdResumeFrameBuffer(TFT_t * dev) {
 	dev->_use_frame_buffer = dev->_use_frame_buffer_evacuate;
 }
 
+// Get frame buffer
+void lcdGetFrameBuffer(TFT_t * dev, uint16_t *buffer) {
+	memcpy((char *)buffer, (char *)dev->_frame_buffer, sizeof(uint16_t)*dev->_width*dev->_height);
+}
+
+// Set frame buffer
+void lcdSetFrameBuffer(TFT_t * dev, uint16_t *buffer) {
+	memcpy((char *)dev->_frame_buffer, (char *)buffer, sizeof(uint16_t)*dev->_width*dev->_height);
+}
+
 // Draw pixel
 // x:X coordinate
 // y:Y coordinate

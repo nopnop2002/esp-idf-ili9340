@@ -70,6 +70,8 @@ void lcdWriteRegisterByte(TFT_t * dev, uint8_t addr, uint16_t data);
 void lcdInit(TFT_t * dev, uint16_t model, int width, int height, int offsetx, int offsety);
 void lcdDisableFrameBuffer(TFT_t * dev);
 void lcdResumeFrameBuffer(TFT_t * dev);
+void lcdGetFrameBuffer(TFT_t * dev, uint16_t *buffer);
+void lcdSetFrameBuffer(TFT_t * dev, uint16_t *buffer);
 void lcdDrawPixel(TFT_t * dev, uint16_t x, uint16_t y, uint16_t color);
 void lcdDrawMultiPixels(TFT_t * dev, uint16_t x, uint16_t y, uint16_t size, uint16_t * colors);
 void lcdDrawFillRect(TFT_t * dev, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color);
