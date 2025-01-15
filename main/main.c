@@ -1761,6 +1761,19 @@ void TouchIconTest(TFT_t * dev, FontxFile *fx, int width, int height, TickType_t
 	AREA_t area[8];
 	// Show all small image
 	ShowAllPngImage(dev, "/icons/", 8, fx, width, height, area);
+
+	// Save Screen
+	uint16_t *frame_buffer = NULL;
+	if (lcdIsFrameBuffer(dev)) {
+		frame_buffer = heap_caps_malloc(sizeof(uint16_t)*width*height, MALLOC_CAP_DEFAULT);
+		if (frame_buffer == NULL) {
+			ESP_LOGI(TAG, "TouchIconTest heap_caps_malloc fail");
+		} else {
+			ESP_LOGI(TAG, "TouchIconTest heap_caps_malloc success");
+			lcdGetFrameBuffer(dev, frame_buffer);
+		}
+	}
+	
 	TickType_t lastTouched = xTaskGetTickCount();
 
 	while(1) {
@@ -1796,8 +1809,14 @@ void TouchIconTest(TFT_t * dev, FontxFile *fx, int width, int height, TickType_t
 					vTaskDelay(500);
 
 					// Show all small image
-					ShowAllPngImage(dev, "/icons/", 8, fx, width, height, area);
+					if (frame_buffer) {
+						lcdSetFrameBuffer(dev, frame_buffer);
+						lcdDrawFinish(dev);
+					} else {
+						ShowAllPngImage(dev, "/icons/", 8, fx, width, height, area);
+					}
 					lastTouched = xTaskGetTickCount();
+					break;
 				}
 			}
 		
@@ -1805,8 +1824,10 @@ void TouchIconTest(TFT_t * dev, FontxFile *fx, int width, int height, TickType_t
 			TickType_t current = xTaskGetTickCount();
 			if (current - lastTouched > timeout) break;
 		} // end if
-
+		
 	} // end while
+	if (frame_buffer) free(frame_buffer);
+	return;
 }
 
 void ShowSoftKeyboard(TFT_t * dev, int page, char * input, FontxFile *fx, int width, int height, AREA_t *area) {
@@ -2262,10 +2283,10 @@ void TFT(void *pvParameters)
 #if 0
 	// for test
 	while(1) {
-		FillTest(&dev, CONFIG_WIDTH, CONFIG_HEIGHT);
-		WAIT;
-		//TouchCalibration(&dev, fx24G, CONFIG_WIDTH, CONFIG_HEIGHT);
-		//TouchMenuTest(&dev, fx24G, CONFIG_WIDTH, CONFIG_HEIGHT, 1000);
+		lcdDisableFrameBuffer(&dev);
+		TouchCalibration(&dev, fx24G, CONFIG_WIDTH, CONFIG_HEIGHT);
+		lcdResumeFrameBuffer(&dev);
+		TouchIconTest(&dev, fx24G, CONFIG_WIDTH, CONFIG_HEIGHT, 1000);
 	}
 #endif
 
@@ -2302,7 +2323,7 @@ void TFT(void *pvParameters)
 		RoundRectTest(&dev, CONFIG_WIDTH, CONFIG_HEIGHT);
 		WAIT;
 
-		if (dev._use_frame_buffer == false) {
+		if (lcdIsFrameBuffer(&dev) == false) {
 			RectAngleTest(&dev, CONFIG_WIDTH, CONFIG_HEIGHT);
 			WAIT;
 
@@ -2371,13 +2392,13 @@ void TFT(void *pvParameters)
 		IconTest(&dev, file, CONFIG_WIDTH, CONFIG_HEIGHT, CONFIG_WIDTH/2, CONFIG_HEIGHT/2);
 		WAIT;
 
-		if (dev._use_frame_buffer == false) {
+		if (lcdIsFrameBuffer(&dev) == false) {
 			ScrollTest(&dev, fx16G, CONFIG_WIDTH, CONFIG_HEIGHT);
 			WAIT;
 			ScrollReset(&dev, CONFIG_WIDTH, CONFIG_HEIGHT);
 		}
 
-		if (dev._use_frame_buffer == true) {
+		if (lcdIsFrameBuffer(&dev) == true) {
 			if (CONFIG_WIDTH >= 240) {
 				TextBoxTest(&dev, fx32G, CONFIG_WIDTH, CONFIG_HEIGHT);
 			} else {
