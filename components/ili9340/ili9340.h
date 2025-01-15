@@ -68,6 +68,7 @@ void delayMS(int ms);
 void lcdWriteRegisterWord(TFT_t * dev, uint16_t addr, uint16_t data);
 void lcdWriteRegisterByte(TFT_t * dev, uint8_t addr, uint16_t data);
 void lcdInit(TFT_t * dev, uint16_t model, int width, int height, int offsetx, int offsety);
+bool lcdIsFrameBuffer(TFT_t * dev);
 void lcdDisableFrameBuffer(TFT_t * dev);
 void lcdResumeFrameBuffer(TFT_t * dev);
 void lcdGetFrameBuffer(TFT_t * dev, uint16_t *buffer);

@@ -534,6 +534,11 @@ void lcdInit(TFT_t * dev, uint16_t model, int width, int height, int offsetx, in
 
 }
 
+// Get framebuffer status
+bool lcdIsFrameBuffer(TFT_t * dev) {
+	return dev->_use_frame_buffer;
+}
+
 // Disable framebuffer
 void lcdDisableFrameBuffer(TFT_t * dev) {
 	dev->_use_frame_buffer_evacuate = dev->_use_frame_buffer;
@@ -547,12 +552,16 @@ void lcdResumeFrameBuffer(TFT_t * dev) {
 
 // Get frame buffer
 void lcdGetFrameBuffer(TFT_t * dev, uint16_t *buffer) {
-	memcpy((char *)buffer, (char *)dev->_frame_buffer, sizeof(uint16_t)*dev->_width*dev->_height);
+	if (dev->_use_frame_buffer) {
+		memcpy((char *)buffer, (char *)dev->_frame_buffer, sizeof(uint16_t)*dev->_width*dev->_height);
+	}
 }
 
 // Set frame buffer
 void lcdSetFrameBuffer(TFT_t * dev, uint16_t *buffer) {
-	memcpy((char *)dev->_frame_buffer, (char *)buffer, sizeof(uint16_t)*dev->_width*dev->_height);
+	if (dev->_use_frame_buffer) {
+		memcpy((char *)dev->_frame_buffer, (char *)buffer, sizeof(uint16_t)*dev->_width*dev->_height);
+	}
 }
 
 // Draw pixel
