@@ -541,8 +541,6 @@ idf.py erase_flash
 
 ![config-xpt2046-4](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/27bc35da-db6a-460d-ba8a-311d4bb72637)
 
----
-
 # SPI Clock speed   
 According to the datasheet, the minimum SPI clock cycles for each driver are as follows:   
 Maximum SPI clock frequency is the reciprocal of this.   
