@@ -611,6 +611,32 @@ Benchmarking using ESP32-S2@240 & 2.4 inch TFT
 |PNGTest|2940|2960|
 |IconTest|740|870|
 
+# How to use this component in your project   
+Create idf_component.yml in the same directory as main.c.   
+```
+YourProject --+-- CMakeLists.txt
+              +-- main --+-- main.c
+                         +-- CMakeLists.txt
+                         +-- idf_component.yml
+```
+
+Contents of idf_component.yml.
+```
+dependencies:
+  nopnop2002/ili9340:
+    path: components/ili9340/
+    git: https://github.com/nopnop2002/esp-idf-ili9340.git
+```
+
+When you build a projects esp-idf will automaticly fetch repository to managed_components dir and link with your code.   
+```
+YourProject --+-- CMakeLists.txt
+              +-- main --+-- main.c
+              |          +-- CMakeLists.txt
+              |          +-- idf_component.yml
+              +-- managed_components ----- nopnop2002__st7789
+```
+
 ---
 
 # Using SPI TFT Adapter   
