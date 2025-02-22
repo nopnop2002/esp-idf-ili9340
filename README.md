@@ -634,7 +634,7 @@ YourProject --+-- CMakeLists.txt
               +-- main --+-- main.c
               |          +-- CMakeLists.txt
               |          +-- idf_component.yml
-              +-- managed_components ----- nopnop2002__st7789
+              +-- managed_components ----- nopnop2002__ili9340
 ```
 
 ---
