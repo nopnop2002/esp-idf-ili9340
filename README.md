@@ -441,7 +441,7 @@ XPT2046 and HR2046 are very similar. But HR2046 does not work properly.
 ![XPT2046-2](https://user-images.githubusercontent.com/6020549/144332571-717f33b1-df03-4a0a-9a23-c7c99b9d4d32.JPG)
 
 
-### Wirering for XPT2046  
+### Wiring for XPT2046  
 
 |TFT||ESP32|ESP32-S2/S3|ESP32-C2/C3||
 |:-:|:-:|:-:|:-:|:-:|:-:|
