@@ -489,33 +489,6 @@ XPT2046 and HR2046 are very similar. But HR2046 does not work properly.
 
 (*3) It can be controlled using gpio. However, GPIO of ESP32 cannot supply too much current. TFT backlight becomes brighter when powered by an external power source.   
 
-# Backlight control   
-You can control backlight using GPIO.   
-A transistor is required for backlight control.   
-```
-ESP32 5V  ------------------+ TFT LED
-                            |collector
-                            |
-                      base /
-ESP32 GPIO ----^^^--------|    SS8050
-               100ohm      \
-                            |emitter
-ESP32 GND ------------------+
-```
-
-You can use Digital transistor.   
-```
-ESP32 5V  ------------------+ TFT LED
-                            |OUT
-                            |
-                        IN /
-ESP32 GPIO ---------------|    Digital transistor
-                           \
-                            |GND
-ESP32 GND ------------------+
-```
-
-
 ### Check if XPT2046 works properly   
 You can check if XPT2046 works properly.   
 ![config-xpt2046-2](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/4fe1f528-c443-4e93-a22f-e85f9f02ef84)
