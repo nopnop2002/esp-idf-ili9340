@@ -499,8 +499,8 @@ ESP32 5V  ------------------+ TFT LED
                       base /
 ESP32 GPIO ----^^^--------|    SS8050
                100ohm      \
-                           |emitter
-ESP32 GND -----------------+
+                            |emitter
+ESP32 GND ------------------+
 ```
 
 You can use Digital transistor.   
@@ -511,8 +511,8 @@ ESP32 5V  ------------------+ TFT LED
                         IN /
 ESP32 GPIO ---------------|    Digital transistor
                            \
-                           |GND
-ESP32 GND -----------------+
+                            |GND
+ESP32 GND ------------------+
 ```
 
 
