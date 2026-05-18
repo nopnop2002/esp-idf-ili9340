@@ -1,14 +1,5 @@
 menu "TFT Configuration"
 
-	config GPIO_RANGE_MAX
-		int
-		default 39 if IDF_TARGET_ESP32
-		default 46 if IDF_TARGET_ESP32S2
-		default 48 if IDF_TARGET_ESP32S3
-		default 18 if IDF_TARGET_ESP32C2
-		default 19 if IDF_TARGET_ESP32C3
-		default 30 if IDF_TARGET_ESP32C6
-
 	choice DRIVER
 		prompt "Display Driver"
 		default ILI9341
@@ -70,7 +61,7 @@ menu "TFT Configuration"
 
 	config MOSI_GPIO
 		int "MOSI GPIO number"
-		range 0 GPIO_RANGE_MAX
+		range 0 SOC_GPIO_OUT_RANGE_MAX
 		default 23 if IDF_TARGET_ESP32
 		default 35 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
 		default  0 # C3 and others
@@ -82,7 +73,7 @@ menu "TFT Configuration"
 
 	config SCLK_GPIO
 		int "SCLK GPIO number"
-		range 0 GPIO_RANGE_MAX
+		range 0 SOC_GPIO_OUT_RANGE_MAX
 		default 18 if IDF_TARGET_ESP32
 		default 36 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
 		default  1 # C3 and others
@@ -94,7 +85,7 @@ menu "TFT Configuration"
 
 	config TFT_CS_GPIO
 		int "CS GPIO number"
-		range 0 GPIO_RANGE_MAX
+		range 0 SOC_GPIO_OUT_RANGE_MAX
 		default 14 if IDF_TARGET_ESP32
 		default 34 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
 		default  2 # C3 and others
@@ -106,7 +97,7 @@ menu "TFT Configuration"
 
 	config DC_GPIO
 		int "DC GPIO number"
-		range 0 GPIO_RANGE_MAX
+		range 0 SOC_GPIO_OUT_RANGE_MAX
 		default 27 if IDF_TARGET_ESP32
 		default 37 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
 		default  3 # C3 and others
@@ -118,7 +109,7 @@ menu "TFT Configuration"
 
 	config RESET_GPIO
 		int "RESET GPIO number"
-		range -1 GPIO_RANGE_MAX
+		range -1 SOC_GPIO_OUT_RANGE_MAX
 		default 33 if IDF_TARGET_ESP32
 		default 38 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
 		default  4 # C3 and others
@@ -131,7 +122,7 @@ menu "TFT Configuration"
 
 	config BL_GPIO
 		int "BACKLIGHT GPIO number"
-		range -1 GPIO_RANGE_MAX
+		range -1 SOC_GPIO_OUT_RANGE_MAX
 		default 32 if IDF_TARGET_ESP32
 		default 33 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
 		default  5 # C3 and others
@@ -189,17 +180,17 @@ menu "TFT Configuration"
 			help
 				Use SPI2_HOST. This is also called HSPI_HOST.
 		config SPI3_HOST
-			depends on IDF_TARGET_ESP32 || IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
+			depends on SOC_SPI_PERIPH_NUM > 2
 			bool "SPI3_HOST"
 			help
-				USE SPI3_HOST. This is also called VSPI_HOST
+				USE SPI3_HOST. This is also called VSPI_HOST.
 	endchoice
 
 
 	config XPT_MISO_GPIO
 		depends on XPT2046_ENABLE_SAME_BUS || XPT2046_ENABLE_DIFF_BUS
 		int "XPT2046 MISO GPIO number"
-		range 0 GPIO_RANGE_MAX
+		range 0 SOC_GPIO_IN_RANGE_MAX
 		default 19 if IDF_TARGET_ESP32
 		default  1 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
 		default  6 # C3 and others
@@ -210,7 +201,7 @@ menu "TFT Configuration"
 	config XPT_CS_GPIO
 		depends on XPT2046_ENABLE_SAME_BUS || XPT2046_ENABLE_DIFF_BUS
 		int "XPT2046 CS GPIO number"
-		range 0 GPIO_RANGE_MAX
+		range 0 SOC_GPIO_OUT_RANGE_MAX
 		default 21 if IDF_TARGET_ESP32
 		default  2 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
 		default  7 # C3 and others
@@ -221,7 +212,7 @@ menu "TFT Configuration"
 	config XPT_IRQ_GPIO
 		depends on XPT2046_ENABLE_SAME_BUS || XPT2046_ENABLE_DIFF_BUS
 		int "XPT2046 IRQ GPIO number"
-		range 0 GPIO_RANGE_MAX
+		range 0 SOC_GPIO_IN_RANGE_MAX
 		default 22 if IDF_TARGET_ESP32
 		default  3 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
 		default  8 # C3 and others
@@ -232,7 +223,7 @@ menu "TFT Configuration"
 	config XPT_SCLK_GPIO
 		depends on XPT2046_ENABLE_DIFF_BUS
 		int "XPT2046 SCLK GPIO number"
-		range 0 GPIO_RANGE_MAX
+		range 0 SOC_GPIO_OUT_RANGE_MAX
 		default 25 if IDF_TARGET_ESP32
 		default  4 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
 		default  9 # C3 and others
@@ -243,7 +234,7 @@ menu "TFT Configuration"
 	config XPT_MOSI_GPIO
 		depends on XPT2046_ENABLE_DIFF_BUS
 		int "XPT2046 MOSI GPIO number"
-		range 0 GPIO_RANGE_MAX
+		range 0 SOC_GPIO_OUT_RANGE_MAX
 		default 26 if IDF_TARGET_ESP32
 		default  5 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
 		default 10 # C3 and others
