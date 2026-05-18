@@ -466,7 +466,7 @@ XPT2046 and HR2046 are very similar. But HR2046 does not work properly.
 
 ### Wiring for XPT2046  
 
-|TFT||ESP32|ESP32-S2/S3|ESP32-C2/C3||
+|TFT||ESP32|ESP32-S2/S3|ESP32-Cx/Hx||
 |:-:|:-:|:-:|:-:|:-:|:-:|
 |VCC|--|3.3V|3.3V|3V3||
 |GND|--|GND|GND|GND||
