@@ -809,6 +809,12 @@ TickType_t BMPTest(TFT_t * dev, char * file, int width, int height) {
 
 #define BUFFPIXEL 20
 		uint8_t sdbuffer[3*BUFFPIXEL]; // pixel buffer (R+G+B per pixel)
+		if (w <= 0 || (size_t)w > SIZE_MAX / sizeof(uint16_t)) {
+			ESP_LOGE(__FUNCTION__, "invalid width");
+			free(result);
+			fclose(fp);
+			return 0;
+		}
 		uint16_t *colors = (uint16_t*)malloc(sizeof(uint16_t) * w);
 		if (colors == NULL) {
 			ESP_LOGE(__FUNCTION__, "malloc fail");
