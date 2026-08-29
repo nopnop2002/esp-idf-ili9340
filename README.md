@@ -644,6 +644,10 @@ dependencies:
   nopnop2002/ili9340:
     path: components/ili9340/
     git: https://github.com/nopnop2002/esp-idf-ili9340.git
+  esp_jpeg:
+    version: "^1.0.0"
+    rules:
+      - if: "idf_version >=5.0"
 ```
 
 When you build a projects esp-idf will automaticly fetch repository to managed_components dir and link with your code.   
