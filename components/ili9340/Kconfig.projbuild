@@ -135,20 +135,20 @@ menu "TFT Configuration"
 
 	config INVERSION
 		bool "Enable Display Inversion"
-		default false
+		default n
 		help
 			Enable Display Inversion.
 
 	config RGB_COLOR
 		bool "Change BGR filter to RGB filter"
-		default false
+		default n
 		help
 			Change BGR color filter to RGB color filter.
 
 	config FRAME_BUFFER
 		bool "Enable Frame Buffer"
 		depends on !IDF_TARGET_ESP32C2
-		default false
+		default n
 		help
 			Enable Frame Buffer.
 
@@ -255,14 +255,14 @@ menu "TFT Configuration"
 	config SAVE_CALIBRATION
 		depends on XPT2046_ENABLE_SAME_BUS || XPT2046_ENABLE_DIFF_BUS
 		bool "Save calibration data to NVS"
-		default false
+		default n
 		help
 			Save calibration data to NVS.
 
 	config XPT_CHECK
 		depends on XPT2046_ENABLE_SAME_BUS || XPT2046_ENABLE_DIFF_BUS
 		bool "Enable XPT2046 Touch Check"
-		default false
+		default n
 		help
 			Enable XPT2046 Touch Check.
 
