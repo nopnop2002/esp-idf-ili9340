@@ -142,7 +142,7 @@ Left:4.0" Right:2.4"
 ---
 
 # Shenzhen Jingcal Intelligent 3.5" ST7796 320x480
-Vendor part number is ESP32-3248S035.   
+Vendor part number is ESP32-3248S035C/R.   
 The product page is [here](https://github.com/guitionofficial/ESP32-series/tree/master/3.5inch_ESP32-3248S035/3.5inch_ESP32-3248S035).   
 
 ![config-ESP32-3248S035](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/68749d5a-9047-4725-bc06-281f37e44539)
