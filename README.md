@@ -98,7 +98,7 @@ All of these are SPI interface products.
 
 __CST820 is not supported in this project.__   
 
-__ESP32-2432S022/ESP32-2432S032/ESP32-4827S043/ESP32-8048S043 is not supported in this project because it's an RGB panel, not SPI.__   
+__ESP32-2432S022/ESP32-2432S032/ESP32-4827S043/ESP32-8048S043 is not supported in this project because it's an Parallel interface, not SPI interface.__   
 
 ---
 
