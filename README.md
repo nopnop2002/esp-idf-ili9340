@@ -517,7 +517,7 @@ What you get here is the physical coordinates.
 See [here](https://github.com/nopnop2002/esp-idf-ili9340/issues/39) about physical coordinates.   
 ![TouchPosition-2](https://user-images.githubusercontent.com/6020549/147400385-20b035b4-653a-4605-9d36-6d325a1f68a3.jpg)
 
-### Using ESP32-3248S035   
+### Using ESP32-3248S035R   
 This module also has an XPT2046.   
 ![ESP32-3248S035-2](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/56d7bc3b-ab03-4486-bd51-bc16d6138d1c)
 ![ESP32-3248S035-3](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/bed91135-fd74-4789-949e-f9c8398b565f)
