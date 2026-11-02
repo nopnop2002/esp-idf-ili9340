@@ -58,7 +58,7 @@ __TFT MISO is not use.__
 
 # Tested TFT   
 - M5Stack   
-- Shenzhen Jingcal Intelligent 3.5" ST7796 320x480 (ESP32-3248S035)   
+- Shenzhen Jingcal Intelligent 3.5" ST7796 320x480 (ESP32-3248S035R)   
 - Shenzhen Jingcal Intelligent 2.8" ILI9341 240x320 (ESP32-2432S028R)   
 - 4.0" ST7796 320x480   
 - 3.2" ILI9341 240x320   
@@ -81,10 +81,24 @@ __A note about RESET__
 Pull Up of the RESET pin may be required. I inserted a 100 ohm resistor between Vcc and RESET.   
 
 ### Shenzhen Jingcal Intelligent Product   
-They can use touch screens.   
+Shenzhen Jingcal Intelligent offers these products.   
+All of these are SPI interface products.   
+
+|Model|SoC|TFT|Size(Inch)|Width(Pixel)|Height(Pixel)|Touch|
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|ESP32-1732S019N|ESP32-S3|ST7789|1.9|170|320|None|
+|ESP32-2432S024N|ESP32|ILI9341|2.4|240|320|None|
+|ESP32-2432S024R|ESP32|ILI9341|2.4|240|320|CST820|
+|ESP32-2432S024C|ESP32|ILI9341|2.4|240|320|XPT2046|
+|ESP32-2432S028R|ESP32|ILI9341|2.8|240|320|XPT2046|
+|ESP32-3248S035C|ESP32|ST7796|3.5|320|480|CST820|
+|ESP32-3248S035R|ESP32|ST7796|3.5|320|480|XPT2046|
+
 ![Shenzhen_Jingcal_Intelligent](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/eda884bb-9fac-40ea-8396-d77bb0de074b)
 
-__ESP32-2432S032/ESP32-4827S043/ESP32-8048S043 doesn't work because it's an RGB panel, not SPI.__   
+__CST820 is not supported in this project.__   
+
+__ESP32-2432S022/ESP32-2432S032/ESP32-4827S043/ESP32-8048S043 is not supported in this project because it's an RGB panel, not SPI.__   
 
 ---
 
