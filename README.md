@@ -129,6 +129,7 @@ Left:4.0" Right:2.4"
 
 # Shenzhen Jingcal Intelligent 3.5" ST7796 320x480
 Vendor part number is ESP32-3248S035.   
+The product page is [here](https://github.com/guitionofficial/ESP32-series/tree/master/3.5inch_ESP32-3248S035/3.5inch_ESP32-3248S035).   
 
 ![config-ESP32-3248S035](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/68749d5a-9047-4725-bc06-281f37e44539)
 ![ESP32-3248S035-1](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/ee2b7eb5-2627-4bbf-b7a5-8a31005cf22d)
@@ -162,6 +163,7 @@ Left:2.4" Right:2.8"
 
 # Shenzhen Jingcal Intelligent 2.8" ILI9341 240x320
 Vendor part number is ESP32-2432S028R.   
+The product page is [here](https://github.com/guitionofficial/ESP32-series/tree/master/2.8inch_ESP32-2432S028R/2.8inch_ESP32-2432S028R).   
 
 ![config-ESP32-2432S028R-1](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/317e365c-3c1a-4c6f-9c14-f07feacbd4d8)
 ![ESP32-2432S028R-1](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/e9e4b502-4063-49b2-b58a-d60aeccdd380)
