@@ -84,21 +84,25 @@ Pull Up of the RESET pin may be required. I inserted a 100 ohm resistor between 
 Shenzhen Jingcal Intelligent offers these products.   
 All of these are SPI interface products.   
 
-|Model|SoC|TFT|Size(Inch)|Width(Pixel)|Height(Pixel)|Touch|
-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|ESP32-1732S019N|ESP32-S3|ST7789|1.9|170|320|None|
-|ESP32-2432S024N|ESP32|ILI9341|2.4|240|320|None|
-|ESP32-2432S024C|ESP32|ILI9341|2.4|240|320|CST820(*)|
-|ESP32-2432S024R|ESP32|ILI9341|2.4|240|320|XPT2046|
-|ESP32-2432S028R|ESP32|ILI9341|2.8|240|320|XPT2046|
-|ESP32-3248S035C|ESP32|ST7796|3.5|320|480|CST820(*)|
-|ESP32-3248S035R|ESP32|ST7796|3.5|320|480|XPT2046|
+|Model|Size(Inch)|SoC|TFT|Width(Pixel)|Height(Pixel)|Touch||
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+|ESP32-2424S012N|1.28|ESP32-C3|GC9A01(*)|240|240|None|Round Display|
+|ESP32-2424S012C|1.28|ESP32-C3|GC9A01(*)|240|240|CST816D(*)|Round Display|
+|ESP32-1732S019N|1.9|ESP32-S3|ST7789|170|320|None||
+|ESP32-2432S024N|2.4|ESP32|ILI9341|240|320|None||
+|ESP32-2432S024C|2.4|ESP32|ILI9341|240|320|CST820(*)||
+|ESP32-2432S024R|2.4|ESP32|ILI9341|240|320|XPT2046||
+|ESP32-2432S028R|2.8|ESP32|ILI9341|240|320|XPT2046||
+|ESP32-3248S035C|3.5|ESP32|ST7796|320|480|CST820(*)||
+|ESP32-3248S035R|3.5|ESP32|ST7796|320|480|XPT2046||
 
 ![Shenzhen_Jingcal_Intelligent](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/eda884bb-9fac-40ea-8396-d77bb0de074b)
 
-__CST820 is not supported in this project.__   
+__GC9A01 is not supported in this project.__   
 
-__ESP32-2432S022/ESP32-2432S032/ESP32-4827S043/ESP32-8048S043 is not supported in this project because it's an Parallel interface, not SPI interface.__   
+__CST816D/CST820 is not supported in this project.__   
+
+__ESP32-2432S022/ESP32-2432S032/ESP32-4848S040/ESP32-4827S043/ESP32-8048S043 is not supported in this project because it's an Parallel interface, not SPI interface.__   
 
 ---
 
