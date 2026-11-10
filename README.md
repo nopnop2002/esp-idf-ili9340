@@ -98,7 +98,7 @@ All of these are SPI interface products.
 
 ![Shenzhen_Jingcal_Intelligent](https://github.com/nopnop2002/esp-idf-ili9340/assets/6020549/eda884bb-9fac-40ea-8396-d77bb0de074b)
 
-__ESP32-2424S012N/C is Round Display.___
+__ESP32-2424S012N/C is Round Display.__
 
 __GC9A01 is not supported in this project.__   
 
